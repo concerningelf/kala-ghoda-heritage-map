@@ -52,6 +52,113 @@
     .popup-title { font-family: 'Cardo', serif; font-size: 18px; font-weight: bold; margin-bottom: 5px; color: #111; text-transform: uppercase; }
     .popup-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; display: inline-block; padding: 3px 6px; border-radius: 4px; color: #fff; margin-bottom: 10px; }
     .popup-desc { font-size: 14px; color: #555; line-height: 1.5; margin: 0; }
+
+    /* MOBILE OPTIMIZATION */
+    @media (max-width: 768px) {
+        #header {
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            width: auto;
+            max-width: calc(100vw - 30px);
+        }
+        
+        #header h1 {
+            font-size: 20px;
+            padding: 20px 20px 5px 20px;
+        }
+        
+        #header h2 {
+            font-size: 11px;
+            padding: 0 20px 12px 20px;
+        }
+        
+        #console {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .filter-btn {
+            padding: 8px 14px;
+            margin: 5px 3px 0 0;
+            font-size: 10px;
+            touch-action: manipulation;
+        }
+        
+        .maplibregl-popup {
+            max-width: calc(100vw - 40px) !important;
+        }
+        
+        .popup-img {
+            height: 140px;
+        }
+        
+        .popup-inner {
+            padding: 15px;
+        }
+        
+        .popup-title {
+            font-size: 16px;
+        }
+        
+        .popup-desc {
+            font-size: 13px;
+        }
+        
+        .marker {
+            width: 16px !important;
+            height: 16px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #header {
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            max-width: calc(100vw - 20px);
+        }
+        
+        #header h1 {
+            font-size: 18px;
+            padding: 15px 15px 5px 15px;
+        }
+        
+        #header h2 {
+            font-size: 10px;
+            padding: 0 15px 10px 15px;
+        }
+        
+        #console {
+            padding: 0 15px 15px 15px;
+        }
+        
+        .filter-btn {
+            padding: 7px 11px;
+            margin: 4px 2px 0 0;
+            font-size: 9px;
+        }
+        
+        .popup-img {
+            height: 120px;
+        }
+        
+        .popup-inner {
+            padding: 12px;
+        }
+        
+        .popup-title {
+            font-size: 15px;
+        }
+        
+        .popup-desc {
+            font-size: 12px;
+        }
+        
+        .marker {
+            width: 14px !important;
+            height: 14px !important;
+        }
+    }
 </style>
 </head>
 
@@ -68,74 +175,94 @@
             // Your Grey Map
             style: 'https://api.maptiler.com/maps/dataviz-v4/style.json?key=f0f0aibL2C05fTzSrqHq', 
             title: 'Visual Audit: Kala Ghoda',
-            subtitle: 'A design study of Mumbai’s Art District',
+            subtitle: 'A design study of Mumbai\'s Art District',
             
             // COLOR PALETTE
             colors: {
-                'Art Deco': '#2a9d8f',   // Teal
-                'Victorian': '#e76f51',  // Terra Cotta
-                'Texture': '#e9c46a',    // Gold
-                'Modern': '#264653'      // Dark Blue
+                'Art Deco': '#2a9d8f',
+                'Victorian': '#e76f51',
+                'Texture': '#e9c46a',
+                'Modern': '#264653'
             },
 
             // LOCATIONS
             chapters: [
                 {
-                    id: 'regal', category: 'Art Deco', title: '1. Regal Cinema',
-                    image: './images/regal.jpg', 
-                    description: 'India’s first Art Deco theater. Note the Ziggurat stepping.',
+                    id: 'regal',
+                    category: 'Art Deco',
+                    title: '1. Regal Cinema',
+                    image: './images/regal.jpg',
+                    description: 'India\'s first Art Deco theater. Note the Ziggurat stepping.',
                     location: { center: [72.8334, 18.9279], zoom: 17 }
                 },
                 {
-                    id: 'museum', category: 'Victorian', title: '2. CSMVS Museum',
+                    id: 'museum',
+                    category: 'Victorian',
+                    title: '2. CSMVS Museum',
                     image: './images/csmvs.jpg',
                     description: 'Indo-Saracenic style using grey Kurla basalt and yellow Malad stone.',
                     location: { center: [72.8327, 18.9269], zoom: 17 }
                 },
                 {
-                    id: 'elphinstone', category: 'Victorian', title: '3. Elphinstone College',
+                    id: 'elphinstone',
+                    category: 'Victorian',
+                    title: '3. Elphinstone College',
                     image: './images/elphinstone.jpg',
                     description: 'Romanesque Transitional style with stone gargoyles.',
                     location: { center: [72.8313, 18.9265], zoom: 17 }
                 },
                 {
-                    id: 'sassoon', category: 'Victorian', title: '4. David Sassoon Library',
+                    id: 'sassoon',
+                    category: 'Victorian',
+                    title: '4. David Sassoon Library',
                     image: './images/sassoon.jpg',
                     description: 'Victorian Gothic defined by pointed arches.',
                     location: { center: [72.8316, 18.9272], zoom: 17 }
                 },
                 {
-                    id: 'army', category: 'Victorian', title: '5. Army & Navy',
+                    id: 'army',
+                    category: 'Victorian',
+                    title: '5. Army & Navy',
                     image: './images/army-navy.jpg',
                     description: 'Edwardian Neo-Classical with original serif typography.',
                     location: { center: [72.8322, 18.9285], zoom: 17 }
                 },
                 {
-                    id: 'esplanade', category: 'Texture', title: '6. Esplanade Mansion',
+                    id: 'esplanade',
+                    category: 'Texture',
+                    title: '6. Esplanade Mansion',
                     image: './images/esplanade.jpg',
                     description: 'Oldest cast-iron building. Rust and exposed iron.',
                     location: { center: [72.8311, 18.9282], zoom: 17 }
                 },
                 {
-                    id: 'jehangir', category: 'Modern', title: '7. Jehangir Art Gallery',
+                    id: 'jehangir',
+                    category: 'Modern',
+                    title: '7. Jehangir Art Gallery',
                     image: './images/jehangir.jpg',
                     description: 'Concrete Modernism with a wavy cantilevered entrance.',
                     location: { center: [72.8317, 18.9275], zoom: 17 }
                 },
                 {
-                    id: 'statue', category: 'Texture', title: '8. Spirit of Kala Ghoda',
+                    id: 'statue',
+                    category: 'Texture',
+                    title: '8. Spirit of Kala Ghoda',
                     image: './images/placeholder.jpg',
                     description: 'Bronze statue marking the original Black Horse spot.',
                     location: { center: [72.8318, 18.9277], zoom: 17 }
                 },
                 {
-                    id: 'synagogue', category: 'Victorian', title: '9. Blue Synagogue',
+                    id: 'synagogue',
+                    category: 'Victorian',
+                    title: '9. Blue Synagogue',
                     image: './images/synagogue.jpg',
                     description: 'Victorian structure with unique turquoise color.',
                     location: { center: [72.8324, 18.9278], zoom: 17 }
                 },
                 {
-                    id: 'ropewalk', category: 'Texture', title: '10. Rope Walk Lane',
+                    id: 'ropewalk',
+                    category: 'Texture',
+                    title: '10. Rope Walk Lane',
                     image: './images/ropewalk.jpg',
                     description: 'Vintage blue enamel signs and exposed brick.',
                     location: { center: [72.8320, 18.9270], zoom: 17 }
@@ -145,12 +272,12 @@
 
         // --- 2. SETUP HEADER ---
         var header = document.getElementById('header');
-        var titleHTML = `<h1>${config.title}</h1><h2>${config.subtitle}</h2>`;
+        var titleHTML = '<h1>' + config.title + '</h1><h2>' + config.subtitle + '</h2>';
         document.getElementById('console').insertAdjacentHTML('beforebegin', titleHTML);
 
         // --- 3. SETUP FILTERS ---
         var consoleDiv = document.getElementById('console');
-        var categories = [...new Set(config.chapters.map(item => item.category))];
+        var categories = [...new Set(config.chapters.map(function(item) { return item.category; }))];
         
         // "All" Button
         var allBtn = document.createElement('button');
@@ -160,12 +287,12 @@
         consoleDiv.appendChild(allBtn);
 
         // Category Buttons
-        categories.forEach(cat => {
+        categories.forEach(function(cat) {
             var btn = document.createElement('button');
             btn.className = 'filter-btn';
             btn.innerText = cat;
             var color = config.colors[cat] || '#333';
-            btn.style.borderLeft = `4px solid ${color}`;
+            btn.style.borderLeft = '4px solid ' + color;
             btn.onclick = function() { filterMarkers(cat, this); };
             consoleDiv.appendChild(btn);
         });
@@ -174,7 +301,7 @@
         var map = new maplibregl.Map({
             container: 'map',
             style: config.style,
-            center: [72.8325, 18.9275], // Centered on Kala Ghoda
+            center: [72.8325, 18.9275],
             zoom: 16.5,
             pitch: 45,
             bearing: -15
@@ -185,7 +312,7 @@
         var markerObjects = [];
 
         map.on("load", function () {
-            config.chapters.forEach((record) => {
+            config.chapters.forEach(function(record) {
                 
                 // Get Color
                 var color = config.colors[record.category] || '#333';
@@ -194,18 +321,17 @@
                 var el = document.createElement('div');
                 el.className = 'marker';
                 el.style.backgroundColor = color;
-                el.style.width = '20px';
-                el.style.height = '20px';
+                el.style.width = '12px';
+                el.style.height = '12px';
 
                 // Create Popup
-                var popupHTML = `
-                    <img src="${record.image}" class="popup-img">
-                    <div class="popup-inner">
-                        <span class="popup-cat" style="background:${color}">${record.category}</span>
-                        <div class="popup-title">${record.title}</div>
-                        <p class="popup-desc">${record.description}</p>
-                    </div>
-                `;
+                var popupHTML = '<img src="' + record.image + '" class="popup-img">' +
+                    '<div class="popup-inner">' +
+                    '<span class="popup-cat" style="background:' + color + '">' + record.category + '</span>' +
+                    '<div class="popup-title">' + record.title + '</div>' +
+                    '<p class="popup-desc">' + record.description + '</p>' +
+                    '</div>';
+                    
                 var popup = new maplibregl.Popup({ offset: 25, maxWidth: '300px' }).setHTML(popupHTML);
 
                 // Add to Map
@@ -223,16 +349,18 @@
         function filterMarkers(selectedCat, clickedBtn) {
             // Reset Buttons
             var buttons = document.getElementsByClassName('filter-btn');
-            for (var btn of buttons) btn.classList.remove('active');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
             clickedBtn.classList.add('active');
 
             // Show/Hide Dots
-            markerObjects.forEach(m => {
+            markerObjects.forEach(function(m) {
                 if (selectedCat === 'all' || m.category === selectedCat) {
                     m.element.style.display = 'block';
                     m.element.style.opacity = '1';
                 } else {
-                    m.element.style.display = 'none'; // Hide it
+                    m.element.style.display = 'none';
                 }
             });
         }
