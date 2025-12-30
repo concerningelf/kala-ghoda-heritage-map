@@ -2,770 +2,240 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>MapLibre Storytelling</title>
+    <title>Visual Audit: Kala Ghoda</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src="./dist/bundle.js"></script>
-    <link href='./dist/maplibre-gl.css' rel='stylesheet' />
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-        }
+    <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-        a,
-        a:hover,
-        a:visited {
-            color: #0071bc;
-        }
+   <style>
+    /* --- CSS STYLING --- */
+    body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; }
+    #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
 
-        #map {
-            top: 0;
-            height: 100vh;
-            width: 100vw;
-            position: fixed;
-        }
+    /* HEADER */
+    #header {
+        position: absolute; top: 30px; left: 30px; width: 300px;
+        background: #ffffff; z-index: 100;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        border-top: 5px solid #333;
+    }
+    #header h1 { font-family: 'Cardo', serif; font-size: 24px; font-weight: 700; text-transform: uppercase; padding: 25px 25px 5px 25px; margin: 0; color: #111; }
+    #header h2 { font-family: 'Lato', sans-serif; font-size: 13px; color: #777; padding: 0 25px 15px 25px; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
 
-        #mapInset {
-            bottom: 50px;
-            right: 30px;
-            height: 180px;
-            width: 250px;
-            max-width: 100%;
-            position: fixed;
-            z-index: 1;
-            opacity: 1;
-            border: 1px solid rgb(100, 100, 100);
-            transition: opacity 0.5s ease-in-out;
-            pointer-events: none;
-        }
+    /* FILTERS */
+    #console { padding: 0 25px 25px 25px; }
+    .filter-btn {
+        display: inline-block; padding: 6px 12px; margin: 5px 5px 0 0;
+        font-size: 11px; text-transform: uppercase; font-weight: bold;
+        border: 1px solid #ccc; background: #fff; color: #555;
+        cursor: pointer; border-radius: 20px; transition: all 0.2s ease;
+    }
+    .filter-btn:hover { background: #eee; }
+    .filter-btn.active { background: #333; color: #fff; border-color: #333 !important; }
 
-        #bookmarks {
-            margin: 0;
-            width: 100vw;
-            position: fixed;
-            top: 0;
-            z-index: 6;
-            background-color: rgba(14, 17, 22, 1);
-        }
+    /* CUSTOM DOTS */
+    .marker {
+        border-radius: 50%;
+        border: 2px solid #fff;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .marker:hover { transform: scale(1.3); z-index: 999; }
 
-        #bookmarks p {
-            padding: 1vh;
-            text-align: center;
-            color: white;
-            font-size: 0.8em;
-        }
-
-        #header {
-            margin: 3vh auto;
-            width: 60vw;
-            padding: 2vh;
-            position: relative;
-            z-index: 5;
-            text-align: center;
-            background-color: rgba(14,17,22,0.75); 
-            border-radius: 25px;
-        }
-
-        #header h1,
-        #header h2,
-        #header p {
-            margin: 0;
-            padding: 2vh 2vw;
-            text-align: center;
-        }
-
-        #footer {
-            width: 100%;
-            min-height: 5vh;
-            padding-top: 2vh;
-            padding-bottom: 2vh;
-            text-align: center;
-            line-height: 25px;
-            font-size: 13px;
-            position: relative;
-            z-index: 5;
-        }
-
-        #footer p {
-            padding: 0 10rem;
-        }
-
-        #features {
-            padding-top: 10vh;
-            padding-bottom: 10vh;
-        }
-
-        .fab,
-        .fas {
-            font-size: 15px;
-            margin: 10px 10px 0 0;
-            color: #fff;
-            text-decoration: none;
-        }
-
-
-        .hidden {
-            visibility: hidden;
-        }
-
-        .centered {
-            width: 50vw;
-            margin: 0 auto;
-        }
-
-        .lefty {
-            width: 33vw;
-            margin-left: 5vw;
-        }
-
-        .righty {
-            width: 33vw;
-            margin-left: 62vw;
-        }
-
-        .fully {
-            width: 100%;
-            margin: auto;
-        }
-
-        .light {
-            color: #444;
-            background-color: #fafafa;
-        }
-
-        .dark {
-            color: #fafafa;
-            background-color: #444;
-        }
-
-        .step {
-            padding-bottom: 50vh;
-            /* margin-bottom: 10vh; */
-            opacity: 0.25;
-        }
-
-        .step.active {
-            opacity: 0.9;
-        }
-
-        .step div {
-            padding: 25px 50px;
-            line-height: 25px;
-            font-size: 13px;
-            border-radius: 25px;
-        }
-
-        .step h3 {
-            font-size: 2em;
-            line-height: 1.3em;
-        }
-
-        .step p {
-            font-size: 1.5em;
-            line-height: 1.5em;
-        }
-
-        .step div a {
-            color: #ffffff;
-        }
-
-        .step img {
-            width: 100%;
-        }
-
-        #rotate-mobile {
-            display: none;
-        }
-
-        .legend {
-            position: fixed;
-            right: 30px;
-            bottom: 30px;
-            color: #444;
-            background-color: #fafafa;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
-            font-family: 'Montserrat', Helvetica, sans-serif;
-            padding: 10px;
-            display: none;
-            z-index: 1;
-            max-width: 350px;
-        }
-
-        .legend img {
-            width: 25px;
-            margin-right: 10px;
-        }
-
-        .legend h3 {
-            margin: 0 0 10px;
-            font-family: 'Montserrat', Helvetica, sans-serif;
-        }
-
-        .legend div {
-            vertical-align: center;
-        }
-
-        .legend div #block {
-            display: inline-block;
-            height: 20px;
-            width: 30px;
-            margin-right: 5px;
-        }
-
-        .legend div #text {
-            vertical-align: top;
-        }
-
-        .maplibregl-ctrl {
-            margin-right: 30px !important;
-        }
-
-        .maplibregl-popup {
-            font: 12px/20px 'Montserrat', Helvetica, sans-serif;
-        }
-
-        @media (max-width: 750px) {
-            #features {
-                width: 90vw;
-                margin: 0 auto;
-            }
-
-            #bookmarks {
-                display: none;
-            }
-
-            #header {
-                width: 80vw;
-            }
-
-            #header img {
-                width: 80vw;
-            }
-
-            #header h1 {
-                font-family: 'Roboto', 'Open Sans', 'Verdana', sans-serif;
-                font-size: 1.9rem;
-                text-transform: uppercase;
-            }
-
-            .lefty {
-                width: 90%;
-            }
-
-            .step div {
-                padding: 5px 15px;
-            }
-
-            .step div h3 {
-                font-family: 'Lora', 'Georgia', serif;
-                font-size: 1.5rem;
-                font-weight: 1000;
-            }
-
-            #footer p {
-                padding: 0;
-            }
-
-            #rotate-mobile {
-                display: inline-block;
-                margin-top: 25px;
-            }
-
-            .centered,
-            .lefty,
-            .righty,
-            .fully {
-                width: 90vw;
-                margin: 0 auto;
-            }
-        }
-
-        /* Fix issue on mobile browser where scroll breaks  */
-        .maplibregl-canvas-container.maplibregl-touch-zoom-rotate.maplibregl-touch-drag-pan,
-        .maplibregl-canvas-container.maplibregl-touch-zoom-rotate.maplibregl-touch-drag-pan .maplibregl-canvas {
-            touch-action: unset;
-        }
-    </style>
+    /* POPUPS */
+    .maplibregl-popup { z-index: 200; max-width: 300px !important; }
+    .maplibregl-popup-content { padding: 0; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-radius: 0; font-family: 'Lato', sans-serif; }
+    .popup-img { width: 100%; height: 160px; object-fit: cover; display: block; }
+    .popup-inner { padding: 20px; }
+    .popup-title { font-family: 'Cardo', serif; font-size: 18px; font-weight: bold; margin-bottom: 5px; color: #111; text-transform: uppercase; }
+    .popup-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; display: inline-block; padding: 3px 6px; border-radius: 4px; color: #fff; margin-bottom: 10px; }
+    .popup-desc { font-size: 14px; color: #555; line-height: 1.5; margin: 0; }
+</style>
 </head>
 
 <body>
 
     <div id="map"></div>
-    <div id="mapInset"></div>
-    <div id="story"></div>
-    <script src="./config.js"></script>
-    <script src="./sources.js"></script>
+    <div id="header">
+        <div id="console"></div>
+    </div>
+
     <script>
-        var initLoad = true;
-        var layerTypes = {
-            'fill': ['fill-opacity'],
-            'line': ['line-opacity'],
-            'circle': ['circle-opacity', 'circle-stroke-opacity'],
-            'symbol': ['icon-opacity', 'text-opacity'],
-            'raster': ['raster-opacity'],
-            'fill-extrusion': ['fill-extrusion-opacity'],
-            'heatmap': ['heatmap-opacity']
-        }
+        // --- 1. YOUR DATA CONFIGURATION (EDIT HERE) ---
+        var config = {
+            // Your Grey Map
+            style: 'https://api.maptiler.com/maps/019b6e7e-1456-7c20-87c7-76729fcd23fd/style.json?key=f0f0aibL2C05fTzSrqHq', 
+            title: 'Visual Audit: Kala Ghoda',
+            subtitle: 'A design study of Mumbai’s Art District',
+            
+            // COLOR PALETTE
+            colors: {
+                'Art Deco': '#2a9d8f',   // Teal
+                'Victorian': '#e76f51',  // Terra Cotta
+                'Texture': '#e9c46a',    // Gold
+                'Modern': '#264653'      // Dark Blue
+            },
 
-        var alignments = {
-            'left': 'lefty',
-            'center': 'centered',
-            'right': 'righty',
-            'full': 'fully'
-        }
-
-        function getLayerPaintType(layer) {
-            var layerType = map.getLayer(layer).type;
-            return layerTypes[layerType];
-        }
-
-        function setLayerOpacity(layer) {
-            var paintProps = getLayerPaintType(layer.layer);
-            paintProps.forEach(function (prop) {
-                var options = {};
-                if (layer.duration) {
-                    var transitionProp = prop + "-transition";
-                    options = { "duration": layer.duration };
-                    map.setPaintProperty(layer.layer, transitionProp, options);
+            // LOCATIONS
+            chapters: [
+                {
+                    id: 'regal', category: 'Art Deco', title: '1. Regal Cinema',
+                    image: './images/regal.jpg', 
+                    description: 'India’s first Art Deco theater. Note the Ziggurat stepping.',
+                    location: { center: [72.8334, 18.9279], zoom: 17 }
+                },
+                {
+                    id: 'museum', category: 'Victorian', title: '2. CSMVS Museum',
+                    image: './images/csmvs.jpg',
+                    description: 'Indo-Saracenic style using grey Kurla basalt and yellow Malad stone.',
+                    location: { center: [72.8327, 18.9269], zoom: 17 }
+                },
+                {
+                    id: 'elphinstone', category: 'Victorian', title: '3. Elphinstone College',
+                    image: './images/elphinstone.jpg',
+                    description: 'Romanesque Transitional style with stone gargoyles.',
+                    location: { center: [72.8313, 18.9265], zoom: 17 }
+                },
+                {
+                    id: 'sassoon', category: 'Victorian', title: '4. David Sassoon Library',
+                    image: './images/sassoon.jpg',
+                    description: 'Victorian Gothic defined by pointed arches.',
+                    location: { center: [72.8316, 18.9272], zoom: 17 }
+                },
+                {
+                    id: 'army', category: 'Victorian', title: '5. Army & Navy',
+                    image: './images/army-navy.jpg',
+                    description: 'Edwardian Neo-Classical with original serif typography.',
+                    location: { center: [72.8322, 18.9285], zoom: 17 }
+                },
+                {
+                    id: 'esplanade', category: 'Texture', title: '6. Esplanade Mansion',
+                    image: './images/esplanade.jpg',
+                    description: 'Oldest cast-iron building. Rust and exposed iron.',
+                    location: { center: [72.8311, 18.9282], zoom: 17 }
+                },
+                {
+                    id: 'jehangir', category: 'Modern', title: '7. Jehangir Art Gallery',
+                    image: './images/jehangir.jpg',
+                    description: 'Concrete Modernism with a wavy cantilevered entrance.',
+                    location: { center: [72.8317, 18.9275], zoom: 17 }
+                },
+                {
+                    id: 'statue', category: 'Texture', title: '8. Spirit of Kala Ghoda',
+                    image: './images/placeholder.jpg',
+                    description: 'Bronze statue marking the original Black Horse spot.',
+                    location: { center: [72.8318, 18.9277], zoom: 17 }
+                },
+                {
+                    id: 'synagogue', category: 'Victorian', title: '9. Blue Synagogue',
+                    image: './images/synagogue.jpg',
+                    description: 'Victorian structure with unique turquoise color.',
+                    location: { center: [72.8324, 18.9278], zoom: 17 }
+                },
+                {
+                    id: 'ropewalk', category: 'Texture', title: '10. Rope Walk Lane',
+                    image: './images/ropewalk.jpg',
+                    description: 'Vintage blue enamel signs and exposed brick.',
+                    location: { center: [72.8320, 18.9270], zoom: 17 }
                 }
-                map.setPaintProperty(layer.layer, prop, layer.opacity, options);
-            });
-        }
-
-        // add navigation control for interactive chapters
-        const navigation = new maplibregl.NavigationControl();
-
-        if (config.use3dTerrain) {
-            map.addControl(
-                new maplibregl.TerrainControl({
-                    source: 'terrainSource',
-                    exaggeration: 1
-                })
-            );
-        }
-
-        // add custom hover popups for interactive chapters
-        const popup = new maplibregl.Popup({
-            closeButton: false,
-            closeOnClick: false,
-        });
-        const popupHover = (e) => {
-            map.getCanvas().style.cursor = 'pointer';
-            const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = e.features[0].properties.Community_;
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-            popup.setLngLat(coordinates).setHTML(description).addTo(map);
-        }
-        const popupHoverAway = () => {
-            popup.remove();
-            map.getCanvas().style.cursor = 'default';
-        }
-        const turnPopupsOn = (layer) => {
-            map.on('mouseenter', layer, popupHover);
-            map.on('mouseleave', layer, popupHoverAway);
+            ]
         };
-        const turnPopupsOff = (layer) => {
-            map.off('mouseenter', layer, popupHover);
-            map.off('mouseleave', layer, popupHoverAway);
-        };
 
-        var story = document.getElementById('story');
-        var features = document.createElement('div');
-        features.setAttribute('id', 'features');
+        // --- 2. SETUP HEADER ---
+        var header = document.getElementById('header');
+        var titleHTML = `<h1>${config.title}</h1><h2>${config.subtitle}</h2>`;
+        document.getElementById('console').insertAdjacentHTML('beforebegin', titleHTML);
 
-        var header = document.createElement('div');
+        // --- 3. SETUP FILTERS ---
+        var consoleDiv = document.getElementById('console');
+        var categories = [...new Set(config.chapters.map(item => item.category))];
+        
+        // "All" Button
+        var allBtn = document.createElement('button');
+        allBtn.className = 'filter-btn active';
+        allBtn.innerText = 'All Layers';
+        allBtn.onclick = function() { filterMarkers('all', this); };
+        consoleDiv.appendChild(allBtn);
 
-        if (config.title) {
-            var titleText = document.createElement('h1');
-            titleText.innerText = config.title;
-            header.appendChild(titleText);
-        }
-
-        // add logo if found in config
-        if (config.logo) {
-            var image = new Image();
-            image.src = config.logo;
-            header.appendChild(image);
-        }
-
-        if (config.subtitle) {
-            var subtitleText = document.createElement('h2');
-            subtitleText.innerText = config.subtitle;
-            header.appendChild(subtitleText);
-        }
-
-        if (config.byline) {
-            var bylineText = document.createElement('p');
-            bylineText.innerText = config.byline;
-            header.appendChild(bylineText);
-        }
-
-        if (header.innerText.length > 0) {
-            header.classList.add(config.theme);
-            header.setAttribute('id', 'header');
-            story.appendChild(header);
-        }
-
-        config.chapters.forEach((record, idx) => {
-            var container = document.createElement('div');
-            var chapter = document.createElement('div');
-
-            if (record.title) {
-                var title = document.createElement('h3');
-                title.innerText = record.title;
-                chapter.appendChild(title);
-            }
-
-            if (record.image) {
-                var image = new Image();
-                image.src = record.image;
-                chapter.appendChild(image);
-            }
-
-            // add image caption to chapters if found in config
-            if (record.caption) {
-                caption = document.createElement('p');
-                caption.setAttribute("class", "caption");
-                caption.innerHTML = `<em>${record.caption}</em>`;
-                chapter.appendChild(caption);
-            }
-
-            if (record.description) {
-                var story = document.createElement('p');
-                story.innerHTML = record.description;
-                chapter.appendChild(story);
-
-                // add author to chapters if found in config
-                if (record.author) {
-                    author = document.createElement('p');
-                    author.innerHTML = '<strong>By ' + record.author + '</strong>';
-                    chapter.appendChild(author);
-                }
-
-                // add website to chapters if found in config
-                if (record.website) {
-                    var website = document.createElement('p');
-                    website.innerHTML = `» ${record.website}`;
-                    chapter.appendChild(website);
-                }
-
-                // add return to top link to each chapter
-                if (config.chapterReturn) {
-                    var returnTop = document.createElement('p');
-                    returnTop.setAttribute("class", "returntop");
-                    returnTop.innerHTML = '<a href="#header">Back to top</a>';
-                    chapter.appendChild(returnTop);
-                }
-            }
-
-            // add legend to chapters if found in config
-            if (record.legend) {
-                var legend = document.createElement('div');
-                legend.setAttribute("class", "legend");
-                legend.setAttribute("id", (record.id + "Legend"));
-                legend.innerHTML = '<div>' + record.legend + '</div>';
-                document.body.append(legend);
-            }
-
-            container.setAttribute('id', record.id);
-            container.classList.add('step');
-            if (idx === 0) {
-                container.classList.add('active');
-            }
-
-            chapter.classList.add(config.theme);
-            container.appendChild(chapter);
-            container.classList.add(alignments[record.alignment] || 'centered');
-            if (record.hidden) {
-                container.classList.add('hidden');
-            }
-            features.appendChild(container);
+        // Category Buttons
+        categories.forEach(cat => {
+            var btn = document.createElement('button');
+            btn.className = 'filter-btn';
+            btn.innerText = cat;
+            var color = config.colors[cat] || '#333';
+            btn.style.borderLeft = `4px solid ${color}`;
+            btn.onclick = function() { filterMarkers(cat, this); };
+            consoleDiv.appendChild(btn);
         });
 
-        story.appendChild(features);
-
-        var footer = document.createElement('div');
-
-        // add bookmarks for chapters with title, append to header and footer
-        if (config.bookmarks) {
-            var bookmarksText = "<strong>Bookmarks</strong>: ";
-            for (i = 0; i < config.chapters.length; i++) {
-                if (config.chapters[i].title) {
-                    bookmarksText += `<a href=#${config.chapters[i].id}>${config.chapters[i].title}</a>`;
-                    if (i != config.chapters.length - 1) {
-                        bookmarksText += " | ";
-                    }
-                }
-            }
-            var headerBookmarks = document.createElement('h5');
-            headerBookmarks.innerHTML = bookmarksText;
-            header.appendChild(headerBookmarks);
-            var footerBookmarks = document.createElement('p');
-            footerBookmarks.innerHTML = bookmarksText;
-            footer.appendChild(footerBookmarks);
-        }
-
-        // add prefix content for mobile view
-        if (config.mobileview) {
-            var mobileText = document.createElement('p');
-            mobileText.innerHTML = config.mobileview;
-            header.appendChild(mobileText);
-        }
-
-        if (config.footer) {
-            var footerText = document.createElement('p');
-            footerText.innerHTML = config.footer;
-            footer.appendChild(footerText);
-        }
-
-        if (footer.innerText.length > 0) {
-            footer.classList.add(config.theme);
-            footer.setAttribute('id', 'footer');
-            story.appendChild(footer);
-        }
-
+        // --- 4. INITIALIZE MAP ---
         var map = new maplibregl.Map({
             container: 'map',
             style: config.style,
-            center: config.chapters[0].location.center,
-            zoom: config.chapters[0].location.zoom,
-            bearing: config.chapters[0].location.bearing,
-            pitch: config.chapters[0].location.pitch,
-            // make storymap partially interactive
-            interactive: true,
-            dragPan: false,
-            dragRotate: false,
-            doubleClickZoom: false,
-            scrollZoom: false,
-            touchZoomRotate: false,
-            maplibreLogo: true
+            center: [72.8325, 18.9275], // Centered on Kala Ghoda
+            zoom: 16.5,
+            pitch: 45,
+            bearing: -15
         });
+        map.addControl(new maplibregl.NavigationControl());
 
-        // Create a inset map if enabled in config.js
-        if (config.inset && !config.legend) {
-            var insetMap = new maplibregl.Map({
-                container: 'mapInset', // container id
-                style: config.style, //hosted style id
-                center: config.chapters[0].location.center,
-                // Hardcode above center value if you want insetMap to be static.
-                zoom: 3, // starting zoom
-                hash: false,
-                interactive: false,
-                attributionControl: false,
-            });
-        }
-
-        if (config.showMarkers) {
-            var marker = new maplibregl.Marker({ color: config.markerColor });
-            marker.setLngLat(config.chapters[0].location.center).addTo(map);
-        }
-
-        // instantiate the scrollama
-        var scroller = scrollama();
+        // List to track markers
+        var markerObjects = [];
 
         map.on("load", function () {
-            if (config.use3dTerrain) {
-                map.addSource('terrainSource', {
-                    'type': 'raster-dem',
-                    'url': 'map/terrain-tiles/tiles.json',
-                    tileSize: 256
-                });
+            config.chapters.forEach((record) => {
+                
+                // Get Color
+                var color = config.colors[record.category] || '#333';
 
-                map.setTerrain({ 'source': 'terrainSource', 'exaggeration': 1 });
-            };            
+                // Create DOT Element (CSS Class .marker)
+                var el = document.createElement('div');
+                el.className = 'marker';
+                el.style.backgroundColor = color;
+                el.style.width = '20px';
+                el.style.height = '20px';
 
-            // add custom layers
-            if (config.useCustomLayers) {
-                for (i = 0; i < externalData.sources.length; i++) {
-                    let currentSource = externalData.sources[i];
-                    let sourceObj = { "type": currentSource.type, "url": currentSource.url };
-                    map.addSource(currentSource.name, sourceObj);
-                }
-                for (i = 0; i < externalData.layers.length; i++) {
-                    map.addLayer(externalData.layers[i], 'your-layer'); // arrange layers beneath this layer in your Studio map
-                }
-            }
+                // Create Popup
+                var popupHTML = `
+                    <img src="${record.image}" class="popup-img">
+                    <div class="popup-inner">
+                        <span class="popup-cat" style="background:${color}">${record.category}</span>
+                        <div class="popup-title">${record.title}</div>
+                        <p class="popup-desc">${record.description}</p>
+                    </div>
+                `;
+                var popup = new maplibregl.Popup({ offset: 25, maxWidth: '300px' }).setHTML(popupHTML);
 
-            // As the map moves, grab and update bounds in inset map.
-            if (config.inset && !config.legend) {
-                map.on('move', getInsetBounds);
-            }
+                // Add to Map
+                var marker = new maplibregl.Marker(el)
+                    .setLngLat(record.location.center)
+                    .setPopup(popup)
+                    .addTo(map);
 
-            // setup the instance, pass callback functions
-            scroller
-                .setup({
-                    step: '.step',
-                    offset: 0.5,
-                    progress: true
-                })
-                .onStepEnter(async response => {
-                    var chapter = config.chapters.find(chap => chap.id === response.element.id);
-
-                    // add legend to each chapter
-                    if (config.legend && !config.inset) {
-                        for (i = 0; i < config.chapters.length; i++) {
-                            if (config.chapters[i].legend != undefined) {
-                                if (config.chapters[i].id == response.element.id) {
-                                    document.getElementById(config.chapters[i].id + "Legend").style.display = "block";
-                                } else {
-                                    document.getElementById(config.chapters[i].id + "Legend").style.display = "none";
-                                }
-                            }
-                        };
-                    }
-
-                    response.element.classList.add('active');
-                    map[chapter.mapAnimation || 'flyTo'](chapter.location);
-                    // Incase you do not want to have a dynamic inset map,
-                    // rather want to keep it a static view but still change the
-                    // bbox as main map move: comment out the below if section.
-                    if (config.inset && !config.legend) {
-                        if (chapter.location.zoom < 5) {
-                            insetMap.flyTo({ center: chapter.location.center, zoom: 0 });
-                        }
-                        else {
-                            insetMap.flyTo({ center: chapter.location.center, zoom: 3 });
-                        }
-                    }
-                    if (config.showMarkers) {
-                        marker.setLngLat(chapter.location.center);
-                    }
-                    if (chapter.onChapterEnter.length > 0) {
-                        chapter.onChapterEnter.forEach(setLayerOpacity);
-                    }
-
-                    // set interactive properties for chapters set as mapInteractive = true
-                    if (chapter.mapInteractive) {
-                        map.addControl(navigation);
-                        map.dragPan.enable();
-                        map.doubleClickZoom.enable();
-                        map.getCanvas().style.cursor = 'grab';
-                    } else {
-                        if (map.hasControl(navigation)) {
-                            map.removeControl(navigation);
-                        }
-                        map.dragPan.disable();
-                        map.doubleClickZoom.disable();
-                        map.getCanvas().style.cursor = 'default';
-                    }
-                    if (chapter.callback) {
-                        window[chapter.callback]();
-                    }
-                    if (chapter.rotateAnimation) {
-                        map.once('moveend', () => {
-                            const rotateNumber = map.getBearing();
-                            map.rotateTo(rotateNumber + 180, {
-                                duration: 30000, easing: function (t) {
-                                    return t;
-                                }
-                            });
-                        });
-                    }
-
-                    if (chapter.spinGlobe) {
-                        map.once('moveend', () => {
-                            const center = map.getCenter();
-                            const newCenter = [center.lng + 360, center.lat];
-                            map.easeTo({ center: newCenter, duration: 20000, easing: n => n });
-                        });
-                    }
-                })
-                .onStepExit(response => {
-                    var chapter = config.chapters.find(chap => chap.id === response.element.id);
-                    response.element.classList.remove('active');
-                    if (chapter.onChapterExit.length > 0) {
-                        chapter.onChapterExit.forEach(setLayerOpacity);
-                    }
-                });
+                // Add to list for filtering
+                markerObjects.push({ element: el, category: record.category });
+            });
         });
 
-        //Helper functions for insetmap
-        function getInsetBounds() {
-            let bounds = map.getBounds();
+        // --- 5. FILTER FUNCTION ---
+        function filterMarkers(selectedCat, clickedBtn) {
+            // Reset Buttons
+            var buttons = document.getElementsByClassName('filter-btn');
+            for (var btn of buttons) btn.classList.remove('active');
+            clickedBtn.classList.add('active');
 
-            let boundsJson = {
-                "type": "FeatureCollection",
-                "features": [{
-                    "type": "Feature",
-                    "properties": {},
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": [
-                            [
-                                [
-                                    bounds._sw.lng,
-                                    bounds._sw.lat
-                                ],
-                                [
-                                    bounds._ne.lng,
-                                    bounds._sw.lat
-                                ],
-                                [
-                                    bounds._ne.lng,
-                                    bounds._ne.lat
-                                ],
-                                [
-                                    bounds._sw.lng,
-                                    bounds._ne.lat
-                                ],
-                                [
-                                    bounds._sw.lng,
-                                    bounds._sw.lat
-                                ]
-                            ]
-                        ]
-                    }
-                }]
-            }
-
-            if (initLoad) {
-                addInsetLayer(boundsJson);
-                initLoad = false;
-            } else {
-                updateInsetLayer(boundsJson);
-            }
-
-        }
-
-        function addInsetLayer(bounds) {
-            insetMap.addSource('boundsSource', {
-                'type': 'geojson',
-                'data': bounds
-            });
-
-            insetMap.addLayer({
-                'id': 'boundsLayer',
-                'type': 'fill',
-                'source': 'boundsSource', // reference the data source
-                'layout': {},
-                'paint': {
-                    'fill-color': '#fff', // blue color fill
-                    'fill-opacity': 0.2
-                }
-            });
-            // // Add a black outline around the polygon.
-            insetMap.addLayer({
-                'id': 'outlineLayer',
-                'type': 'line',
-                'source': 'boundsSource',
-                'layout': {},
-                'paint': {
-                    'line-color': '#000',
-                    'line-width': 1
+            // Show/Hide Dots
+            markerObjects.forEach(m => {
+                if (selectedCat === 'all' || m.category === selectedCat) {
+                    m.element.style.display = 'block';
+                    m.element.style.opacity = '1';
+                } else {
+                    m.element.style.display = 'none'; // Hide it
                 }
             });
         }
-
-        function updateInsetLayer(bounds) {
-            insetMap.getSource('boundsSource').setData(bounds);
-        }
-
-        // setup resize event
-        window.addEventListener('resize', scroller.resize);
-
     </script>
 
 </body>
