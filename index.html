@@ -88,7 +88,7 @@
         #wall-btn:hover { background: #fff5f5; }
         #wall-btn.active { background: var(--accent-wall); color: #fff; border-style: solid; }
 
-        /* WALL INFO BOX (Hidden by default) */
+        /* WALL INFO BOX */
         #wall-info {
             display: none;
             margin-top: 10px;
@@ -226,6 +226,10 @@
         });
 
         function initMap() {
+            // --- 1. MOBILE ZOOM CHECK ---
+            // If screen width is less than 768px, use zoom level 15.0, else 16.5
+            var initialZoom = window.innerWidth < 768 ? 15.0 : 16.5;
+
             var config = {
                 style: 'https://api.maptiler.com/maps/019b6fe6-78c4-7dcb-b6eb-fed1b18171df/style.json?key=f0f0aibL2C05fTzSrqHq', 
                 
@@ -334,7 +338,7 @@
                 container: 'map',
                 style: config.style,
                 center: [72.8325, 18.9275],
-                zoom: 16.5,
+                zoom: initialZoom, // USING THE DYNAMIC ZOOM VARIABLE
                 pitch: 30, 
                 bearing: -15,
                 antialias: true 
@@ -362,17 +366,17 @@
                     }
                 });
 
-                // 2. FORT WALL LAYER
+                // 2. FORT WALL LAYER (Refined Coordinates to trace K. Dubash Marg curve)
                 var fortWallGeoJSON = {
                     "type": "Feature",
                     "geometry": {
                         "type": "LineString",
                         "coordinates": [
-                            [72.8340, 18.9272],
-                            [72.8335, 18.9273],
-                            [72.8325, 18.9275],
-                            [72.8315, 18.9278],
-                            [72.8305, 18.9282]
+                            [72.8312, 18.9278], // West end (near Khyber/Rhythm House)
+                            [72.8318, 18.9276],
+                            [72.8325, 18.9273], // Mid curve
+                            [72.8335, 18.9268],
+                            [72.8342, 18.9265]  // East end (Towards Lion Gate)
                         ]
                     }
                 };
@@ -429,7 +433,7 @@
 
             document.getElementById('close-btn').addEventListener('click', function() { closePanel(false); });
             document.getElementById('reset-btn').addEventListener('click', function() {
-                map.flyTo({ center: [72.8325, 18.9275], zoom: 16.5, pitch: 30, bearing: -15, duration: 2000 });
+                map.flyTo({ center: [72.8325, 18.9275], zoom: initialZoom, pitch: 30, bearing: -15, duration: 2000 });
                 closePanel(true);
             });
             document.addEventListener('keydown', function(event) { if (event.key === "Escape") closePanel(false); });
@@ -474,7 +478,7 @@
                     selectedMarker = null;
                 }
                 if (!preventCameraMove) {
-                    map.flyTo({ zoom: map.getZoom() - 0.5, speed: 0.6 });
+                    map.flyTo({ zoom: initialZoom, speed: 0.6 });
                 }
             }
 
@@ -494,7 +498,7 @@
                 if (selectedMarker && selectedMarker.style.display === 'none') closePanel(false);
             }
 
-            // TOGGLE FORT WALL LOGIC (Now includes Text)
+            // TOGGLE FORT WALL LOGIC
             window.toggleLayer = function(layerId, btn) {
                 var visibility = map.getLayoutProperty(layerId, 'visibility');
                 var infoBox = document.getElementById('wall-info');
