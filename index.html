@@ -12,173 +12,176 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <style>
-        /* --- CSS VARIABLES & RESET --- */
+        /* --- VINTAGE THEME VARIABLES --- */
         :root {
-            --primary: #111;
-            --glass: rgba(255, 255, 255, 0.90);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            --accent: #d4a373; 
+            --paper-bg: #f4f1ea; 
+            --paper-border: #888;
+            --text-dark: #222; 
+            --text-light: #555;
+            --accent: #8c2f00; 
+            --shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
         
-        body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; overflow: hidden; }
-        #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; background: #e5e5e5; }
+        body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; overflow: hidden; background: #eee; }
+        
+        #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+
+        /* THE VINTAGE FILTER (Applied to canvas only) */
+        .maplibregl-canvas-container canvas {
+            filter: sepia(0.25) contrast(0.95) saturate(0.4);
+        }
         
         /* SCROLLBAR */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: var(--text-dark); border-radius: 0; }
 
         /* --- UI: HEADER --- */
         #header {
-            position: absolute; top: 30px; left: 30px; width: 320px;
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
+            position: absolute; top: 30px; left: 30px; width: 340px;
+            background: var(--paper-bg);
+            border: 1px solid var(--paper-border);
             z-index: 100;
-            border-radius: 12px;
             box-shadow: var(--shadow);
-            transition: transform 0.3s ease;
         }
+        #header::before { 
+            content: ''; position: absolute; top: 4px; left: 4px; right: 4px; height: 100%; 
+            border: 1px solid rgba(0,0,0,0.1); pointer-events: none; 
+        }
+
         #header h1 { 
             font-family: 'Cardo', serif; 
-            font-size: 24px; font-weight: 700; 
-            text-transform: uppercase; padding: 25px 25px 5px 25px; margin: 0; color: #111; 
-            border-bottom: 2px solid var(--accent);
+            font-size: 28px; font-weight: 700; 
+            text-transform: uppercase; padding: 25px 25px 5px 25px; margin: 0; 
+            color: var(--text-dark);
+            letter-spacing: 1px;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         #header h2 { 
-            font-family: 'Lato', sans-serif; font-size: 12px; color: #555; 
-            padding: 0 25px 15px 25px; margin: 0; text-transform: uppercase; letter-spacing: 2px; 
+            font-family: 'Lato', sans-serif; font-size: 11px; color: var(--accent); 
+            padding: 0 25px 20px 25px; margin: 0; text-transform: uppercase; letter-spacing: 2px; 
+            font-weight: 700; border-bottom: 2px solid var(--text-dark);
         }
 
         /* --- UI: FILTERS --- */
-        #console { padding: 0 25px 25px 25px; display: flex; flex-wrap: wrap; gap: 8px; }
+        #console { padding: 20px 25px 25px 25px; display: flex; flex-wrap: wrap; gap: 8px; }
         .filter-btn {
             padding: 6px 12px;
-            font-size: 11px; text-transform: uppercase; font-weight: 700;
-            border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.6); 
-            color: #555; cursor: pointer; border-radius: 20px; 
+            font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;
+            border: 1px solid var(--paper-border); 
+            background: #fff; 
+            color: var(--text-light); cursor: pointer; 
             transition: all 0.2s ease;
-            display: flex; align-items: center; gap: 5px;
+            display: flex; align-items: center; gap: 6px;
             font-family: 'Lato', sans-serif;
         }
-        .filter-btn:hover { background: #fff; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .filter-btn.active { background: #222; color: #fff; border-color: #222; }
-        .dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .filter-btn:hover { background: var(--text-dark); border-color: var(--text-dark); color: #fff; }
+        .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .dot-indicator { width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: currentColor; }
 
-        /* --- UI: MARKERS --- */
+        /* --- UI: MARKERS & TOOLTIP --- */
         .marker {
-            width: 34px; height: 34px;
+            width: 32px; height: 32px;
             border-radius: 50%;
-            background: #fff;
-            border: 2px solid #fff;
+            /* Background color set by JS */
+            border: 2px solid #fff; 
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
             display: flex; align-items: center; justify-content: center;
-            font-size: 14px; color: #fff;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 12px; color: #fff; 
+            transition: transform 0.2s ease;
             z-index: 10;
         }
-        .marker:hover { transform: scale(1.2) translateY(-5px); z-index: 20; }
+        .marker:hover { transform: scale(1.1); z-index: 20; }
         .marker.selected { 
-            transform: scale(1.3) translateY(-5px); 
-            box-shadow: 0 0 0 4px rgba(255,255,255,0.5);
-            z-index: 30;
+            transform: scale(1.3); z-index: 30;
+            box-shadow: 0 0 0 3px #fff; 
+        }
+
+        /* CUSTOM TOOLTIP */
+        #tooltip {
+            position: absolute; 
+            pointer-events: none;
+            background: #fff; color: var(--text-dark);
+            padding: 5px 10px; font-size: 11px; font-family: 'Lato', sans-serif; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            border: 1px solid var(--text-dark);
+            opacity: 0;
+            transform: translate(-50%, -150%);
+            transition: opacity 0.2s; z-index: 500;
+            white-space: nowrap;
         }
         
         /* --- UI: SIDE PANEL --- */
         #side-panel {
-            position: fixed; right: -450px; top: 20px; bottom: 20px; width: 380px;
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            position: fixed; right: -450px; top: 0; bottom: 0; width: 400px;
+            background: var(--paper-bg);
             z-index: 200;
-            box-shadow: var(--shadow);
-            border-radius: 16px 0 0 16px;
+            box-shadow: -1px 0 0 rgba(0,0,0,0.2); 
             transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-            overflow-y: auto; border: 1px solid var(--glass-border);
+            overflow-y: auto; 
         }
         #side-panel.open { right: 0; }
         
-        .panel-img-container { position: relative; width: 100%; height: 260px; overflow: hidden; }
-        .panel-img { width: 100%; height: 100%; object-fit: cover; transition: transform 3s ease; }
-        #side-panel:hover .panel-img { transform: scale(1.05); }
+        .panel-img-container { 
+            position: relative; width: 100%; height: 300px; overflow: hidden; 
+        }
+        .panel-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(20%) sepia(10%); }
         
-        .panel-content { padding: 30px; }
+        .panel-content { padding: 40px; }
         .panel-cat {
-            font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
-            padding: 5px 10px; border-radius: 4px; color: #fff; margin-bottom: 15px; display: inline-block;
-            font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+            padding-bottom: 5px; color: var(--accent); margin-bottom: 15px; display: block;
+            font-weight: 700; border-bottom: 1px solid #ccc; display: inline-block;
         }
         .panel-title {
             font-family: 'Cardo', serif; 
-            font-size: 28px; font-weight: 700;
-            margin-bottom: 10px; color: #111; line-height: 1.2;
-            text-transform: uppercase;
+            font-size: 36px; font-weight: 400; 
+            margin-bottom: 20px; color: var(--text-dark); line-height: 1;
         }
-        .panel-desc { font-size: 16px; color: #444; line-height: 1.7; margin-bottom: 25px; }
+        .panel-desc { 
+            font-size: 17px; color: #444; line-height: 1.8; margin-bottom: 30px; 
+            font-family: 'Cardo', serif; 
+        }
         
         .panel-info {
-            background: rgba(255,255,255,0.5); padding: 20px; border-radius: 8px;
-            border-left: 3px solid #333;
+            background: #fff; padding: 25px; 
+            border: 1px solid var(--paper-border);
         }
-        .panel-info-row { margin-bottom: 8px; font-size: 14px; color: #555; display: flex; justify-content: space-between; }
-        .panel-info-row strong { color: #111; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;}
+        .panel-info-row { margin-bottom: 12px; font-size: 14px; color: var(--text-dark); display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .panel-info-row:last-child { border-bottom: none; }
+        .panel-info-row strong { font-family: 'Lato', sans-serif; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; color: #888; }
 
         .panel-close {
-            position: absolute; top: 15px; right: 15px; width: 36px; height: 36px;
-            background: #fff; color: #111; border: none; border-radius: 50%;
-            cursor: pointer; font-size: 20px; z-index: 5;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center;
+            position: absolute; top: 20px; right: 20px; width: 40px; height: 40px;
+            background: #fff; color: var(--text-dark); border: 1px solid #ccc;
+            cursor: pointer; font-size: 24px; z-index: 5;
+            transition: all 0.2s; display: flex; align-items: center; justify-content: center;
         }
-        .panel-close:hover { transform: rotate(90deg); background: #111; color: #fff; }
+        .panel-close:hover { background: var(--text-dark); color: #fff; }
 
         /* RESET BUTTON */
         #reset-btn {
             position: fixed; 
             top: 20px; 
-            right: 70px; /* Moved left away from zoom controls */
-            background: #fff; color: #111; border: none;
-            padding: 10px 15px; border-radius: 30px;
-            font-family: 'Lato', sans-serif; font-weight: bold; font-size: 12px;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            right: 120px; 
+            background: var(--paper-bg); color: var(--text-dark); border: 1px solid var(--paper-border);
+            padding: 10px 15px; 
+            font-family: 'Lato', sans-serif; font-weight: bold; font-size: 11px; letter-spacing: 1px;
+            cursor: pointer; 
             z-index: 90; transition: all 0.2s;
             display: flex; align-items: center; gap: 8px;
             text-transform: uppercase;
         }
-        #reset-btn:hover { background: #111; color: #fff; }
+        #reset-btn:hover { background: var(--text-dark); color: #fff; border-color: var(--text-dark); }
 
         /* MOBILE OPTIMIZATION */
         @media (max-width: 768px) {
-            #header { 
-                top: 15px; left: 15px; right: 15px; 
-                width: auto; max-width: none; 
-            }
-            #console {
-                padding: 0 15px 15px 15px;
-            }
-            #header h1 {
-                font-size: 20px;
-                padding: 20px 20px 5px 20px;
-            }
-            
-            /* Bottom Sheet for Mobile */
-            #side-panel { 
-                right: auto; left: 0; bottom: -100vh; top: auto; 
-                width: 100%; height: 70vh; 
-                border-radius: 20px 20px 0 0; 
-                transition: bottom 0.4s ease; 
-                border-top: 1px solid rgba(255,255,255,0.8);
-            }
+            #header { top: 15px; left: 15px; right: 15px; width: auto; max-width: none; }
+            #side-panel { right: auto; left: 0; bottom: -100vh; top: auto; width: 100%; height: 75vh; border-left: none; border-top: 5px solid var(--text-dark); }
             #side-panel.open { bottom: 0; }
-            
-            #reset-btn { top: auto; bottom: 30px; right: 20px; }
-            
-            .marker { width: 40px; height: 40px; font-size: 16px; } 
+            #reset-btn { top: auto; bottom: 30px; right: 20px; } 
         }
     </style>
 </head>
@@ -186,12 +189,13 @@
 <body>
 
     <div id="map"></div>
+    <div id="tooltip"></div> 
     
     <div id="header">
         <div id="console"></div>
     </div>
 
-    <button id="reset-btn"><i class="fa-solid fa-compress"></i> Reset</button>
+    <button id="reset-btn"><i class="fa-solid fa-compress"></i> Reset View</button>
 
     <div id="side-panel">
         <button class="panel-close" id="close-btn">×</button>
@@ -207,7 +211,7 @@
             var config = {
                 style: 'https://api.maptiler.com/maps/019b6fe6-78c4-7dcb-b6eb-fed1b18171df/style.json?key=f0f0aibL2C05fTzSrqHq', 
                 title: 'Visual Audit: Kala Ghoda',
-                subtitle: 'Explorations in the Art District',
+                subtitle: 'Architectural Heritage Survey',
                 
                 colors: {
                     'Art Deco': '#2a9d8f',
@@ -235,7 +239,7 @@
                         year: '1933',
                         architect: 'Charles Stevens',
                         builder: 'Framji Sidhwa',
-                        location: { center: [72.8334, 18.9279], zoom: 17.5, pitch: 50, bearing: -10 }
+                        location: { center: [72.8334, 18.9279] } // Clean coords
                     },
                     {
                         id: 'museum',
@@ -246,7 +250,7 @@
                         year: '1914',
                         architect: 'George Wittet',
                         builder: 'Govt. of Bombay',
-                        location: { center: [72.8327, 18.9269], zoom: 17.5, pitch: 60, bearing: 45 }
+                        location: { center: [72.8327, 18.9269] }
                     },
                     {
                         id: 'elphinstone',
@@ -257,7 +261,7 @@
                         year: '1871',
                         architect: 'James Trubshawe',
                         builder: 'Unknown',
-                        location: { center: [72.8313, 18.9265], zoom: 18, pitch: 55, bearing: -90 }
+                        location: { center: [72.8313, 18.9265] }
                     },
                     {
                         id: 'sassoon',
@@ -268,7 +272,7 @@
                         year: '1870',
                         architect: 'Campbell & Gosling',
                         builder: 'Scott McClelland',
-                        location: { center: [72.8316, 18.9272], zoom: 18, pitch: 45, bearing: -45 }
+                        location: { center: [72.8316, 18.9272] }
                     },
                     {
                         id: 'army',
@@ -279,7 +283,7 @@
                         year: 'Late 19th C.',
                         architect: 'Unknown',
                         builder: 'British Military',
-                        location: { center: [72.8322, 18.9285], zoom: 18, pitch: 50, bearing: 0 }
+                        location: { center: [72.8322, 18.9285] }
                     },
                     {
                         id: 'esplanade',
@@ -290,7 +294,7 @@
                         year: '1865',
                         architect: 'Unknown',
                         builder: 'British Engineers',
-                        location: { center: [72.8311, 18.9282], zoom: 18, pitch: 60, bearing: -20 }
+                        location: { center: [72.8311, 18.9282] }
                     },
                     {
                         id: 'jehangir',
@@ -301,7 +305,7 @@
                         year: '1952',
                         architect: 'G. M. Bhuta',
                         builder: 'Sir Cowasji Jehangir',
-                        location: { center: [72.8317, 18.9275], zoom: 18, pitch: 40, bearing: 90 }
+                        location: { center: [72.8317, 18.9275] }
                     },
                     {
                         id: 'statue',
@@ -312,7 +316,7 @@
                         year: '2017',
                         architect: 'Commissioned Art',
                         builder: 'KG Association',
-                        location: { center: [72.8318, 18.9277], zoom: 19, pitch: 0, bearing: 0 }
+                        location: { center: [72.8318, 18.9277] }
                     },
                     {
                         id: 'synagogue',
@@ -323,7 +327,7 @@
                         year: '1884',
                         architect: 'Unknown',
                         builder: 'Jewish Community',
-                        location: { center: [72.8324, 18.9278], zoom: 18.5, pitch: 55, bearing: 30 }
+                        location: { center: [72.8324, 18.9278] }
                     },
                     {
                         id: 'ropewalk',
@@ -334,7 +338,7 @@
                         year: '19th Century',
                         architect: 'Incremental',
                         builder: 'Multiple',
-                        location: { center: [72.8320, 18.9270], zoom: 18, pitch: 30, bearing: 180 }
+                        location: { center: [72.8320, 18.9270] }
                     },
                     {
                         id: 'army-lettering',
@@ -345,7 +349,7 @@
                         year: 'Late 19th C.',
                         architect: 'Unknown',
                         builder: 'British Military',
-                        location: { center: [72.83225, 18.92855], zoom: 19, pitch: 20, bearing: 0 }
+                        location: { center: [72.83225, 18.92855] }
                     },
                     {
                         id: 'ropewalk-signs',
@@ -356,55 +360,53 @@
                         year: '20th Century',
                         architect: 'Municipal',
                         builder: 'BMC',
-                        location: { center: [72.83205, 18.92705], zoom: 19, pitch: 0, bearing: 0 }
+                        location: { center: [72.83205, 18.92705] }
                     }
                 ]
             };
 
-            // Header Setup
+            // Setup Header
             var titleHTML = '<h1>' + config.title + '</h1><h2>' + config.subtitle + '</h2>';
             document.getElementById('console').insertAdjacentHTML('beforebegin', titleHTML);
 
-            // Filter Setup
             var consoleDiv = document.getElementById('console');
             var categories = [...new Set(config.chapters.map(function(item) { return item.category; }))];
             
-            // "All" Button
+            // Filters
             var allBtn = document.createElement('button');
             allBtn.className = 'filter-btn active';
-            allBtn.innerHTML = '<span class="dot-indicator" style="background:#333"></span> All';
+            allBtn.innerHTML = 'All Layers';
             allBtn.onclick = function() { filterMarkers('all', this); };
             consoleDiv.appendChild(allBtn);
 
-            // Category Buttons
             categories.forEach(function(cat) {
                 var btn = document.createElement('button');
                 btn.className = 'filter-btn';
                 var color = config.colors[cat] || '#333';
-                btn.innerHTML = '<span class="dot-indicator" style="background:' + color + '"></span> ' + cat;
+                btn.innerHTML = '<span class="dot-indicator" style="color:' + color + '"></span> ' + cat;
                 btn.onclick = function() { filterMarkers(cat, this); };
                 consoleDiv.appendChild(btn);
             });
 
-            // Map Setup
+            // Init Map (Reduced pitch)
             var map = new maplibregl.Map({
                 container: 'map',
                 style: config.style,
                 center: [72.8325, 18.9275],
                 zoom: 16.5,
-                pitch: 45,
+                pitch: 30, // Lower initial pitch
                 bearing: -15,
-                antialias: true // Crucial for 3D buildings
+                antialias: true 
             });
             map.addControl(new maplibregl.NavigationControl({ showCompass: true, showZoom: true }));
-            window.mapInstance = map; // Global reference
+            window.mapInstance = map;
 
             var markerObjects = [];
             var selectedMarker = null;
+            var tooltip = document.getElementById('tooltip');
 
             map.on("load", function () {
-                
-                // 1. Add 3D Building Layer
+                // Add 3D buildings layer
                 map.addLayer({
                     'id': '3d-buildings',
                     'source': 'openmaptiles', 
@@ -412,27 +414,40 @@
                     'type': 'fill-extrusion',
                     'minzoom': 15,
                     'paint': {
-                        'fill-extrusion-color': '#ddd',
+                        'fill-extrusion-color': '#d0d0d0', 
                         'fill-extrusion-height': ['get', 'render_height'],
                         'fill-extrusion-base': ['get', 'render_min_height'],
-                        'fill-extrusion-opacity': 0.6
+                        'fill-extrusion-opacity': 0.7
                     }
                 });
 
-                // 2. Add Markers
                 config.chapters.forEach(function(record) {
                     var color = config.colors[record.category] || '#333';
                     var iconClass = config.icons[record.category] || 'fa-map-marker-alt';
 
                     var el = document.createElement('div');
                     el.className = 'marker';
-                    el.style.backgroundColor = color;
+                    el.style.backgroundColor = color; 
                     el.innerHTML = '<i class="fa-solid ' + iconClass + '"></i>';
 
+                    // CLICK Event
                     el.onclick = function(e) {
                         e.stopPropagation();
                         openPanel(record, color, el);
                     };
+
+                    // HOVER Event (Tooltip)
+                    el.addEventListener('mouseenter', function(e) {
+                        tooltip.innerText = record.title;
+                        var rect = el.getBoundingClientRect();
+                        tooltip.style.left = rect.left + (rect.width / 2) + 'px';
+                        tooltip.style.top = rect.top + 'px';
+                        tooltip.style.opacity = '1';
+                    });
+
+                    el.addEventListener('mouseleave', function() {
+                        tooltip.style.opacity = '0';
+                    });
 
                     var marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
                         .setLngLat(record.location.center)
@@ -440,54 +455,19 @@
 
                     markerObjects.push({ element: el, category: record.category, marker: marker });
                 });
-                
-                // Idle Animation
-                let rotation = 0;
-                let isInteracting = false;
-                function animate() {
-                    if (!isInteracting && !selectedMarker) {
-                        rotation += 0.05;
-                    }
-                    requestAnimationFrame(animate);
-                }
             });
 
             // --- LISTENERS ---
-
-            // Panel 'X' Button
-            document.getElementById('close-btn').addEventListener('click', function() {
-                closePanel(false); // Normal close (zooms out)
-            });
-
-            // Reset View Button
+            document.getElementById('close-btn').addEventListener('click', function() { closePanel(false); });
             document.getElementById('reset-btn').addEventListener('click', function() {
-                // Re-center map and Set Bearing to 0 (North)
-                map.flyTo({
-                    center: [72.8325, 18.9275],
-                    zoom: 16.5,
-                    pitch: 45,
-                    bearing: 0, // Reset to North
-                    duration: 2000
-                });
-                // Pass 'true' to skip the zoom-out animation in closePanel
+                // RESET: Gentle movement, no rotation
+                map.flyTo({ center: [72.8325, 18.9275], zoom: 16.5, pitch: 30, bearing: -15, duration: 2000 });
                 closePanel(true);
             });
+            document.addEventListener('keydown', function(event) { if (event.key === "Escape") closePanel(false); });
+            map.on('click', function() { closePanel(false); });
 
-            // ESC Key support
-            document.addEventListener('keydown', function(event) {
-                if (event.key === "Escape") {
-                    closePanel(false);
-                }
-            });
-
-            // Map Click (Close Panel)
-            map.on('click', function() { 
-                closePanel(false); 
-            });
-
-
-            // --- FUNCTIONS ---
-
+            // --- PANEL LOGIC ---
             function openPanel(record, color, markerEl) {
                 if (selectedMarker) selectedMarker.classList.remove('selected');
                 markerEl.classList.add('selected');
@@ -501,7 +481,7 @@
 
                 var panelContent = '<div class="panel-img-container"><img src="' + record.image + '" class="panel-img"></div>' +
                     '<div class="panel-content">' +
-                    '<span class="panel-cat" style="background:' + color + '">' + record.category + '</span>' +
+                    '<span class="panel-cat" style="color:' + color + '">' + record.category + '</span>' +
                     '<div class="panel-title">' + record.title + '</div>' +
                     '<p class="panel-desc">' + record.description + '</p>' +
                     infoHTML +
@@ -510,27 +490,30 @@
                 document.getElementById('panel-inner').innerHTML = panelContent;
                 document.getElementById('side-panel').classList.add('open');
 
+                // --- THE COMFORT MODE FIX ---
+                // We keep the current pitch and bearing (no rotation/tilting)
+                // We only pan to the location and adjust zoom slightly
                 map.flyTo({
                     center: record.location.center,
-                    zoom: record.location.zoom,
-                    pitch: record.location.pitch,
-                    bearing: record.location.bearing,
-                    duration: 1500,
-                    curve: 1
+                    zoom: 17.5, // Standard consistent zoom
+                    pitch: map.getPitch(), // Keep current pitch
+                    bearing: map.getBearing(), // Keep current rotation
+                    speed: 0.8, // Slower speed
+                    curve: 1.2
                 });
             }
 
             function closePanel(preventCameraMove) {
                 document.getElementById('side-panel').classList.remove('open');
+                
                 if (selectedMarker) {
                     selectedMarker.classList.remove('selected');
                     selectedMarker = null;
                 }
                 
-                // CRITICAL FIX: Only zoom out if preventCameraMove is NOT true.
-                // This prevents the Reset Button's animation from being canceled.
                 if (!preventCameraMove) {
-                    map.flyTo({ zoom: map.getZoom() - 0.5, duration: 1000 });
+                    // Gentle zoom out, no rotation
+                    map.flyTo({ zoom: map.getZoom() - 0.5, speed: 0.6 });
                 }
             }
 
