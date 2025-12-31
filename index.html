@@ -19,6 +19,7 @@
             --text-sub: #555;
             --border: #ddd;
             --shadow: 0 4px 15px rgba(0,0,0,0.08);
+            --accent-wall: #c0392b;
         }
         
         body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; overflow: hidden; background: #eee; }
@@ -76,6 +77,30 @@
         }
         .filter-btn:hover { border-color: #999; color: #000; }
         .filter-btn.active { background: var(--text-main); color: #fff; border-color: var(--text-main); }
+        
+        /* WALL TOGGLE */
+        #wall-btn {
+            margin-top: 10px; 
+            border: 1px dashed var(--accent-wall);
+            color: var(--accent-wall);
+            width: 100%; justify-content: center;
+        }
+        #wall-btn:hover { background: #fff5f5; }
+        #wall-btn.active { background: var(--accent-wall); color: #fff; border-style: solid; }
+
+        /* WALL INFO BOX (Hidden by default) */
+        #wall-info {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff5f5;
+            border-left: 3px solid var(--accent-wall);
+            font-size: 11px;
+            color: #333;
+            line-height: 1.4;
+        }
+        #wall-info strong { display: block; margin-bottom: 3px; color: var(--accent-wall); }
+
         .dot-indicator { width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: currentColor; }
 
         /* --- UI: MARKERS --- */
@@ -205,18 +230,14 @@
                 style: 'https://api.maptiler.com/maps/019b6fe6-78c4-7dcb-b6eb-fed1b18171df/style.json?key=f0f0aibL2C05fTzSrqHq', 
                 
                 colors: {
-                    // Original
                     'Art Deco': '#2a9d8f',
                     'Victorian': '#e76f51',
                     'Texture': '#d4a373', 
                     'Modern': '#264653',
                     'Lettering': '#7b2cbf',
-                    // New
-                    'Architecture': '#2c3e50',
                     'Ghost Site': '#95a5a6',
-                    'Street Furniture': '#4a69bd', // CHANGED: Steel Blue (Distinct from Victorian Orange)
-                    'Living Heritage': '#27ae60',
-                    'Typography': '#8e44ad'
+                    'Street Furniture': '#4a69bd', 
+                    'Living Heritage': '#27ae60'
                 },
                 
                 icons: {
@@ -225,147 +246,52 @@
                     'Texture': 'fa-eye',
                     'Modern': 'fa-square',
                     'Lettering': 'fa-font',
-                    'Architecture': 'fa-building',
                     'Ghost Site': 'fa-ghost',
                     'Street Furniture': 'fa-road',
-                    'Living Heritage': 'fa-users',
-                    'Typography': 'fa-font'
+                    'Living Heritage': 'fa-users'
                 },
                 
                 chapters: [
-                    // --- ORIGINAL ENTRIES ---
+                    { id: 'regal', category: 'Art Deco', title: 'Regal Cinema', image: './images/regal.jpg', description: 'One of the earliest Art Deco cinemas in India, characterised by ziggurat style stepping and strong vertical emphasis.', year: '1933', architect: 'Charles Stevens', builder: 'Framji Sidhwa', location: { center: [72.8334, 18.9279] } },
+                    { id: 'museum', category: 'Victorian', title: 'CSMVS Museum', image: './images/csmvs.jpg', description: 'Indo Saracenic landmark constructed using grey Kurla basalt and yellow Malad stone.', year: '1914', architect: 'George Wittet', builder: 'Govt. of Bombay', location: { center: [72.8327, 18.9269] } },
+                    { id: 'elphinstone', category: 'Victorian', title: 'Elphinstone College', image: './images/elphinstone.jpg', description: 'Victorian Gothic Revival building with pointed arches, stone detailing, and ornamental gargoyles.', year: '1871', architect: 'James Trubshawe', builder: 'Unknown', location: { center: [72.8313, 18.9265] } },
+                    { id: 'sassoon', category: 'Victorian', title: 'David Sassoon Library', image: './images/sassoon.jpg', description: 'Victorian Gothic architecture defined by pointed arches, lancet windows, and symmetrical massing.', year: '1870', architect: 'Campbell & Gosling', builder: 'Scott McClelland', location: { center: [72.8316, 18.9272] } },
+                    { id: 'army', category: 'Victorian', title: 'Army and Navy Building', image: './images/army-navy.jpg', description: 'Late nineteenth century Neo Classical commercial building retaining original serif signage.', year: 'Late 19th C.', architect: 'Unknown', builder: 'British Military', location: { center: [72.8322, 18.9285] } },
+                    { id: 'esplanade', category: 'Victorian', title: 'Esplanade Mansion', image: './images/esplanade.jpg', description: 'Formerly Watson\'s Hotel. One of the earliest cast iron framed buildings in the world, with exposed iron elements.', year: '1865', architect: 'Rowland Mason Ordish', builder: 'British Engineers', location: { center: [72.8311, 18.9282] } },
+                    { id: 'jehangir', category: 'Modern', title: 'Jehangir Art Gallery', image: './images/jehangir.jpg', description: 'Modernist concrete structure with a distinctive cantilevered entrance.', year: '1952', architect: 'G. M. Bhuta', builder: 'Sir Cowasji Jehangir', location: { center: [72.8317, 18.9275] } },
+                    { id: 'statue', category: 'Texture', title: 'Kala Ghoda Statue', image: './images/placeholder.jpg', description: 'Bronze statue installed to mark the historic site of the original Black Horse after which the precinct is named.', year: '2017', architect: 'Commissioned artwork', builder: 'Kala Ghoda Association', location: { center: [72.8318, 18.9277] } },
+                    { id: 'synagogue', category: 'Victorian', title: 'Keneseth Eliyahoo', image: './images/synagogue.jpg', description: 'Victorian era synagogue built for the Baghdadi Jewish community, noted for its distinctive turquoise blue façade.', year: '1884', architect: 'Unknown', builder: 'Jewish Community', location: { center: [72.8324, 18.9278] } },
+                    { id: 'ropewalk', category: 'Texture', title: 'Rope Walk Lane', image: './images/ropewalk.jpg', description: 'Historic lane characterised by enamel street signage, layered brickwork, and traces of nineteenth century urban fabric.', year: '19th century', architect: 'Incremental', builder: 'Multiple', location: { center: [72.8320, 18.9270] } },
+                    { id: 'army-lettering', category: 'Lettering', title: 'Army and Navy Signage', image: './images/army-lettering.jpg', description: 'Original carved and painted serif lettering integrated into the building façade.', year: 'Late 19th C.', architect: 'Unknown', builder: 'British Military', location: { center: [72.83225, 18.92855] } },
+                    { id: 'ropewalk-signs', category: 'Lettering', title: 'Rope Walk Signs', image: './images/ropewalk-lettering.jpg', description: 'Blue enamel street signage with bilingual lettering, showing material wear and layered urban history.', year: '20th century', architect: 'Municipal signage', builder: 'BMC', location: { center: [72.83205, 18.92705] } },
+                    { id: 'lumiere', category: 'Ghost Site', title: 'Lumière Screening Site', image: './images/lumiere-placeholder.jpg', description: 'On July 7, 1896, the Lumière Brothers screened the first motion pictures in India here, in the atrium of Watson\'s Hotel.', year: '1896', architect: 'N/A', builder: 'Historic Event', location: { center: [72.8312, 18.9283] } },
+                    { id: 'hydrant', category: 'Street Furniture', title: 'British Fire Hydrant', image: './images/hydrant.jpg', description: 'A cast-iron fire hydrant from the Bombay Municipal Corporation era, painted red. A rare survivor of Victorian infrastructure.', year: 'Late 19th C.', architect: 'BMC', builder: 'Foundry Cast', location: { center: [72.8328, 18.9275] } },
+                    { id: 'pavement', category: 'Living Heritage', title: 'The Pavement Gallery', image: './images/pavement.jpg', description: 'An informal exhibition space where aspiring artists display their work on the railings of the Jehangir Art Gallery.', year: 'Ongoing', architect: 'The People', builder: 'Informal Usage', location: { center: [72.8316, 18.9276] } },
+                    { id: 'booksellers', category: 'Living Heritage', title: 'Secondhand Book Sellers', image: './images/books.jpg', description: 'The lineage of street book vendors near Flora Fountain and the University, creating an intellectual corridor.', year: 'Mid 20th C.', architect: 'N/A', builder: 'Vendor Collective', location: { center: [72.8310, 18.9265] } },
+                    { id: 'kerbstones', category: 'Street Furniture', title: 'Kurla Basalt Kerbstones', image: './images/kerb.jpg', description: 'Original massive blocks of grey Kurla basalt lining the pavement, contrasting with modern pavers.', year: '19th Century', architect: 'City Engineers', builder: 'Public Works', location: { center: [72.8320, 18.9270] } },
+                    
+                    // --- NEW ENTRIES ---
                     {
-                        id: 'regal',
-                        category: 'Art Deco',
-                        title: 'Regal Cinema',
-                        image: './images/regal.jpg',
-                        description: 'One of the earliest Art Deco cinemas in India, characterised by ziggurat style stepping and strong vertical emphasis.',
-                        year: '1933',
-                        architect: 'Charles Stevens',
-                        builder: 'Framji Sidhwa',
-                        location: { center: [72.8334, 18.9279] }
-                    },
-                    {
-                        id: 'museum',
-                        category: 'Victorian',
-                        title: 'CSMVS Museum',
-                        image: './images/csmvs.jpg',
-                        description: 'Indo Saracenic landmark constructed using grey Kurla basalt and yellow Malad stone.',
-                        year: '1914',
-                        architect: 'George Wittet',
-                        builder: 'Govt. of Bombay',
-                        location: { center: [72.8327, 18.9269] }
-                    },
-                    {
-                        id: 'elphinstone',
-                        category: 'Victorian',
-                        title: 'Elphinstone College',
-                        image: './images/elphinstone.jpg',
-                        description: 'Victorian Gothic Revival building with pointed arches, stone detailing, and ornamental gargoyles.',
-                        year: '1871',
-                        architect: 'James Trubshawe',
-                        builder: 'Unknown',
-                        location: { center: [72.8313, 18.9265] }
-                    },
-                    {
-                        id: 'sassoon',
-                        category: 'Victorian',
-                        title: 'David Sassoon Library',
-                        image: './images/sassoon.jpg',
-                        description: 'Victorian Gothic architecture defined by pointed arches, lancet windows, and symmetrical massing.',
-                        year: '1870',
-                        architect: 'Campbell & Gosling',
-                        builder: 'Scott McClelland',
-                        location: { center: [72.8316, 18.9272] }
-                    },
-                    {
-                        id: 'jehangir',
-                        category: 'Modern',
-                        title: 'Jehangir Art Gallery',
-                        image: './images/jehangir.jpg',
-                        description: 'Modernist concrete structure with a distinctive cantilevered entrance.',
-                        year: '1952',
-                        architect: 'G. M. Bhuta',
-                        builder: 'Sir Cowasji Jehangir',
-                        location: { center: [72.8317, 18.9275] }
-                    },
-                    {
-                        id: 'esplanade',
-                        category: 'Texture',
-                        title: 'Esplanade Mansion',
-                        image: './images/esplanade.jpg',
-                        description: 'Formerly Watson\'s Hotel. One of the earliest cast iron framed buildings in the world.',
-                        year: '1865',
-                        architect: 'Rowland Mason Ordish',
-                        builder: 'British Engineers',
-                        location: { center: [72.8311, 18.9282] }
-                    },
-                    // --- NEW "SOHO" ENTRIES ---
-                    {
-                        id: 'lumiere',
+                        id: 'rhythm',
                         category: 'Ghost Site',
-                        title: 'Lumière Screening Site',
-                        image: './images/lumiere-placeholder.jpg', 
-                        description: 'On July 7, 1896, the Lumière Brothers screened the first motion pictures in India here.',
-                        year: '1896',
-                        architect: 'N/A',
-                        builder: 'Historic Event',
-                        location: { center: [72.8312, 18.9283] } 
-                    },
-                    {
-                        id: 'hydrant',
-                        category: 'Street Furniture',
-                        title: 'British Fire Hydrant',
-                        image: './images/hydrant.jpg',
-                        description: 'A cast-iron fire hydrant from the Bombay Municipal Corporation era, painted red.',
-                        year: 'Late 19th C.',
-                        architect: 'BMC',
-                        builder: 'Foundry Cast',
-                        location: { center: [72.8328, 18.9275] } 
-                    },
-                    {
-                        id: 'pavement',
-                        category: 'Living Heritage',
-                        title: 'The Pavement Gallery',
-                        image: './images/pavement.jpg',
-                        description: 'An informal exhibition space where aspiring artists display their work on the railings.',
-                        year: 'Ongoing',
-                        architect: 'The People',
-                        builder: 'Informal Usage',
-                        location: { center: [72.8316, 18.9276] }
-                    },
-                    {
-                        id: 'army-sign',
-                        category: 'Typography',
-                        title: 'Army & Navy Signage',
-                        image: './images/army-sign.jpg',
-                        description: 'Original serif lettering carved directly into the stone facade.',
-                        year: '1890s',
+                        title: 'Rhythm House',
+                        image: './images/rhythm-house.jpg',
+                        description: 'Formerly the city\'s premier music store (1948–2016). This curved Art Deco building hosted musicians from The Beatles to Ravi Shankar.',
+                        year: '1940s',
                         architect: 'Unknown',
-                        builder: 'Stone Masons',
-                        location: { center: [72.8322, 18.9285] }
+                        builder: 'Mehmood Curmally',
+                        location: { center: [72.8317, 18.9272] }
                     },
                     {
-                        id: 'booksellers',
-                        category: 'Living Heritage',
-                        title: 'Secondhand Book Sellers',
-                        image: './images/books.jpg',
-                        description: 'The lineage of street book vendors near Flora Fountain.',
-                        year: 'Mid 20th C.',
+                        id: 'wayside',
+                        category: 'Ghost Site',
+                        title: 'Wayside Inn',
+                        image: './images/wayside.jpg',
+                        description: 'Now the Khyber restaurant. It was in this quaint tea room that Dr. B.R. Ambedkar is said to have drafted sections of the Indian Constitution.',
+                        year: 'Early 20th C.',
                         architect: 'N/A',
-                        builder: 'Vendor Collective',
-                        location: { center: [72.8310, 18.9265] }
-                    },
-                    {
-                        id: 'kerbstones',
-                        category: 'Street Furniture',
-                        title: 'Kurla Basalt Kerbstones',
-                        image: './images/kerb.jpg',
-                        description: 'Original massive blocks of grey Kurla basalt lining the pavement.',
-                        year: '19th Century',
-                        architect: 'City Engineers',
-                        builder: 'Public Works',
-                        location: { center: [72.8320, 18.9270] }
+                        builder: 'Historic Site',
+                        location: { center: [72.8320, 18.9275] }
                     }
                 ]
             };
@@ -389,6 +315,20 @@
                 consoleDiv.appendChild(btn);
             });
 
+            // ADD THE FORT WALL BUTTON 
+            var wallBtn = document.createElement('button');
+            wallBtn.id = 'wall-btn';
+            wallBtn.className = 'filter-btn';
+            wallBtn.innerHTML = '<i class="fa-solid fa-archway"></i> Toggle 1860 Fort Wall';
+            wallBtn.onclick = function() { toggleLayer('fort-wall-layer', this); };
+            consoleDiv.appendChild(wallBtn);
+
+            // ADD THE WALL INFO BOX
+            var wallInfo = document.createElement('div');
+            wallInfo.id = 'wall-info';
+            wallInfo.innerHTML = '<strong>The Invisible Ramparts</strong>This dashed line traces the demolished fortifications of the Bombay Fort (removed 1862). K. Dubash Marg curves specifically because it was built over this moat.';
+            consoleDiv.appendChild(wallInfo);
+
             // Init Map
             var map = new maplibregl.Map({
                 container: 'map',
@@ -407,6 +347,7 @@
             var tooltip = document.getElementById('tooltip');
 
             map.on("load", function () {
+                // 1. 3D Buildings
                 map.addLayer({
                     'id': '3d-buildings',
                     'source': 'openmaptiles', 
@@ -421,6 +362,35 @@
                     }
                 });
 
+                // 2. FORT WALL LAYER
+                var fortWallGeoJSON = {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": [
+                            [72.8340, 18.9272],
+                            [72.8335, 18.9273],
+                            [72.8325, 18.9275],
+                            [72.8315, 18.9278],
+                            [72.8305, 18.9282]
+                        ]
+                    }
+                };
+
+                map.addSource('fort-wall', { 'type': 'geojson', 'data': fortWallGeoJSON });
+                map.addLayer({
+                    'id': 'fort-wall-layer',
+                    'type': 'line',
+                    'source': 'fort-wall',
+                    'layout': { 'line-join': 'round', 'line-cap': 'round', 'visibility': 'none' }, 
+                    'paint': {
+                        'line-color': '#c0392b',
+                        'line-width': 4,
+                        'line-dasharray': [2, 4] 
+                    }
+                });
+
+                // 3. Markers
                 config.chapters.forEach(function(record) {
                     var color = config.colors[record.category] || '#333';
                     var iconClass = config.icons[record.category] || 'fa-map-marker-alt';
@@ -511,7 +481,7 @@
             function filterMarkers(selectedCat, clickedBtn) {
                 var buttons = document.getElementsByClassName('filter-btn');
                 for (var i = 0; i < buttons.length; i++) buttons[i].classList.remove('active');
-                clickedBtn.classList.add('active');
+                if(clickedBtn) clickedBtn.classList.add('active');
 
                 markerObjects.forEach(function(m) {
                     if (selectedCat === 'all' || m.category === selectedCat) {
@@ -523,6 +493,22 @@
                 });
                 if (selectedMarker && selectedMarker.style.display === 'none') closePanel(false);
             }
+
+            // TOGGLE FORT WALL LOGIC (Now includes Text)
+            window.toggleLayer = function(layerId, btn) {
+                var visibility = map.getLayoutProperty(layerId, 'visibility');
+                var infoBox = document.getElementById('wall-info');
+                
+                if (visibility === 'visible') {
+                    map.setLayoutProperty(layerId, 'visibility', 'none');
+                    btn.classList.remove('active');
+                    infoBox.style.display = 'none';
+                } else {
+                    map.setLayoutProperty(layerId, 'visibility', 'visible');
+                    btn.classList.add('active');
+                    infoBox.style.display = 'block';
+                }
+            };
         }
     </script>
 </body>
