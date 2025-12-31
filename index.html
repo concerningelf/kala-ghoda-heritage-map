@@ -4,429 +4,553 @@
     <meta charset='utf-8' />
     <title>Visual Audit: Kala Ghoda</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    
     <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+    
     <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-   <style>
-    /* --- CSS STYLING --- */
-    body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; }
-    #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary: #111;
+            --glass: rgba(255, 255, 255, 0.90);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --accent: #d4a373; 
+        }
+        
+        body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; overflow: hidden; }
+        #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; background: #e5e5e5; }
+        
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
 
-    /* HEADER */
-    #header {
-        position: absolute; top: 30px; left: 30px; width: 300px;
-        background: #ffffff; z-index: 100;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        border-top: 5px solid #333;
-    }
-    #header h1 { font-family: 'Cardo', serif; font-size: 24px; font-weight: 700; text-transform: uppercase; padding: 25px 25px 5px 25px; margin: 0; color: #111; }
-    #header h2 { font-family: 'Lato', sans-serif; font-size: 13px; color: #777; padding: 0 25px 15px 25px; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
-
-    /* FILTERS */
-    #console { padding: 0 25px 25px 25px; }
-    .filter-btn {
-        display: inline-block; padding: 6px 12px; margin: 5px 5px 0 0;
-        font-size: 11px; text-transform: uppercase; font-weight: bold;
-        border: 1px solid #ccc; background: #fff; color: #555;
-        cursor: pointer; border-radius: 20px; transition: all 0.2s ease;
-    }
-    .filter-btn:hover { background: #eee; }
-    .filter-btn.active { background: #333; color: #fff; border-color: #333 !important; }
-
-    /* CUSTOM DOTS */
-    .marker {
-        border-radius: 50%;
-        border: 2px solid #fff;
-        cursor: pointer;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        transition: transform 0.2s ease, opacity 0.2s ease;
-    }
-    .marker:hover { transform: scale(1.3); z-index: 999; }
-
-    /* POPUPS */
-    .maplibregl-popup { z-index: 200; max-width: 300px !important; }
-    .maplibregl-popup-content { padding: 0; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-radius: 0; font-family: 'Lato', sans-serif; }
-    .popup-img { width: 100%; height: 160px; object-fit: cover; display: block; }
-    .popup-inner { padding: 20px; }
-    .popup-title { font-family: 'Cardo', serif; font-size: 18px; font-weight: bold; margin-bottom: 5px; color: #111; text-transform: uppercase; }
-    .popup-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; display: inline-block; padding: 3px 6px; border-radius: 4px; color: #fff; margin-bottom: 10px; }
-    .popup-desc { font-size: 14px; color: #555; line-height: 1.5; margin: 0; }
-
-    /* MOBILE OPTIMIZATION */
-    @media (max-width: 768px) {
+        /* --- UI: HEADER --- */
         #header {
-            top: 15px;
-            left: 15px;
-            right: 15px;
-            width: auto;
-            max-width: calc(100vw - 30px);
+            position: absolute; top: 30px; left: 30px; width: 320px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            z-index: 100;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
         }
-        
-        #header h1 {
-            font-size: 20px;
-            padding: 20px 20px 5px 20px;
+        #header h1 { 
+            font-family: 'Cardo', serif; 
+            font-size: 24px; font-weight: 700; 
+            text-transform: uppercase; padding: 25px 25px 5px 25px; margin: 0; color: #111; 
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            margin-bottom: 10px;
         }
-        
-        #header h2 {
-            font-size: 11px;
-            padding: 0 20px 12px 20px;
+        #header h2 { 
+            font-family: 'Lato', sans-serif; font-size: 12px; color: #555; 
+            padding: 0 25px 15px 25px; margin: 0; text-transform: uppercase; letter-spacing: 2px; 
         }
-        
-        #console {
-            padding: 0 20px 20px 20px;
-        }
-        
-        .filter-btn {
-            padding: 8px 14px;
-            margin: 5px 3px 0 0;
-            font-size: 10px;
-            touch-action: manipulation;
-        }
-        
-        .maplibregl-popup {
-            max-width: calc(100vw - 40px) !important;
-        }
-        
-        .popup-img {
-            height: 140px;
-        }
-        
-        .popup-inner {
-            padding: 15px;
-        }
-        
-        .popup-title {
-            font-size: 16px;
-        }
-        
-        .popup-desc {
-            font-size: 13px;
-        }
-        
-        .marker {
-            width: 16px !important;
-            height: 16px !important;
-        }
-    }
 
-    @media (max-width: 480px) {
-        #header {
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            max-width: calc(100vw - 20px);
-        }
-        
-        #header h1 {
-            font-size: 18px;
-            padding: 15px 15px 5px 15px;
-        }
-        
-        #header h2 {
-            font-size: 10px;
-            padding: 0 15px 10px 15px;
-        }
-        
-        #console {
-            padding: 0 15px 15px 15px;
-        }
-        
+        /* --- UI: FILTERS --- */
+        #console { padding: 0 25px 25px 25px; display: flex; flex-wrap: wrap; gap: 8px; }
         .filter-btn {
-            padding: 7px 11px;
-            margin: 4px 2px 0 0;
-            font-size: 9px;
+            padding: 6px 12px;
+            font-size: 11px; text-transform: uppercase; font-weight: 700;
+            border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.6); 
+            color: #555; cursor: pointer; border-radius: 20px; 
+            transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 5px;
+            font-family: 'Lato', sans-serif;
         }
-        
-        .popup-img {
-            height: 120px;
-        }
-        
-        .popup-inner {
-            padding: 12px;
-        }
-        
-        .popup-title {
-            font-size: 15px;
-        }
-        
-        .popup-desc {
-            font-size: 12px;
-        }
-        
+        .filter-btn:hover { background: #fff; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .filter-btn.active { background: #222; color: #fff; border-color: #222; }
+        .dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+        /* --- UI: MARKERS --- */
         .marker {
-            width: 14px !important;
-            height: 14px !important;
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #fff;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: #fff;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
         }
-    }
-</style>
+        .marker:hover { transform: scale(1.2) translateY(-5px); z-index: 20; }
+        .marker.selected { 
+            transform: scale(1.3) translateY(-5px); 
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.5);
+            z-index: 30;
+        }
+        
+        /* --- UI: SIDE PANEL --- */
+        #side-panel {
+            position: fixed; right: -450px; top: 20px; bottom: 20px; width: 380px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 200;
+            box-shadow: var(--shadow);
+            border-radius: 16px 0 0 16px;
+            transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            overflow-y: auto; border: 1px solid var(--glass-border);
+        }
+        #side-panel.open { right: 0; }
+        
+        .panel-img-container { position: relative; width: 100%; height: 260px; overflow: hidden; }
+        .panel-img { width: 100%; height: 100%; object-fit: cover; transition: transform 3s ease; }
+        #side-panel:hover .panel-img { transform: scale(1.05); }
+        
+        .panel-content { padding: 30px; }
+        .panel-cat {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+            padding: 5px 10px; border-radius: 4px; color: #fff; margin-bottom: 15px; display: inline-block;
+            font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .panel-title {
+            font-family: 'Cardo', serif; 
+            font-size: 28px; font-weight: 700;
+            margin-bottom: 10px; color: #111; line-height: 1.2;
+            text-transform: uppercase;
+        }
+        .panel-desc { font-size: 16px; color: #444; line-height: 1.7; margin-bottom: 25px; }
+        
+        .panel-info {
+            background: rgba(255,255,255,0.5); padding: 20px; border-radius: 8px;
+            border-left: 3px solid #333;
+        }
+        .panel-info-row { margin-bottom: 8px; font-size: 14px; color: #555; display: flex; justify-content: space-between; }
+        .panel-info-row strong { color: #111; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;}
+
+        .panel-close {
+            position: absolute; top: 15px; right: 15px; width: 36px; height: 36px;
+            background: #fff; color: #111; border: none; border-radius: 50%;
+            cursor: pointer; font-size: 20px; z-index: 5;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .panel-close:hover { transform: rotate(90deg); background: #111; color: #fff; }
+
+        /* RESET BUTTON */
+        #reset-btn {
+            position: fixed; 
+            top: 20px; 
+            right: 70px; /* Moved left away from zoom controls */
+            background: #fff; color: #111; border: none;
+            padding: 10px 15px; border-radius: 30px;
+            font-family: 'Lato', sans-serif; font-weight: bold; font-size: 12px;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            z-index: 90; transition: all 0.2s;
+            display: flex; align-items: center; gap: 8px;
+            text-transform: uppercase;
+        }
+        #reset-btn:hover { background: #111; color: #fff; }
+
+        /* MOBILE OPTIMIZATION */
+        @media (max-width: 768px) {
+            #header { 
+                top: 15px; left: 15px; right: 15px; 
+                width: auto; max-width: none; 
+            }
+            #console {
+                padding: 0 15px 15px 15px;
+            }
+            #header h1 {
+                font-size: 20px;
+                padding: 20px 20px 5px 20px;
+            }
+            
+            /* Bottom Sheet for Mobile */
+            #side-panel { 
+                right: auto; left: 0; bottom: -100vh; top: auto; 
+                width: 100%; height: 70vh; 
+                border-radius: 20px 20px 0 0; 
+                transition: bottom 0.4s ease; 
+                border-top: 1px solid rgba(255,255,255,0.8);
+            }
+            #side-panel.open { bottom: 0; }
+            
+            #reset-btn { top: auto; bottom: 30px; right: 20px; }
+            
+            .marker { width: 40px; height: 40px; font-size: 16px; } 
+        }
+    </style>
 </head>
 
 <body>
 
     <div id="map"></div>
+    
     <div id="header">
         <div id="console"></div>
     </div>
 
+    <button id="reset-btn"><i class="fa-solid fa-compress"></i> Reset</button>
+
+    <div id="side-panel">
+        <button class="panel-close" id="close-btn">×</button>
+        <div id="panel-inner"></div>
+    </div>
+
     <script>
-        // --- 1. YOUR DATA CONFIGURATION (EDIT HERE) ---
-        var config = {
-            // Your Grey Map
-            style: 'https://api.maptiler.com/maps/019b6fe6-78c4-7dcb-b6eb-fed1b18171df/style.json?key=f0f0aibL2C05fTzSrqHq', 
-            title: 'Visual Audit: Kala Ghoda',
-            subtitle: 'A design study of Mumbai\'s Art District',
-            
-            // COLOR PALETTE
-            colors: {
-                'Art Deco': '#2a9d8f',
-                'Victorian': '#e76f51',
-                'Texture': '#e9c46a',
-                'Modern': '#264653',
-                'Lettering': '#6a4c93'
-
-            },
-
-            // LOCATIONS
-           chapters: [
-    {
-        id: 'regal',
-        category: 'Art Deco',
-        title: '1. Regal Cinema',
-        image: './images/regal.jpg',
-        description: 'One of the earliest Art Deco cinemas in India, characterised by ziggurat style stepping and strong vertical emphasis.',
-        year: '1933',
-        architect: 'Charles Stevens',
-        builder: 'Framji Sidhwa',
-        location: { center: [72.8334, 18.9279], zoom: 17 }
-    },
-    {
-        id: 'museum',
-        category: 'Victorian',
-        title: '2. CSMVS Museum',
-        image: './images/csmvs.jpg',
-        description: 'Indo Saracenic landmark constructed using grey Kurla basalt and yellow Malad stone.',
-        year: '1914',
-        architect: 'George Wittet',
-        builder: 'Government of Bombay',
-        location: { center: [72.8327, 18.9269], zoom: 17 }
-    },
-    {
-        id: 'elphinstone',
-        category: 'Victorian',
-        title: '3. Elphinstone College',
-        image: './images/elphinstone.jpg',
-        description: 'Victorian Gothic Revival building with pointed arches, stone detailing, and ornamental gargoyles.',
-        year: '1871',
-        architect: 'James Trubshawe',
-        builder: 'Unknown',
-        location: { center: [72.8313, 18.9265], zoom: 17 }
-    },
-    {
-        id: 'sassoon',
-        category: 'Victorian',
-        title: '4. David Sassoon Library',
-        image: './images/sassoon.jpg',
-        description: 'Victorian Gothic architecture defined by pointed arches, lancet windows, and symmetrical massing.',
-        year: '1870',
-        architect: 'J. Campbell and G. E. Gosling',
-        builder: 'Scott McClelland and Co.',
-        location: { center: [72.8316, 18.9272], zoom: 17 }
-    },
-    {
-        id: 'army',
-        category: 'Victorian',
-        title: '5. Army and Navy Building',
-        image: './images/army-navy.jpg',
-        description: 'Late nineteenth century Neo Classical commercial building retaining original serif signage.',
-        year: 'Late 19th century',
-        architect: 'Unknown',
-        builder: 'British Military Establishment',
-        location: { center: [72.8322, 18.9285], zoom: 17 }
-    },
-    {
-        id: 'esplanade',
-        category: 'Texture',
-        title: '6. Esplanade Mansion',
-        image: './images/esplanade.jpg',
-        description: 'One of the earliest cast iron framed buildings in Mumbai, with exposed iron elements and industrial detailing.',
-        year: '1865',
-        architect: 'Unknown',
-        builder: 'British Engineers',
-        location: { center: [72.8311, 18.9282], zoom: 17 }
-    },
-    {
-        id: 'jehangir',
-        category: 'Modern',
-        title: '7. Jehangir Art Gallery',
-        image: './images/jehangir.jpg',
-        description: 'Modernist concrete structure with a distinctive cantilevered entrance and restrained formal language.',
-        year: '1952',
-        architect: 'G. M. Bhuta',
-        builder: 'Sir Cowasji Jehangir',
-        location: { center: [72.8317, 18.9275], zoom: 17 }
-    },
-    {
-        id: 'statue',
-        category: 'Texture',
-        title: '8. Kala Ghoda Statue',
-        image: './images/placeholder.jpg',
-        description: 'Bronze statue installed to mark the historic site of the original Black Horse after which the precinct is named.',
-        year: '2017',
-        architect: 'Commissioned artwork',
-        builder: 'Kala Ghoda Association',
-        location: { center: [72.8318, 18.9277], zoom: 17 }
-    },
-    {
-        id: 'synagogue',
-        category: 'Victorian',
-        title: '9. Keneseth Eliyahoo Synagogue',
-        image: './images/synagogue.jpg',
-        description: 'Victorian era synagogue built for the Baghdadi Jewish community, noted for its distinctive turquoise blue façade.',
-        year: '1884',
-        architect: 'Unknown',
-        builder: 'Baghdadi Jewish Community',
-        location: { center: [72.8324, 18.9278], zoom: 17 }
-    },
-    {
-        id: 'ropewalk',
-        category: 'Texture',
-        title: '10. Rope Walk Lane',
-        image: './images/ropewalk.jpg',
-        description: 'Historic lane characterised by enamel street signage, layered brickwork, and traces of nineteenth century urban fabric.',
-        year: '19th century',
-        architect: 'Incremental street development',
-        builder: 'Multiple owners',
-        location: { center: [72.8320, 18.9270], zoom: 17 }
-    },
-    {
-    id: 'army-lettering',
-    category: 'Lettering',
-    title: 'Army and Navy Signage',
-    image: './images/army-lettering.jpg',
-    description: 'Original carved and painted serif lettering integrated into the building façade, reflecting late nineteenth century commercial typography.',
-    year: 'Late 19th century',
-    architect: 'Unknown',
-    builder: 'British Military Establishment',
-    location: { center: [72.83225, 18.92855], zoom: 18 }
-},
-{
-    id: 'ropewalk-signs',
-    category: 'Lettering',
-    title: 'Rope Walk Lane Street Signs',
-    image: './images/ropewalk-lettering.jpg',
-    description: 'Blue enamel street signage with bilingual lettering, showing material wear and layered urban history.',
-    year: '20th century',
-    architect: 'Municipal signage',
-    builder: 'Bombay Municipal Corporation',
-    location: { center: [72.83205, 18.92705], zoom: 18 }
-}
-]
-
-        };
-
-        // --- 2. SETUP HEADER ---
-        var header = document.getElementById('header');
-        var titleHTML = '<h1>' + config.title + '</h1><h2>' + config.subtitle + '</h2>';
-        document.getElementById('console').insertAdjacentHTML('beforebegin', titleHTML);
-
-        // --- 3. SETUP FILTERS ---
-        var consoleDiv = document.getElementById('console');
-        var categories = [...new Set(config.chapters.map(function(item) { return item.category; }))];
-        
-        // "All" Button
-        var allBtn = document.createElement('button');
-        allBtn.className = 'filter-btn active';
-        allBtn.innerText = 'All Layers';
-        allBtn.onclick = function() { filterMarkers('all', this); };
-        consoleDiv.appendChild(allBtn);
-
-        // Category Buttons
-        categories.forEach(function(cat) {
-            var btn = document.createElement('button');
-            btn.className = 'filter-btn';
-            btn.innerText = cat;
-            var color = config.colors[cat] || '#333';
-            btn.style.borderLeft = '4px solid ' + color;
-            btn.onclick = function() { filterMarkers(cat, this); };
-            consoleDiv.appendChild(btn);
+        window.addEventListener('load', function() {
+            initMap();
         });
 
-        // --- 4. INITIALIZE MAP ---
-        var map = new maplibregl.Map({
-            container: 'map',
-            style: config.style,
-            center: [72.8325, 18.9275],
-            zoom: 16.5,
-            pitch: 45,
-            bearing: -15
-        });
-        map.addControl(new maplibregl.NavigationControl());
-
-        // List to track markers
-        var markerObjects = [];
-
-        map.on("load", function () {
-            config.chapters.forEach(function(record) {
+        function initMap() {
+            var config = {
+                style: 'https://api.maptiler.com/maps/019b6fe6-78c4-7dcb-b6eb-fed1b18171df/style.json?key=f0f0aibL2C05fTzSrqHq', 
+                title: 'Visual Audit: Kala Ghoda',
+                subtitle: 'Explorations in the Art District',
                 
-                // Get Color
-                var color = config.colors[record.category] || '#333';
+                colors: {
+                    'Art Deco': '#2a9d8f',
+                    'Victorian': '#e76f51',
+                    'Texture': '#e9c46a',
+                    'Modern': '#264653',
+                    'Lettering': '#6a4c93'
+                },
+                
+                icons: {
+                    'Art Deco': 'fa-building',
+                    'Victorian': 'fa-landmark',
+                    'Texture': 'fa-eye',
+                    'Modern': 'fa-square',
+                    'Lettering': 'fa-font'
+                },
 
-                // Create DOT Element (CSS Class .marker)
-                var el = document.createElement('div');
-                el.className = 'marker';
-                el.style.backgroundColor = color;
-                el.style.width = '12px';
-                el.style.height = '12px';
+                chapters: [
+                    {
+                        id: 'regal',
+                        category: 'Art Deco',
+                        title: 'Regal Cinema',
+                        image: './images/regal.jpg',
+                        description: 'One of the earliest Art Deco cinemas in India, characterised by ziggurat style stepping and strong vertical emphasis.',
+                        year: '1933',
+                        architect: 'Charles Stevens',
+                        builder: 'Framji Sidhwa',
+                        location: { center: [72.8334, 18.9279], zoom: 17.5, pitch: 50, bearing: -10 }
+                    },
+                    {
+                        id: 'museum',
+                        category: 'Victorian',
+                        title: 'CSMVS Museum',
+                        image: './images/csmvs.jpg',
+                        description: 'Indo Saracenic landmark constructed using grey Kurla basalt and yellow Malad stone.',
+                        year: '1914',
+                        architect: 'George Wittet',
+                        builder: 'Govt. of Bombay',
+                        location: { center: [72.8327, 18.9269], zoom: 17.5, pitch: 60, bearing: 45 }
+                    },
+                    {
+                        id: 'elphinstone',
+                        category: 'Victorian',
+                        title: 'Elphinstone College',
+                        image: './images/elphinstone.jpg',
+                        description: 'Victorian Gothic Revival building with pointed arches, stone detailing, and ornamental gargoyles.',
+                        year: '1871',
+                        architect: 'James Trubshawe',
+                        builder: 'Unknown',
+                        location: { center: [72.8313, 18.9265], zoom: 18, pitch: 55, bearing: -90 }
+                    },
+                    {
+                        id: 'sassoon',
+                        category: 'Victorian',
+                        title: 'David Sassoon Library',
+                        image: './images/sassoon.jpg',
+                        description: 'Victorian Gothic architecture defined by pointed arches, lancet windows, and symmetrical massing.',
+                        year: '1870',
+                        architect: 'Campbell & Gosling',
+                        builder: 'Scott McClelland',
+                        location: { center: [72.8316, 18.9272], zoom: 18, pitch: 45, bearing: -45 }
+                    },
+                    {
+                        id: 'army',
+                        category: 'Victorian',
+                        title: 'Army and Navy Building',
+                        image: './images/army-navy.jpg',
+                        description: 'Late nineteenth century Neo Classical commercial building retaining original serif signage.',
+                        year: 'Late 19th C.',
+                        architect: 'Unknown',
+                        builder: 'British Military',
+                        location: { center: [72.8322, 18.9285], zoom: 18, pitch: 50, bearing: 0 }
+                    },
+                    {
+                        id: 'esplanade',
+                        category: 'Texture',
+                        title: 'Esplanade Mansion',
+                        image: './images/esplanade.jpg',
+                        description: 'One of the earliest cast iron framed buildings in Mumbai, with exposed iron elements.',
+                        year: '1865',
+                        architect: 'Unknown',
+                        builder: 'British Engineers',
+                        location: { center: [72.8311, 18.9282], zoom: 18, pitch: 60, bearing: -20 }
+                    },
+                    {
+                        id: 'jehangir',
+                        category: 'Modern',
+                        title: 'Jehangir Art Gallery',
+                        image: './images/jehangir.jpg',
+                        description: 'Modernist concrete structure with a distinctive cantilevered entrance.',
+                        year: '1952',
+                        architect: 'G. M. Bhuta',
+                        builder: 'Sir Cowasji Jehangir',
+                        location: { center: [72.8317, 18.9275], zoom: 18, pitch: 40, bearing: 90 }
+                    },
+                    {
+                        id: 'statue',
+                        category: 'Texture',
+                        title: 'Kala Ghoda Statue',
+                        image: './images/placeholder.jpg',
+                        description: 'Bronze statue installed to mark the historic site of the original Black Horse.',
+                        year: '2017',
+                        architect: 'Commissioned Art',
+                        builder: 'KG Association',
+                        location: { center: [72.8318, 18.9277], zoom: 19, pitch: 0, bearing: 0 }
+                    },
+                    {
+                        id: 'synagogue',
+                        category: 'Victorian',
+                        title: 'Keneseth Eliyahoo',
+                        image: './images/synagogue.jpg',
+                        description: 'Victorian era synagogue built for the Baghdadi Jewish community, noted for its blue façade.',
+                        year: '1884',
+                        architect: 'Unknown',
+                        builder: 'Jewish Community',
+                        location: { center: [72.8324, 18.9278], zoom: 18.5, pitch: 55, bearing: 30 }
+                    },
+                    {
+                        id: 'ropewalk',
+                        category: 'Texture',
+                        title: 'Rope Walk Lane',
+                        image: './images/ropewalk.jpg',
+                        description: 'Historic lane characterised by enamel street signage and layered brickwork.',
+                        year: '19th Century',
+                        architect: 'Incremental',
+                        builder: 'Multiple',
+                        location: { center: [72.8320, 18.9270], zoom: 18, pitch: 30, bearing: 180 }
+                    },
+                    {
+                        id: 'army-lettering',
+                        category: 'Lettering',
+                        title: 'Army/Navy Signage',
+                        image: './images/army-lettering.jpg',
+                        description: 'Original carved and painted serif lettering integrated into the building façade.',
+                        year: 'Late 19th C.',
+                        architect: 'Unknown',
+                        builder: 'British Military',
+                        location: { center: [72.83225, 18.92855], zoom: 19, pitch: 20, bearing: 0 }
+                    },
+                    {
+                        id: 'ropewalk-signs',
+                        category: 'Lettering',
+                        title: 'Street Signs',
+                        image: './images/ropewalk-lettering.jpg',
+                        description: 'Blue enamel street signage with bilingual lettering.',
+                        year: '20th Century',
+                        architect: 'Municipal',
+                        builder: 'BMC',
+                        location: { center: [72.83205, 18.92705], zoom: 19, pitch: 0, bearing: 0 }
+                    }
+                ]
+            };
 
-                // Create Popup
-                var infoHTML = '<div style="font-size:11px; color:#888; margin-top:10px; padding-top:10px; border-top:1px solid #eee;">' +
-                    '<div style="margin-bottom:3px;"><strong>Year:</strong> ' + record.year + '</div>' +
-                    '<div style="margin-bottom:3px;"><strong>Architect:</strong> ' + record.architect + '</div>' +
-                    '<div><strong>Built by:</strong> ' + record.builder + '</div>' +
-                    '</div>';
-                    
-                var popupHTML = '<img src="' + record.image + '" class="popup-img">' +
-                    '<div class="popup-inner">' +
-                    '<span class="popup-cat" style="background:' + color + '">' + record.category + '</span>' +
-                    '<div class="popup-title">' + record.title + '</div>' +
-                    '<p class="popup-desc">' + record.description + '</p>' +
-                    infoHTML +
-                    '</div>';
-                    
-                var popup = new maplibregl.Popup({ offset: 25, maxWidth: '300px' }).setHTML(popupHTML);
+            // Header Setup
+            var titleHTML = '<h1>' + config.title + '</h1><h2>' + config.subtitle + '</h2>';
+            document.getElementById('console').insertAdjacentHTML('beforebegin', titleHTML);
 
-                // Add to Map
-                var marker = new maplibregl.Marker(el)
-                    .setLngLat(record.location.center)
-                    .setPopup(popup)
-                    .addTo(map);
+            // Filter Setup
+            var consoleDiv = document.getElementById('console');
+            var categories = [...new Set(config.chapters.map(function(item) { return item.category; }))];
+            
+            // "All" Button
+            var allBtn = document.createElement('button');
+            allBtn.className = 'filter-btn active';
+            allBtn.innerHTML = '<span class="dot-indicator" style="background:#333"></span> All';
+            allBtn.onclick = function() { filterMarkers('all', this); };
+            consoleDiv.appendChild(allBtn);
 
-                // Add to list for filtering
-                markerObjects.push({ element: el, category: record.category });
+            // Category Buttons
+            categories.forEach(function(cat) {
+                var btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                var color = config.colors[cat] || '#333';
+                btn.innerHTML = '<span class="dot-indicator" style="background:' + color + '"></span> ' + cat;
+                btn.onclick = function() { filterMarkers(cat, this); };
+                consoleDiv.appendChild(btn);
             });
-        });
 
-        // --- 5. FILTER FUNCTION ---
-        function filterMarkers(selectedCat, clickedBtn) {
-            // Reset Buttons
-            var buttons = document.getElementsByClassName('filter-btn');
-            for (var i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove('active');
-            }
-            clickedBtn.classList.add('active');
+            // Map Setup
+            var map = new maplibregl.Map({
+                container: 'map',
+                style: config.style,
+                center: [72.8325, 18.9275],
+                zoom: 16.5,
+                pitch: 45,
+                bearing: -15,
+                antialias: true // Crucial for 3D buildings
+            });
+            map.addControl(new maplibregl.NavigationControl({ showCompass: true, showZoom: true }));
+            window.mapInstance = map; // Global reference
 
-            // Show/Hide Dots
-            markerObjects.forEach(function(m) {
-                if (selectedCat === 'all' || m.category === selectedCat) {
-                    m.element.style.display = 'block';
-                    m.element.style.opacity = '1';
-                } else {
-                    m.element.style.display = 'none';
+            var markerObjects = [];
+            var selectedMarker = null;
+
+            map.on("load", function () {
+                
+                // 1. Add 3D Building Layer
+                map.addLayer({
+                    'id': '3d-buildings',
+                    'source': 'openmaptiles', 
+                    'source-layer': 'building',
+                    'type': 'fill-extrusion',
+                    'minzoom': 15,
+                    'paint': {
+                        'fill-extrusion-color': '#ddd',
+                        'fill-extrusion-height': ['get', 'render_height'],
+                        'fill-extrusion-base': ['get', 'render_min_height'],
+                        'fill-extrusion-opacity': 0.6
+                    }
+                });
+
+                // 2. Add Markers
+                config.chapters.forEach(function(record) {
+                    var color = config.colors[record.category] || '#333';
+                    var iconClass = config.icons[record.category] || 'fa-map-marker-alt';
+
+                    var el = document.createElement('div');
+                    el.className = 'marker';
+                    el.style.backgroundColor = color;
+                    el.innerHTML = '<i class="fa-solid ' + iconClass + '"></i>';
+
+                    el.onclick = function(e) {
+                        e.stopPropagation();
+                        openPanel(record, color, el);
+                    };
+
+                    var marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+                        .setLngLat(record.location.center)
+                        .addTo(map);
+
+                    markerObjects.push({ element: el, category: record.category, marker: marker });
+                });
+                
+                // Idle Animation
+                let rotation = 0;
+                let isInteracting = false;
+                function animate() {
+                    if (!isInteracting && !selectedMarker) {
+                        rotation += 0.05;
+                    }
+                    requestAnimationFrame(animate);
                 }
             });
+
+            // --- LISTENERS ---
+
+            // Panel 'X' Button
+            document.getElementById('close-btn').addEventListener('click', function() {
+                closePanel(false); // Normal close (zooms out)
+            });
+
+            // Reset View Button
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // Re-center map and Set Bearing to 0 (North)
+                map.flyTo({
+                    center: [72.8325, 18.9275],
+                    zoom: 16.5,
+                    pitch: 45,
+                    bearing: 0, // Reset to North
+                    duration: 2000
+                });
+                // Pass 'true' to skip the zoom-out animation in closePanel
+                closePanel(true);
+            });
+
+            // ESC Key support
+            document.addEventListener('keydown', function(event) {
+                if (event.key === "Escape") {
+                    closePanel(false);
+                }
+            });
+
+            // Map Click (Close Panel)
+            map.on('click', function() { 
+                closePanel(false); 
+            });
+
+
+            // --- FUNCTIONS ---
+
+            function openPanel(record, color, markerEl) {
+                if (selectedMarker) selectedMarker.classList.remove('selected');
+                markerEl.classList.add('selected');
+                selectedMarker = markerEl;
+
+                var infoHTML = '<div class="panel-info">' +
+                    '<div class="panel-info-row"><strong>Year</strong> ' + record.year + '</div>' +
+                    '<div class="panel-info-row"><strong>Architect</strong> ' + record.architect + '</div>' +
+                    '<div class="panel-info-row"><strong>Builder</strong> ' + record.builder + '</div>' +
+                    '</div>';
+
+                var panelContent = '<div class="panel-img-container"><img src="' + record.image + '" class="panel-img"></div>' +
+                    '<div class="panel-content">' +
+                    '<span class="panel-cat" style="background:' + color + '">' + record.category + '</span>' +
+                    '<div class="panel-title">' + record.title + '</div>' +
+                    '<p class="panel-desc">' + record.description + '</p>' +
+                    infoHTML +
+                    '</div>';
+
+                document.getElementById('panel-inner').innerHTML = panelContent;
+                document.getElementById('side-panel').classList.add('open');
+
+                map.flyTo({
+                    center: record.location.center,
+                    zoom: record.location.zoom,
+                    pitch: record.location.pitch,
+                    bearing: record.location.bearing,
+                    duration: 1500,
+                    curve: 1
+                });
+            }
+
+            function closePanel(preventCameraMove) {
+                document.getElementById('side-panel').classList.remove('open');
+                if (selectedMarker) {
+                    selectedMarker.classList.remove('selected');
+                    selectedMarker = null;
+                }
+                
+                // CRITICAL FIX: Only zoom out if preventCameraMove is NOT true.
+                // This prevents the Reset Button's animation from being canceled.
+                if (!preventCameraMove) {
+                    map.flyTo({ zoom: map.getZoom() - 0.5, duration: 1000 });
+                }
+            }
+
+            function filterMarkers(selectedCat, clickedBtn) {
+                var buttons = document.getElementsByClassName('filter-btn');
+                for (var i = 0; i < buttons.length; i++) buttons[i].classList.remove('active');
+                clickedBtn.classList.add('active');
+
+                markerObjects.forEach(function(m) {
+                    if (selectedCat === 'all' || m.category === selectedCat) {
+                        m.element.style.display = 'flex';
+                        m.element.style.opacity = '1';
+                    } else {
+                        m.element.style.display = 'none';
+                    }
+                });
+
+                if (selectedMarker && selectedMarker.style.display === 'none') closePanel(false);
+            }
         }
     </script>
-
 </body>
 </html>
