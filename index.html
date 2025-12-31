@@ -5,8 +5,8 @@
     <title>Visual Audit: Kala Ghoda</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     
-    <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
-    <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
     
     <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
@@ -20,6 +20,7 @@
             --border: #ddd;
             --shadow: 0 4px 20px rgba(0,0,0,0.08);
             --accent-wall: #c0392b;
+            --accent-nav: #2980b9; /* New Color for Navigation */
         }
         
         body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; overflow: hidden; background: #eee; }
@@ -62,7 +63,7 @@
         /* --- UI: FILTERS --- */
         #console { 
             padding: 15px 20px 20px 20px; 
-            display: flex; flex-wrap: wrap; gap: 8px; /* More breathing room */
+            display: flex; flex-wrap: wrap; gap: 8px; 
         }
         .filter-btn {
             padding: 6px 12px;
@@ -78,7 +79,6 @@
         .filter-btn:hover { border-color: #999; color: #000; }
         .filter-btn.active { background: var(--text-main); color: #fff; border-color: var(--text-main); }
         
-        /* WALL TOGGLE */
         #wall-btn {
             margin-top: 5px; 
             border: 1px dashed var(--accent-wall);
@@ -88,7 +88,6 @@
         #wall-btn:hover { background: #fff5f5; }
         #wall-btn.active { background: var(--accent-wall); color: #fff; border-style: solid; }
 
-        /* WALL INFO BOX */
         #wall-info {
             display: none;
             margin-top: 10px;
@@ -132,7 +131,7 @@
             z-index: 500; white-space: nowrap;
         }
         
-        /* --- UI: SIDE PANEL (FIXED LAYOUT) --- */
+        /* --- UI: SIDE PANEL --- */
         #side-panel {
             position: fixed; right: -450px; top: 0; bottom: 0; width: 400px;
             background: #fff;
@@ -140,12 +139,10 @@
             box-shadow: -10px 0 30px rgba(0,0,0,0.05);
             transition: right 0.6s cubic-bezier(0.19, 1, 0.22, 1); 
             border-left: 1px solid var(--border);
-            /* KEY CHANGE: Flexbox to handle sticky header */
             display: flex; flex-direction: column;
         }
         #side-panel.open { right: 0; }
         
-        /* The container that actually scrolls */
         #panel-scroll-area {
             flex: 1;
             overflow-y: auto;
@@ -179,11 +176,22 @@
         .panel-info-label { display: table-cell; padding: 6px 0; font-size: 10px; text-transform: uppercase; color: #888; letter-spacing: 1px; width: 30%; }
         .panel-info-val { display: table-cell; padding: 6px 0; font-size: 13px; color: #111; font-weight: 400; }
 
-        /* Close Button: Fixed to the Panel Container (Not scrolling) */
+        /* NAVIGATION BUTTON STYLE */
+        .panel-action-btn {
+            display: block; width: 100%; 
+            margin-top: 20px; padding: 12px 0;
+            text-align: center; text-decoration: none;
+            background: #fff; border: 1px solid var(--accent-nav);
+            color: var(--accent-nav);
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            border-radius: 2px; transition: all 0.2s;
+        }
+        .panel-action-btn:hover { background: var(--accent-nav); color: #fff; }
+
         .panel-close {
             position: absolute; top: 20px; right: 20px; width: 36px; height: 36px;
             background: rgba(255,255,255,0.9); color: #000; border: none;
-            cursor: pointer; font-size: 20px; z-index: 300; /* High Z-index */
+            cursor: pointer; font-size: 20px; z-index: 300;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.2s; backdrop-filter: blur(4px);
             border-radius: 50%;
@@ -191,45 +199,47 @@
         }
         .panel-close:hover { background: #000; color: #fff; }
 
-        #reset-btn {
+        /* --- FLOATING CONTROLS --- */
+        .control-group {
             position: fixed; top: 30px; right: 80px; 
+            display: flex; gap: 8px; z-index: 90;
+        }
+
+        .map-control-btn {
             background: #fff; color: #111; border: 1px solid var(--border);
             padding: 8px 14px; 
             font-family: 'Lato', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 1px;
             cursor: pointer; box-shadow: var(--shadow);
-            z-index: 90; transition: all 0.2s ease;
+            transition: all 0.2s ease;
             display: flex; align-items: center; gap: 8px;
             text-transform: uppercase; border-radius: 2px;
         }
-        #reset-btn:hover { background: #111; color: #fff; border-color: #111; }
+        .map-control-btn:hover { background: #111; color: #fff; border-color: #111; }
+        .map-control-btn.active { background: var(--text-main); color: #fff; }
 
-        /* --- MOBILE OPTIMIZATION (Fixing Crowding) --- */
+        .maplibregl-ctrl-scale {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid var(--border) !important;
+            color: #333 !important;
+            font-family: 'Lato', sans-serif !important;
+            font-size: 10px !important;
+            border-radius: 2px !important;
+            box-shadow: none !important;
+        }
+
         @media (max-width: 768px) {
-            /* Header: More compact */
-            #header { 
-                top: 15px; left: 15px; right: 15px; width: auto; max-width: none;
-            }
+            #header { top: 15px; left: 15px; right: 15px; width: auto; max-width: none; }
             #header h1 { font-size: 18px; padding: 15px 15px 5px 15px; }
             #header h2 { padding: 0 15px 10px 15px; border: none; }
             #console { padding: 0 15px 15px 15px; }
-            
-            /* Side Panel: Drawer from bottom */
-            #side-panel { 
-                right: auto; left: 0; bottom: -100vh; top: auto; 
-                width: 100%; height: 75vh; /* Perfect mobile height */
-                border-left: none; border-top: 1px solid #ccc;
-                border-radius: 12px 12px 0 0;
-            }
+            #side-panel { right: auto; left: 0; bottom: -100vh; top: auto; width: 100%; height: 75vh; border-left: none; border-top: 1px solid #ccc; border-radius: 12px 12px 0 0; }
             #side-panel.open { bottom: 0; }
-            
-            /* Inner padding reduction for mobile */
             .panel-content { padding: 25px; }
             .panel-title { font-size: 24px; margin-bottom: 15px; }
             .panel-desc { font-size: 14px; margin-bottom: 25px; }
             .panel-img-container { height: 200px; }
-
-            /* Buttons */
-            #reset-btn { top: auto; bottom: 30px; right: 20px; } 
+            
+            .control-group { top: auto; bottom: 30px; right: 20px; flex-direction: column-reverse; }
             .filter-btn { padding: 6px 10px; font-size: 10px; margin-bottom: 2px;}
         }
     </style>
@@ -246,7 +256,10 @@
         <div id="console"></div>
     </div>
 
-    <button id="reset-btn"><i class="fa-solid fa-compress"></i> Reset</button>
+    <div class="control-group">
+        <button id="view-btn" class="map-control-btn"><i class="fa-solid fa-cube"></i> 3D View</button>
+        <button id="reset-btn" class="map-control-btn"><i class="fa-solid fa-compress"></i> Reset</button>
+    </div>
 
     <div id="side-panel">
         <button class="panel-close" id="close-btn">×</button>
@@ -261,32 +274,19 @@
         });
 
         function initMap() {
-            // MOBILE ZOOM CHECK
             var initialZoom = window.innerWidth < 768 ? 15.0 : 16.5;
 
             var config = {
                 style: 'https://api.maptiler.com/maps/019b6fe6-78c4-7dcb-b6eb-fed1b18171df/style.json?key=f0f0aibL2C05fTzSrqHq', 
                 
                 colors: {
-                    'Art Deco': '#2a9d8f',
-                    'Victorian': '#e76f51',
-                    'Texture': '#d4a373', 
-                    'Modern': '#264653',
-                    'Lettering': '#7b2cbf',
-                    'Ghost Site': '#95a5a6',
-                    'Street Furniture': '#4a69bd', 
-                    'Living Heritage': '#27ae60'
+                    'Art Deco': '#2a9d8f', 'Victorian': '#e76f51', 'Modern': '#264653',
+                    'Lettering': '#7b2cbf', 'Ghost Site': '#95a5a6', 'Street Furniture': '#4a69bd', 'Living Heritage': '#27ae60'
                 },
                 
                 icons: {
-                    'Art Deco': 'fa-building',
-                    'Victorian': 'fa-landmark',
-                    'Texture': 'fa-eye',
-                    'Modern': 'fa-square',
-                    'Lettering': 'fa-font',
-                    'Ghost Site': 'fa-ghost',
-                    'Street Furniture': 'fa-road',
-                    'Living Heritage': 'fa-users'
+                    'Art Deco': 'fa-building', 'Victorian': 'fa-landmark', 'Modern': 'fa-square',
+                    'Lettering': 'fa-font', 'Ghost Site': 'fa-ghost', 'Street Furniture': 'fa-road', 'Living Heritage': 'fa-users'
                 },
                 
                 chapters: [
@@ -297,9 +297,9 @@
                     { id: 'army', category: 'Victorian', title: 'Army and Navy Building', image: './images/army-navy.jpg', description: 'Late nineteenth century Neo Classical commercial building retaining original serif signage.', year: 'Late 19th C.', architect: 'Unknown', builder: 'British Military', location: { center: [72.8322, 18.9285] } },
                     { id: 'esplanade', category: 'Victorian', title: 'Esplanade Mansion', image: './images/esplanade.jpg', description: 'Formerly Watson\'s Hotel. One of the earliest cast iron framed buildings in the world, with exposed iron elements.', year: '1865', architect: 'Rowland Mason Ordish', builder: 'British Engineers', location: { center: [72.8311, 18.9282] } },
                     { id: 'jehangir', category: 'Modern', title: 'Jehangir Art Gallery', image: './images/jehangir.jpg', description: 'Modernist concrete structure with a distinctive cantilevered entrance.', year: '1952', architect: 'G. M. Bhuta', builder: 'Sir Cowasji Jehangir', location: { center: [72.8317, 18.9275] } },
-                    { id: 'statue', category: 'Texture', title: 'Kala Ghoda Statue', image: './images/placeholder.jpg', description: 'Bronze statue installed to mark the historic site of the original Black Horse after which the precinct is named.', year: '2017', architect: 'Commissioned artwork', builder: 'Kala Ghoda Association', location: { center: [72.8318, 18.9277] } },
+                    { id: 'statue', category: 'Ghost Site', title: 'Kala Ghoda Statue', image: './images/placeholder.jpg', description: 'Bronze statue installed to mark the historic site of the original Black Horse after which the precinct is named.', year: '2017', architect: 'Commissioned artwork', builder: 'Kala Ghoda Association', location: { center: [72.8318, 18.9277] } },
                     { id: 'synagogue', category: 'Victorian', title: 'Keneseth Eliyahoo', image: './images/synagogue.jpg', description: 'Victorian era synagogue built for the Baghdadi Jewish community, noted for its distinctive turquoise blue façade.', year: '1884', architect: 'Unknown', builder: 'Jewish Community', location: { center: [72.8324, 18.9278] } },
-                    { id: 'ropewalk', category: 'Texture', title: 'Rope Walk Lane', image: './images/ropewalk.jpg', description: 'Historic lane characterised by enamel street signage, layered brickwork, and traces of nineteenth century urban fabric.', year: '19th century', architect: 'Incremental', builder: 'Multiple', location: { center: [72.8320, 18.9270] } },
+                    { id: 'ropewalk', category: 'Street Furniture', title: 'Rope Walk Lane', image: './images/ropewalk.jpg', description: 'Historic lane characterised by enamel street signage, layered brickwork, and traces of nineteenth century urban fabric.', year: '19th century', architect: 'Incremental', builder: 'Multiple', location: { center: [72.8320, 18.9270] } },
                     { id: 'army-lettering', category: 'Lettering', title: 'Army and Navy Signage', image: './images/army-lettering.jpg', description: 'Original carved and painted serif lettering integrated into the building façade.', year: 'Late 19th C.', architect: 'Unknown', builder: 'British Military', location: { center: [72.83225, 18.92855] } },
                     { id: 'ropewalk-signs', category: 'Lettering', title: 'Rope Walk Signs', image: './images/ropewalk-lettering.jpg', description: 'Blue enamel street signage with bilingual lettering, showing material wear and layered urban history.', year: '20th century', architect: 'Municipal signage', builder: 'BMC', location: { center: [72.83205, 18.92705] } },
                     { id: 'lumiere', category: 'Ghost Site', title: 'Lumière Screening Site', image: './images/lumiere-placeholder.jpg', description: 'On July 7, 1896, the Lumière Brothers screened the first motion pictures in India here, in the atrium of Watson\'s Hotel.', year: '1896', architect: 'N/A', builder: 'Historic Event', location: { center: [72.8312, 18.9283] } },
@@ -312,7 +312,6 @@
                 ]
             };
 
-            // Setup Console
             var consoleDiv = document.getElementById('console');
             var categories = [...new Set(config.chapters.map(function(item) { return item.category; }))];
             
@@ -331,7 +330,6 @@
                 consoleDiv.appendChild(btn);
             });
 
-            // ADD THE FORT WALL BUTTON 
             var wallBtn = document.createElement('button');
             wallBtn.id = 'wall-btn';
             wallBtn.className = 'filter-btn';
@@ -339,23 +337,38 @@
             wallBtn.onclick = function() { toggleLayer('fort-wall-layer', this); };
             consoleDiv.appendChild(wallBtn);
 
-            // ADD THE WALL INFO BOX
             var wallInfo = document.createElement('div');
             wallInfo.id = 'wall-info';
             wallInfo.innerHTML = '<strong>The Invisible Ramparts</strong>This dashed line traces the demolished fortifications of the Bombay Fort (removed 1862). K. Dubash Marg curves specifically because it was built over this moat.';
             consoleDiv.appendChild(wallInfo);
 
-            // Init Map
             var map = new maplibregl.Map({
                 container: 'map',
                 style: config.style,
                 center: [72.8325, 18.9275],
-                zoom: initialZoom, // ZOOM VARIABLE USED
-                pitch: 30, 
+                zoom: initialZoom,
+                pitch: 45, 
                 bearing: -15,
                 antialias: true 
             });
-            map.addControl(new maplibregl.NavigationControl({ showCompass: true, showZoom: true }));
+            
+            // 1. ADD NAVIGATION + GEOLOCATE (Locate Me)
+            map.addControl(new maplibregl.NavigationControl({ showCompass: true, showZoom: true }), 'top-right');
+            
+            // "Locate Me" Button
+            var geolocate = new maplibregl.GeolocateControl({
+                positionOptions: { enableHighAccuracy: true },
+                trackUserLocation: true
+            });
+            map.addControl(geolocate, 'top-right');
+
+            // 2. ADD SCALE BAR (Bottom Left)
+            var scale = new maplibregl.ScaleControl({
+                maxWidth: 100,
+                unit: 'metric'
+            });
+            map.addControl(scale, 'bottom-left');
+
             window.mapInstance = map;
 
             var markerObjects = [];
@@ -363,7 +376,14 @@
             var tooltip = document.getElementById('tooltip');
 
             map.on("load", function () {
-                // 1. 3D Buildings
+                map.setSky({
+                    'sky-color': '#87CEEB',
+                    'sky-horizon-blend': 0.5,
+                    'horizon-color': '#ffffff',
+                    'fog-color': '#888888',
+                    'fog-ground-blend': 0.5
+                });
+
                 map.addLayer({
                     'id': '3d-buildings',
                     'source': 'openmaptiles', 
@@ -371,24 +391,19 @@
                     'type': 'fill-extrusion',
                     'minzoom': 15,
                     'paint': {
-                        'fill-extrusion-color': '#e0e0e0',
+                        'fill-extrusion-color': '#f0f0f0',
                         'fill-extrusion-height': ['get', 'render_height'],
                         'fill-extrusion-base': ['get', 'render_min_height'],
-                        'fill-extrusion-opacity': 0.7
+                        'fill-extrusion-opacity': 0.9 
                     }
                 });
 
-                // 2. FORT WALL LAYER (Corrected Curve)
                 var fortWallGeoJSON = {
                     "type": "Feature",
                     "geometry": {
                         "type": "LineString",
                         "coordinates": [
-                            [72.8312, 18.9278], // West
-                            [72.8318, 18.9276],
-                            [72.8325, 18.9273], 
-                            [72.8335, 18.9268],
-                            [72.8342, 18.9265]  // East
+                            [72.8312, 18.9278], [72.8318, 18.9276], [72.8325, 18.9273], [72.8335, 18.9268], [72.8342, 18.9265]
                         ]
                     }
                 };
@@ -399,14 +414,9 @@
                     'type': 'line',
                     'source': 'fort-wall',
                     'layout': { 'line-join': 'round', 'line-cap': 'round', 'visibility': 'none' }, 
-                    'paint': {
-                        'line-color': '#c0392b',
-                        'line-width': 4,
-                        'line-dasharray': [2, 4] 
-                    }
+                    'paint': { 'line-color': '#c0392b', 'line-width': 4, 'line-dasharray': [2, 4] }
                 });
 
-                // 3. Markers
                 config.chapters.forEach(function(record) {
                     var color = config.colors[record.category] || '#333';
                     var iconClass = config.icons[record.category] || 'fa-map-marker-alt';
@@ -429,10 +439,7 @@
                             tooltip.style.top = rect.top + 'px';
                             tooltip.style.opacity = '1';
                         });
-
-                        el.addEventListener('mouseleave', function() {
-                            tooltip.style.opacity = '0';
-                        });
+                        el.addEventListener('mouseleave', function() { tooltip.style.opacity = '0'; });
                     }
 
                     var marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
@@ -444,10 +451,33 @@
             });
 
             document.getElementById('close-btn').addEventListener('click', function() { closePanel(false); });
+            
             document.getElementById('reset-btn').addEventListener('click', function() {
-                map.flyTo({ center: [72.8325, 18.9275], zoom: initialZoom, pitch: 30, bearing: -15, duration: 2000 });
+                map.flyTo({ center: [72.8325, 18.9275], zoom: initialZoom, pitch: 45, bearing: -15, duration: 2000 });
                 closePanel(true);
             });
+
+            // 3. 2D/3D TOGGLE BUTTON LOGIC
+            var viewBtn = document.getElementById('view-btn');
+            var is3D = true;
+            viewBtn.classList.add('active'); // Default is 3D active
+
+            viewBtn.addEventListener('click', function() {
+                if (is3D) {
+                    // Switch to 2D (Flat)
+                    map.easeTo({ pitch: 0, bearing: 0 });
+                    viewBtn.innerHTML = '<i class="fa-solid fa-square"></i> 2D View';
+                    viewBtn.classList.remove('active');
+                    is3D = false;
+                } else {
+                    // Switch to 3D (Angled)
+                    map.easeTo({ pitch: 45, bearing: -15 });
+                    viewBtn.innerHTML = '<i class="fa-solid fa-cube"></i> 3D View';
+                    viewBtn.classList.add('active');
+                    is3D = true;
+                }
+            });
+
             document.addEventListener('keydown', function(event) { if (event.key === "Escape") closePanel(false); });
             map.on('click', function() { closePanel(false); });
 
@@ -462,12 +492,24 @@
                     '<div class="panel-info-row"><span class="panel-info-label">Builder</span><span class="panel-info-val">' + record.builder + '</span></div>' +
                     '</div>';
 
+                // --- SMART DIRECTION LINK ---
+                // Format: destination=Lat,Lng&travelmode=walking
+                // Note: Google Maps uses Lat,Lng order.
+                var destLat = record.location.center[1];
+                var destLng = record.location.center[0];
+                var navUrl = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=walking`;
+                
+                var navButton = `<a href="${navUrl}" target="_blank" class="panel-action-btn">
+                                    <i class="fa-solid fa-diamond-turn-right"></i> Navigate Here
+                                 </a>`;
+
                 var panelContent = '<div class="panel-img-container"><img src="' + record.image + '" class="panel-img"></div>' +
                     '<div class="panel-content">' +
                     '<span class="panel-cat" style="color:' + color + '">' + record.category + '</span>' +
                     '<div class="panel-title">' + record.title + '</div>' +
                     '<p class="panel-desc">' + record.description + '</p>' +
                     infoHTML +
+                    navButton + // ADDED BUTTON
                     '</div>';
 
                 document.getElementById('panel-inner').innerHTML = panelContent;
@@ -510,7 +552,6 @@
                 if (selectedMarker && selectedMarker.style.display === 'none') closePanel(false);
             }
 
-            // TOGGLE FORT WALL LOGIC
             window.toggleLayer = function(layerId, btn) {
                 var visibility = map.getLayoutProperty(layerId, 'visibility');
                 var infoBox = document.getElementById('wall-info');
