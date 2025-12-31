@@ -43,6 +43,7 @@
             border-radius: 2px; 
             max-height: 90vh;
             display: flex; flex-direction: column;
+            transition: max-height 0.3s ease;
         }
 
         #header h1 { 
@@ -71,7 +72,7 @@
         /* --- UI: SEARCH --- */
         #search-container {
             position: relative;
-            padding: 15px 20px 5px 20px;
+            padding: 15px 20px 10px 20px;
         }
         
         .search-wrapper {
@@ -116,12 +117,45 @@
         .search-item-title { font-weight: 700; font-size: 12px; color: #333; }
         .search-item-cat { font-size: 10px; color: #888; text-transform: uppercase; margin-top: 2px; }
 
-        /* --- UI: FILTERS --- */
+        /* --- UI: COLLAPSIBLE FILTERS --- */
         #console { 
-            padding: 15px 20px 20px 20px; 
-            display: flex; flex-wrap: wrap; gap: 8px; 
-            overflow-y: auto;
+            padding: 0 20px 20px 20px; 
+            display: flex; flex-direction: column;
+            border-top: 1px solid #f0f0f0;
         }
+
+        #layers-header {
+            padding: 15px 0 10px 0;
+            cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-sub); 
+            user-select: none;
+        }
+        #layers-header:hover { color: var(--text-main); }
+        
+        #layers-arrow {
+            transition: transform 0.3s ease;
+        }
+        /* When expanded, rotate 180 to point up */
+        #layers-arrow.rotated {
+            transform: rotate(180deg);
+        }
+
+        #layers-content {
+            display: flex; flex-wrap: wrap; gap: 8px; 
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease;
+            max-height: 500px; /* Arbitrary large height for transition */
+            opacity: 1;
+        }
+
+        #layers-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin-top: 0;
+        }
+
         .filter-btn {
             padding: 6px 12px;
             font-size: 10px;
@@ -185,7 +219,6 @@
             z-index: 500; white-space: nowrap;
         }
         
-        /* NEW: HIDE TOOLTIP ON MOBILE/TOUCH DEVICES */
         @media (hover: none) {
             #tooltip { display: none !important; opacity: 0 !important; }
         }
@@ -331,7 +364,18 @@
             <div id="search-results"></div>
         </div>
 
-        <div id="console"></div>
+        <div id="console">
+            <!-- COLLAPSIBLE HEADER -->
+            <div id="layers-header">
+                <span><i class="fa-solid fa-layer-group"></i> Filter Layers</span>
+                <i class="fa-solid fa-chevron-down" id="layers-arrow"></i>
+            </div>
+            
+            <!-- COLLAPSIBLE CONTENT (Added 'collapsed' class here for default state) -->
+            <div id="layers-content" class="collapsed">
+                <!-- JS will inject buttons here -->
+            </div>
+        </div>
     </div>
 
     <div id="vertical-controls">
@@ -394,14 +438,15 @@
                 ]
             };
 
-            var consoleDiv = document.getElementById('console');
+            // MODIFIED: APPEND TO NEW COLLAPSIBLE CONTAINER
+            var layersContent = document.getElementById('layers-content');
             var categories = [...new Set(config.chapters.map(function(item) { return item.category; }))];
             
             var allBtn = document.createElement('button');
             allBtn.className = 'filter-btn active';
             allBtn.innerHTML = 'All Layers';
             allBtn.onclick = function() { filterMarkers('all', this); };
-            consoleDiv.appendChild(allBtn);
+            layersContent.appendChild(allBtn);
 
             categories.forEach(function(cat) {
                 var btn = document.createElement('button');
@@ -409,7 +454,7 @@
                 var color = config.colors[cat] || '#333';
                 btn.innerHTML = '<span class="dot-indicator" style="color:' + color + '"></span> ' + cat;
                 btn.onclick = function() { filterMarkers(cat, this); };
-                consoleDiv.appendChild(btn);
+                layersContent.appendChild(btn);
             });
 
             var wallBtn = document.createElement('button');
@@ -417,12 +462,28 @@
             wallBtn.className = 'filter-btn';
             wallBtn.innerHTML = '<i class="fa-solid fa-archway"></i> Toggle 1860 Fort Wall';
             wallBtn.onclick = function() { toggleLayer('fort-wall-layer', this); };
-            consoleDiv.appendChild(wallBtn);
+            layersContent.appendChild(wallBtn);
 
             var wallInfo = document.createElement('div');
             wallInfo.id = 'wall-info';
             wallInfo.innerHTML = '<strong>The Invisible Ramparts</strong>This dashed line traces the demolished fortifications of the Bombay Fort (removed 1862). K. Dubash Marg curves specifically because it was built over this moat.';
-            consoleDiv.appendChild(wallInfo);
+            layersContent.appendChild(wallInfo);
+
+            // COLLAPSIBLE LOGIC (Adjusted for Default Collapsed State)
+            var layersHeader = document.getElementById('layers-header');
+            var layersArrow = document.getElementById('layers-arrow');
+            
+            layersHeader.addEventListener('click', function() {
+                if (layersContent.classList.contains('collapsed')) {
+                    // Expand
+                    layersContent.classList.remove('collapsed');
+                    layersArrow.classList.add('rotated'); // Point Up
+                } else {
+                    // Collapse
+                    layersContent.classList.add('collapsed');
+                    layersArrow.classList.remove('rotated'); // Point Down
+                }
+            });
 
             var map = new maplibregl.Map({
                 container: 'map',
@@ -430,11 +491,10 @@
                 center: [72.8320, 18.9275], 
                 zoom: initialZoom,
                 
-                // --- LOCKED MAP SETTINGS ---
-                minZoom: 14.5, // Restrict Zoom Out (Blocks "World View")
+                minZoom: 14.5, 
                 maxBounds: [
-                    [72.8100, 18.9100], // Southwest Coordinates (Colaba)
-                    [72.8500, 18.9450]  // Northeast Coordinates (CST/Fort)
+                    [72.8100, 18.9100], 
+                    [72.8500, 18.9450]
                 ],
                 
                 pitch: 45, 
@@ -556,7 +616,6 @@
 
                     el.onclick = function(e) { e.stopPropagation(); openPanel(record, color, el); };
                     
-                    // JS Logic only runs if hover capability is detected
                     if (window.matchMedia('(hover: hover)').matches) {
                         el.addEventListener('mouseenter', function(e) {
                             tooltip.innerText = record.title;
