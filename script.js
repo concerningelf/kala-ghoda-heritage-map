@@ -1,59 +1,88 @@
 window.addEventListener('load', function() {
     initMap();
-    initMobileGestures(); // New swipe logic
+    initMobileGestures(); 
 });
 
-function showToast(message, duration = 2000) {
+// UPDATED: Show Toast (Supports HTML & Custom Classes)
+function showToast(message, duration = 3000, isHtml = false, className = '') {
     var toast = document.getElementById('toast');
     var msg = document.getElementById('toast-msg');
-    msg.innerText = message;
+    
+    // Reset classes and style
+    toast.className = ''; 
+    
+    if (isHtml) {
+        msg.innerHTML = message;
+    } else {
+        msg.innerText = message;
+    }
+
+    if (className) toast.classList.add(className);
+    
     toast.classList.add('show');
     clearTimeout(window.toastTimeout);
-    window.toastTimeout = setTimeout(function() { toast.classList.remove('show'); }, duration);
+    window.toastTimeout = setTimeout(function() { 
+        toast.classList.remove('show'); 
+    }, duration);
 }
 
-// NEW: Swipe to close logic
+// UPDATED: Improved Swipe/Drag Logic
 function initMobileGestures() {
     const panel = document.getElementById('side-panel');
+    const scrollArea = document.getElementById('panel-scroll-area');
+    const handle = document.getElementById('panel-handle');
     let startY = 0;
+    let isDragging = false;
     
     panel.addEventListener('touchstart', function(e) {
-        // Only trigger if we are at the top of the scroll area (prevents conflicting with text scroll)
-        var scrollArea = document.getElementById('panel-scroll-area');
-        if (scrollArea.scrollTop === 0) {
+        const touchTarget = e.target;
+        
+        // Allow drag if touching the Handle OR if content is scrolled to very top
+        const isAtTop = scrollArea.scrollTop <= 0;
+        // Check if handle exists before checking containment
+        const isHandle = (handle && handle.contains(touchTarget)) || touchTarget === panel;
+        
+        if (isHandle || isAtTop) {
             startY = e.touches[0].clientY;
+            isDragging = true;
         } else {
-            startY = -1; // invalid
+            isDragging = false; // User is scrolling content down, don't drag panel
         }
     }, {passive: true});
 
     panel.addEventListener('touchmove', function(e) {
-        if (startY < 0) return;
+        if (!isDragging) return;
+        
         const currentY = e.touches[0].clientY;
         const diff = currentY - startY;
         
-        // If pulling down (positive diff)
+        // Only allow dragging DOWN (positive diff)
         if (diff > 0) {
-            // Visual feedback: drag the panel down slightly
+            // Prevent default scroll behavior if we are dragging the panel
+            if (e.cancelable && diff > 5) e.preventDefault(); 
             panel.style.transform = `translateY(${diff}px)`;
+            panel.style.transition = 'none'; // Disable transition for instant follow
         }
-    }, {passive: true});
+    }, {passive: false}); // passive: false needed to use preventDefault
 
     panel.addEventListener('touchend', function(e) {
-        if (startY < 0) return;
+        if (!isDragging) return;
+        isDragging = false;
+        
         const endY = e.changedTouches[0].clientY;
         const diff = endY - startY;
         
-        // Clear manual transform
-        panel.style.transform = '';
+        // Restore transition for smooth snap back
+        panel.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.25, 1)';
+        panel.style.transform = ''; // Clear manual transform
         
-        // Threshold: if dragged more than 80px down, close it
-        if (diff > 80) {
+        // Threshold: if dragged more than 100px down, close it
+        if (diff > 100) {
             closePanel(false);
         } else {
-            // Snap back to open if not dragged enough
+            // Snap back to open if dropped too early
             if(panel.classList.contains('open')) {
-                panel.classList.add('open'); // Re-applies CSS transform
+                panel.style.transform = ''; 
             }
         }
     }, {passive: true});
@@ -456,6 +485,7 @@ function initMap() {
 
     document.getElementById('close-btn').addEventListener('click', function() { closePanel(false); });
 
+    // UPDATED: Toggle Layer with Mobile Toast logic
     window.toggleLayer = function(layerId, btn) {
         if (document.body.classList.contains('mode-1883')) return;
         var visibility = map.getLayoutProperty(layerId, 'visibility');
@@ -471,12 +501,19 @@ function initMap() {
             map.setLayoutProperty(layerId, 'visibility', 'visible'); 
             btn.classList.add('active-control'); 
             infoBox.style.display = 'block';
-            setTimeout(function() { infoBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
             
-            // ** MOBILE SPECIFIC: Close panel & Show Toast **
+            // ** MOBILE SPECIFIC: Close panel & Show Styled Toast **
             if (window.innerWidth <= 768) {
                 closeMobileConsole();
-                showToast("1860 Fort Wall Visible");
+                
+                // Grab the HTML content from the info box
+                var wallContent = infoBox.innerHTML; 
+                
+                // Show toast with 'wall-mode' style and HTML enabled
+                showToast(wallContent, 6000, true, 'wall-mode');
+            } else {
+                // Desktop behavior
+                setTimeout(function() { infoBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
             }
         }
     };
