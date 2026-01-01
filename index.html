@@ -74,13 +74,54 @@
         #layers-content { display: flex; flex-wrap: wrap; gap: 8px; overflow: hidden; transition: max-height 0.4s ease; max-height: 2000px; }
         #layers-content.collapsed { max-height: 0; margin-top: 0; }
 
+        /* --- FILTER BUTTON STYLES (UPDATED FOR SOLO MODE) --- */
         .filter-btn { 
-            padding: 8px 12px; font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; 
+            /* Changed to flex for the 'Only' button layout */
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 6px 8px 6px 12px; 
+            width: 100%; 
+            box-sizing: border-box;
+            
+            font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; 
             border: 1px solid #e0e0e0; background: #fff; color: #555; cursor: pointer; border-radius: 4px; 
-            display: flex; align-items: center; gap: 8px; flex-grow: 0; transition: all 0.2s;
+            margin-bottom: 0; transition: all 0.2s;
         }
         .filter-btn:hover { border-color: #bbb; color: #000; background: #f9f9f9; }
         
+        /* Container for Eye + Text */
+        .layer-label-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none; /* Let clicks pass to parent */
+        }
+        
+        /* The New "ONLY" Button */
+        .layer-solo-btn {
+            font-size: 9px;
+            background: #eee;
+            color: #888;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .layer-solo-btn:hover {
+            background: var(--accent-nav);
+            color: #fff;
+            border-color: var(--accent-nav);
+        }
+
+        /* Desktop: Hide SOLO until hover to reduce clutter */
+        @media (min-width: 769px) {
+            .layer-solo-btn { opacity: 0; transform: translateX(5px); }
+            .filter-btn:hover .layer-solo-btn { opacity: 1; transform: translateX(0); }
+        }
+
         /* VISIBILITY TOGGLE STYLES */
         .layer-eye { width: 14px; text-align: center; font-size: 12px; color: #888; }
         
@@ -90,7 +131,7 @@
         .filter-btn.layer-hidden .layer-eye { color: #ccc; }
 
         /* All Layers Button */
-        .filter-btn.all-layers-btn { background: #222; color: #fff; border-color: #222; }
+        .filter-btn.all-layers-btn { background: #222; color: #fff; border-color: #222; justify-content: center; }
         .filter-btn.all-layers-btn:hover { background: #444; }
 
         .dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: currentColor; flex-shrink: 0; transition: background 0.2s; }
@@ -205,7 +246,7 @@
             </div>
             
             <div id="layers-content" class="collapsed">
-                </div>
+            </div>
         </div>
     </div>
 
@@ -251,7 +292,6 @@
                     { id: 'army-lettering', category: 'Lettering', title: 'Army and Navy Signage', image: './images/army-lettering.jpg', description: 'Original carved and painted serif lettering.', year: 'Late 19th C.', architect: 'Unknown', builder: 'British Military', location: { center: [72.8313, 18.9282] } },
                     { id: 'ropewalk-signs', category: 'Lettering', title: 'Rope Walk Signs', image: './images/ropewalk-lettering.jpg', description: 'Blue enamel street signage with bilingual lettering.', year: '20th century', architect: 'Municipal signage', builder: 'BMC', location: { center: [72.8323, 18.9278] } },
                     
-                    /* OFFSET FIX: Ghost site moved slightly to avoid hiding Esplanade Mansion */
                     { id: 'lumiere', category: 'Ghost Site', title: 'Lumière Screening Site', image: './images/lumiere-placeholder.jpg', description: 'On July 7, 1896, the Lumière Brothers screened the first motion pictures.', year: '1896', architect: 'N/A', builder: 'Historic Event', location: { center: [72.83125, 18.92835] } },
                     
                     { id: 'hydrant', category: 'Street Furniture', title: 'British Fire Hydrant', image: './images/hydrant.jpg', description: 'A cast-iron fire hydrant from the Bombay Municipal Corporation era.', year: 'Late 19th C.', architect: 'BMC', builder: 'Foundry Cast', location: { center: [72.8325, 18.9276] } },
@@ -287,25 +327,42 @@
             var categories = [...new Set(config.chapters.map(function(item) { return item.category; }))];
             
             // "ALL LAYERS" (Reset) Button
-            var allBtn = document.createElement('button');
+            var allBtn = document.createElement('div');
             allBtn.className = 'filter-btn all-layers-btn active';
             allBtn.innerHTML = 'Reset Visibility';
             allBtn.onclick = function() { resetFilters(); };
             layersContent.appendChild(allBtn);
 
-            // CATEGORY BUTTONS (Eye Toggle Logic)
+            // CATEGORY BUTTONS (Eye Toggle Logic + SOLO Logic)
             categories.forEach(function(cat) {
-                var btn = document.createElement('button');
+                var btn = document.createElement('div'); // Using div to allow inner button
                 btn.className = 'filter-btn'; // Default State (Active)
                 btn.setAttribute('data-cat', cat);
                 var color = config.colors[cat] || '#333';
                 
-                // Icon: Default is visible (Eye)
-                btn.innerHTML = `<i class="fa-regular fa-eye layer-eye"></i> <span class="dot-indicator" style="color:${color}"></span> ${cat}`;
+                // Construct HTML with Label Group and Solo Button
+                btn.innerHTML = `
+                    <div class="layer-label-group">
+                        <i class="fa-regular fa-eye layer-eye"></i> 
+                        <span class="dot-indicator" style="color:${color}"></span> 
+                        ${cat}
+                    </div>
+                    <span class="layer-solo-btn" title="Show Only This Layer">ONLY</span>
+                `;
                 
-                btn.onclick = function() { 
+                // 1. Toggle Click
+                btn.addEventListener('click', function(e) { 
+                    if(e.target.classList.contains('layer-solo-btn')) return;
                     toggleCategory(cat, btn); 
-                };
+                });
+
+                // 2. Solo Click
+                var soloBtn = btn.querySelector('.layer-solo-btn');
+                soloBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    soloCategory(cat);
+                });
+
                 layersContent.appendChild(btn);
             });
 
@@ -319,19 +376,44 @@
                     // Turn ON (Remove from disabled)
                     disabledCategories = disabledCategories.filter(c => c !== cat);
                     btn.classList.remove('layer-hidden');
-                    
-                    // Update Icon to Eye
                     icon.classList.remove('fa-eye-slash');
                     icon.classList.add('fa-eye');
                 } else {
                     // Turn OFF (Add to disabled)
                     disabledCategories.push(cat);
                     btn.classList.add('layer-hidden');
-                    
-                    // Update Icon to Eye Slash
                     icon.classList.remove('fa-eye');
                     icon.classList.add('fa-eye-slash');
                 }
+                updateMapState();
+            }
+
+            // NEW: Logic to hide everything EXCEPT selected category
+            function soloCategory(targetCat) {
+                if (document.body.classList.contains('mode-1883')) return;
+
+                // 1. Set disabled list to everything except target
+                disabledCategories = categories.filter(c => c !== targetCat);
+
+                // 2. Update all UI buttons
+                var allBtns = document.querySelectorAll('.filter-btn[data-cat]');
+                allBtns.forEach(b => {
+                    var cat = b.getAttribute('data-cat');
+                    var icon = b.querySelector('.layer-eye');
+
+                    if (cat === targetCat) {
+                        // Make Visible
+                        b.classList.remove('layer-hidden');
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    } else {
+                        // Make Hidden
+                        b.classList.add('layer-hidden');
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    }
+                });
+
                 updateMapState();
             }
 
@@ -372,10 +454,10 @@
             layersContent.appendChild(separator);
 
             // --- Time Travel Button ---
-            var timeBtn = document.createElement('button');
+            var timeBtn = document.createElement('div'); // Div for consistency
             timeBtn.id = 'time-travel-btn';
             timeBtn.className = 'filter-btn';
-            timeBtn.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Time Travel';
+            timeBtn.innerHTML = '<div class="layer-label-group"><i class="fa-solid fa-clock-rotate-left"></i> Time Travel</div>';
             timeBtn.onclick = function() { toggleTimeTravel(this); };
             layersContent.appendChild(timeBtn);
 
@@ -397,17 +479,17 @@
             `;
             layersContent.appendChild(timeControls);
 
-            var wallBtn = document.createElement('button');
+            var wallBtn = document.createElement('div');
             wallBtn.id = 'wall-btn';
             wallBtn.className = 'filter-btn';
-            wallBtn.innerHTML = '<i class="fa-solid fa-archway"></i> Toggle 1860 Fort Wall';
+            wallBtn.innerHTML = '<div class="layer-label-group"><i class="fa-solid fa-archway"></i> Toggle 1860 Fort Wall</div>';
             wallBtn.onclick = function() { toggleLayer('fort-wall-layer', this); };
             layersContent.appendChild(wallBtn);
 
-            var map1883Btn = document.createElement('button');
+            var map1883Btn = document.createElement('div');
             map1883Btn.id = 'btn-1883';
             map1883Btn.className = 'filter-btn';
-            map1883Btn.innerHTML = '<i class="fa-solid fa-map-location-dot"></i> View 1883 Map';
+            map1883Btn.innerHTML = '<div class="layer-label-group"><i class="fa-solid fa-map-location-dot"></i> View 1883 Map</div>';
             map1883Btn.onclick = function() { toggle1883Map(this); };
             layersContent.appendChild(map1883Btn);
 
@@ -627,7 +709,7 @@
                     // Turn OFF 1883 Map
                     map.setLayoutProperty(layerId, 'visibility', 'none');
                     btn.classList.remove('active');
-                    btn.innerHTML = '<i class="fa-solid fa-map-location-dot"></i> View 1883 Map';
+                    btn.innerHTML = '<div class="layer-label-group"><i class="fa-solid fa-map-location-dot"></i> View 1883 Map</div>';
                     body.classList.remove('mode-1883');
                     
                     // Reset all
@@ -643,7 +725,7 @@
 
                     map.setLayoutProperty(layerId, 'visibility', 'visible');
                     btn.classList.add('active');
-                    btn.innerHTML = '<i class="fa-solid fa-times"></i> Exit 1883 Map';
+                    btn.innerHTML = '<div class="layer-label-group"><i class="fa-solid fa-times"></i> Exit 1883 Map</div>';
                     body.classList.add('mode-1883');
                     
                     // Hide all markers
