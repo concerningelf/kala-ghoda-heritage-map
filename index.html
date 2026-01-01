@@ -62,7 +62,9 @@
 
         /* Mobile Title Specifics */
         #mobile-title { display: none; padding-bottom: 8px; padding-left: 5px; }
-        
+        .m-sub { display: block; font-size: 9px; font-weight: 900; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .m-main { display: block; font-family: 'Cardo', serif; font-size: 18px; color: var(--gold-text); line-height: 1; text-shadow: 0 1px 10px rgba(255,255,255,0.8); }
+
         /* --- UI: SEARCH --- */
         #search-container { position: relative; padding: 15px 20px 5px 20px; }
         .search-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
@@ -227,8 +229,7 @@
             white-space: nowrap;
         }
         
-        /* Removed transition on icon for instant compass response */
-        .v-control-btn i { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .v-control-btn i { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.2s ease-out; }
         
         .v-control-btn span {
             opacity: 0; padding-left: 12px; padding-right: 2px;
@@ -260,9 +261,6 @@
             
             /* Show Mobile Title */
             #mobile-title { display: block; }
-            .m-sub { display: block; font-size: 9px; font-weight: 900; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-            /* UPDATED COLOR TO GOLD */
-            .m-main { display: block; font-family: 'Cardo', serif; font-size: 18px; color: var(--gold-text); line-height: 1; text-shadow: 0 1px 10px rgba(255,255,255,0.8); }
 
             #search-container { padding: 0; background: transparent; display: flex; gap: 10px; }
             .search-wrapper { flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; background: #fff; }
@@ -395,10 +393,6 @@
     <script>
         window.addEventListener('load', function() {
             initMap();
-            // Only show intro toast on desktop
-            if(window.innerWidth > 768) {
-                showToast("Try the Time Travel slider!", 2000);
-            }
         });
         
         function showToast(message, duration = 2000) {
