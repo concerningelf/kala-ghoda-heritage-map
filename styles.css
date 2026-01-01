@@ -188,8 +188,8 @@ input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 
 .panel-info-val { display: table-cell; padding: 8px 0; font-size: 13px; color: #222; font-weight: 400; }
 .panel-action-btn { display: block; width: 100%; margin-top: 20px; padding: 14px 0; text-align: center; text-decoration: none; background: var(--accent-nav); color: #fff; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-radius: 6px; }
 
-/* THE CLOSE BUTTON - Default Desktop */
-.panel-close-btn { 
+/* THE CLOSE BUTTON */
+#panel-close-btn { 
     position: absolute; top: 15px; right: 15px; 
     width: 36px; height: 36px; 
     background: rgba(0,0,0,0.5); color: #fff; 
@@ -198,7 +198,7 @@ input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 
     display: flex; align-items: center; justify-content: center; 
     transition: background 0.2s;
 }
-.panel-close-btn:hover { background: #000; }
+#panel-close-btn:hover { background: #000; }
 
 /* PANEL DRAG HANDLE (Hidden on desktop) */
 #panel-handle { display: none; }
@@ -315,9 +315,11 @@ input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 
     }
     #side-panel.open { transform: translateY(0); }
     
-    /* MOBILE SPECIFIC CLOSE BUTTON: Floating white circle */
-    .panel-close-btn { 
-        top: -20px; /* Positions it slightly above the panel edge */
+    /* MOBILE SPECIFIC CLOSE BUTTON 
+       Positioned -60px from the top of the panel, creating a floating bubble effect.
+    */
+    #panel-close-btn { 
+        top: -60px; /* Floating ABOVE the panel */
         right: 15px; 
         background: #fff; 
         color: #000; 
@@ -325,6 +327,7 @@ input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 
         font-size: 16px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
         z-index: 2000 !important; /* Critical High Z-index */
+        border-radius: 50%;
         opacity: 1;
         pointer-events: auto;
     }

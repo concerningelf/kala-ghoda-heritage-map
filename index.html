@@ -5,15 +5,12 @@
     <title>Visual Audit: Kala Ghoda Heritage</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover' />
     
-    <!-- MapLibre -->
     <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -22,7 +19,6 @@
     <div id="map"></div>
     <div id="tooltip"></div> 
     
-    <!-- Time Widget -->
     <div id="time-widget">
         <div class="widget-close" onclick="closeTimeWidget()">×</div>
         <div id="year-display">Present Day</div>
@@ -32,15 +28,12 @@
         </div>
     </div>
 
-    <!-- Notification Toast -->
     <div id="toast">
         <i class="fa-solid fa-info-circle"></i>
         <span id="toast-msg">Welcome to Kala Ghoda</span>
     </div>
 
-    <!-- Main Header & Console -->
     <div id="header">
-        <!-- Info Icon (Top Right) -->
         <a href="about.html" class="info-icon-btn" title="About This Project">
             <i class="fa-solid fa-circle-info"></i>
         </a>
@@ -51,13 +44,11 @@
         </h1>
         <h2>Heritage Survey</h2>
         
-        <!-- Mobile Title -->
         <div id="mobile-title">
             <span class="m-sub">Visual Audit</span>
             <span class="m-main">Kala Ghoda</span>
         </div>
 
-        <!-- Search -->
         <div id="search-container">
             <div class="search-wrapper">
                 <i class="fa-solid fa-search search-icon"></i>
@@ -66,7 +57,6 @@
             <div id="search-results"></div>
         </div>
 
-        <!-- Layers Console -->
         <div id="console">
             <div id="layers-header">
                 <span><i class="fa-solid fa-layer-group"></i> Filter Layers</span>
@@ -74,12 +64,10 @@
             </div>
             
             <div id="layers-content" class="collapsed">
-                <!-- Layers injected via JS -->
-            </div>
+                </div>
         </div>
     </div>
 
-    <!-- Right Side Controls -->
     <div id="vertical-controls">
         <button class="v-control-btn" id="zoom-in-btn"><i class="fa-solid fa-plus"></i> <span>Zoom In</span></button>
         <button class="v-control-btn" id="zoom-out-btn"><i class="fa-solid fa-minus"></i> <span>Zoom Out</span></button>
@@ -91,19 +79,18 @@
         <button class="v-control-btn" id="locate-btn" data-msg="Locating..."><i class="fa-solid fa-location-crosshairs"></i> <span>My Location</span></button>
     </div>
 
-    <!-- Slide-out Info Panel -->
-   <<div id="side-panel">
-    <button id="panel-close-btn" class="panel-close-btn">
-        <i class="fa-solid fa-xmark"></i>
-    </button>
+    <div id="side-panel">
+        <button id="panel-close-btn">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
 
-    <div id="panel-handle"></div>
+        <div id="panel-handle"></div>
 
-    <div id="panel-scroll-area">
-        <div id="panel-inner"></div>
+        <div id="panel-scroll-area">
+            <div id="panel-inner"></div>
+        </div>
     </div>
-</div>
-    <!-- Custom Logic -->
+
     <script src="script.js"></script>
 </body>
 </html>
