@@ -41,6 +41,22 @@ body.mode-1883 #map-1883-btn { background: #222; color: #fff; border-color: #222
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* NEW: Info Icon Top Right */
+.info-icon-btn {
+    position: absolute;
+    top: 20px;   /* Aligns with the top padding of your title */
+    right: 20px; /* Aligns with the right padding */
+    color: #bbb; /* Very subtle light grey */
+    font-size: 16px;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+.info-icon-btn:hover {
+    color: var(--accent-nav);
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
 #header h1 { font-family: 'Cardo', serif; padding: 20px 20px 5px 20px; margin: 0; line-height: 1.2; }
 .title-sub { display: block; font-size: 13px; font-weight: 900; color: #888; text-transform: uppercase; letter-spacing: 2px; }
 .title-main { display: block; font-size: 28px; font-weight: 400; color: var(--gold-text); margin-top: 5px; }
@@ -263,6 +279,7 @@ input[type=range]::-moz-range-thumb {
     #header { top: 15px; left: 15px; right: 15px; width: auto; max-height: none; background: transparent; box-shadow: none; border: none; overflow: visible; }
     #header h1, #header h2 { display: none; }
     
+    
     /* Show Mobile Title */
     #mobile-title { display: block; }
 
@@ -319,5 +336,70 @@ input[type=range]::-moz-range-thumb {
         justify-content: center; 
         padding: 8px 16px; 
         font-size: 11px;
+    }
+     /* FIX: Make the Info Icon look like a proper button on mobile */
+    info-icon-btn {
+        /* Position it inline with the "Kala Ghoda" title */
+        position: absolute;
+        top: 0;
+        right: 0;
+        
+        /* Remove the box/shadow clutter */
+        background: transparent;
+        box-shadow: none;
+        width: 40px; 
+        height: 40px;
+        border-radius: 0;
+        
+        /* Style it like the Gold Title */
+        color: var(--gold-text); 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        /* Add text shadow so it's readable on the map (matches title) */
+        text-shadow: 0 1px 10px rgba(255,255,255,0.8);
+        
+        /* Kill the ugly underline artifact */
+        text-decoration: none !important; 
+    }
+    
+    .info-icon-btn i {
+        font-size: 20px; /* Make it slightly larger and legible */
+    }
+    
+    /* Ensure the icon doesn't turn blue/black on tap */
+    .info-icon-btn {
+        /* Force position to top-right corner of the container */
+        position: absolute !important;
+        top: -2px !important;  /* Moves it up to align with 'Visual Audit' text */
+        right: 0 !important;   /* Aligns to the far right edge */
+        
+        /* Remove desktop padding/backgrounds */
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        
+        /* Visuals */
+        width: 30px !important;
+        height: 20px !important; /* Match height of the text line */
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        
+        /* Match the Grey color of 'VISUAL AUDIT' text */
+        color: #999 !important; 
+        z-index: 200;
+    }
+
+    .info-icon-btn i {
+        font-size: 14px !important; /* Keep icon size distinct but subtle */
+    }
+    
+    /* Ensure title text doesn't overlap the icon */
+    #mobile-title {
+        padding-right: 30px; 
     }
 }

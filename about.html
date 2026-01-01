@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Kala Ghoda Visual Audit</title>
+    
+    <!-- Fonts & Icons (Same as Main Map) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <!-- Link to your existing CSS (we will add a few specific styles for this page below) -->
+    <link rel="stylesheet" href="styles.css" />
+
+    <style>
+        /* --- PAGE SPECIFIC STYLES --- */
+        /* These override or add to styles.css for the text layout */
+        
+        body {
+            overflow-y: auto; /* Allow scrolling for this page */
+            background: #f9f9f9;
+        }
+
+        .about-container {
+            max-width: 800px;
+            margin: 60px auto 100px auto;
+            background: #fff;
+            padding: 60px;
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        /* Navigation Button */
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 100;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: var(--text-main);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+        .back-btn:hover { transform: translateX(-5px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+
+        /* Typography */
+        h1.page-title {
+            font-family: 'Cardo', serif;
+            font-size: 42px;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        h2.page-subtitle {
+            font-family: 'Lato', sans-serif;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold-text);
+            font-weight: 900;
+            margin-top: 0;
+            margin-bottom: 50px;
+        }
+
+        h3 {
+            font-family: 'Cardo', serif;
+            font-size: 24px;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            border-left: 3px solid var(--accent-nav);
+            padding-left: 15px;
+        }
+
+        p {
+            font-family: 'Lato', sans-serif;
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: #f8f8f8;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            color: var(--accent-nav);
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: #666;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .audit-meta {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 768px) {
+            .about-container { margin: 0; padding: 30px; border-radius: 0; border: none; min-height: 100vh; }
+            .features-grid { grid-template-columns: 1fr; }
+            .back-btn { position: sticky; top: 20px; margin-bottom: 20px; width: fit-content; }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i> Return to Map
+    </a>
+
+    <div class="about-container">
+        <h1 class="page-title">Visual Audit: Kala Ghoda</h1>
+        <h2 class="page-subtitle">Digital Heritage Survey 2025</h2>
+
+        <p>
+            The <strong>Kala Ghoda Visual Audit</strong> is an interactive digital survey documenting the architectural evolution of Mumbai’s premier art district. Using web-based mapping technology, this project catalogs the diverse stylistic lineage of the precinct—from the demolition of the Fort walls in the 1860s to the Art Deco boom of the 1930s.
+        </p>
+
+        <p>
+            This tool serves as an open-access archive for students, urban planners, and historians to analyze the spatial relationship between the city's colonial past and its living heritage.
+        </p>
+
+        <h3>The Precinct</h3>
+        <p>
+            Named after the black stone statue of King Edward VII (the "Black Horse") that once stood at the node, Kala Ghoda is a unique crescent-shaped precinct. It represents one of the finest concentrations of heritage structures in India, transitioning seamlessly from Victorian Neo-Gothic public buildings to early 20th-century Indo-Saracenic museums and later Edwardian commercial blocks.
+        </p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="feature-icon fa-solid fa-layer-group"></i>
+                <div class="feature-title">Stylistic Layering</div>
+                <p class="feature-desc">Filter the map by architectural style (Gothic, Art Deco, Indo-Saracenic) to see how different eras of construction cluster in specific zones.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="feature-icon fa-solid fa-clock-rotate-left"></i>
+                <div class="feature-title">Time Travel</div>
+                <p class="feature-desc">Use the temporal slider to strip away modern developments and view the precinct as it existed in 1890, 1920, or 1950.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="feature-icon fa-solid fa-map-location-dot"></i>
+                <div class="feature-title">1883 Historical Map</div>
+                <p class="feature-desc">Overlay a high-fidelity raster scan of the 1883 Survey of India map to compare historical street alignments with the modern urban fabric.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="feature-icon fa-solid fa-cube"></i>
+                <div class="feature-title">3D Morphology</div>
+                <p class="feature-desc">Explore the built form in 3D to understand the relationship between street widths, building heights, and the famous 'Rampart Row'.</p>
+            </div>
+        </div>
+
+        <h3>Methodology</h3>
+        <p>
+            This audit utilizes vector mapping based on OpenMapTiles, overlaid with custom GeoJSON datasets derived from historical records. Each data point is categorized by construction year, architect (where known), and architectural classification. The "Invisible Ramparts" layer traces the exact coordinates of the original Bombay Fort walls, demolished in 1862, providing critical context to the precinct's layout.
+        </p>
+
+        <div class="audit-meta">
+            <span><strong>Status:</strong> Active Survey (v1.2)</span>
+            <span><strong>Region:</strong> Mumbai, India</span>
+            <span><strong>Tech:</strong> MapLibre GL JS</span>
+        </div>
+    </div>
+
+</body>
+</html>
