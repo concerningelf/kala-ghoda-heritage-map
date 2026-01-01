@@ -89,7 +89,7 @@ function initMap() {
             </div>
         `;
         
-        // Removed the click listener for label group here
+        // Removed the click listener for label group here (Label is static)
 
         // Click on Eye toggles visibility
         btn.querySelector('.layer-eye-btn').addEventListener('click', function(e) {
@@ -519,6 +519,11 @@ function initMap() {
             map.setLayoutProperty(layerId, 'visibility', 'visible'); 
             btn.classList.add('active-control'); 
             infoBox.style.display = 'block';
+            
+            // FIX: Auto-scroll to the message
+            setTimeout(function() {
+                infoBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
         }
     };
 
