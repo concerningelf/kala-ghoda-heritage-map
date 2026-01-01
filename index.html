@@ -87,41 +87,49 @@
         #layers-content { display: flex; flex-wrap: wrap; gap: 8px; overflow: hidden; transition: max-height 0.4s ease; max-height: 2000px; }
         #layers-content.collapsed { max-height: 0; margin-top: 0; }
 
-        /* --- FILTER BUTTONS --- */
         .filter-btn { 
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 8px 0 12px; 
-            width: 100%; height: 38px;
+            padding: 0 6px 0 10px; 
+            width: 100%; height: 40px;
             font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; 
-            border: 1px solid #e0e0e0; background: #fff; color: #555; cursor: pointer; border-radius: 6px; 
+            border: 1px solid #e0e0e0; background: #fff; color: #555; border-radius: 6px; 
             transition: all 0.2s; box-sizing: border-box; flex-shrink: 0;
         }
-        .filter-btn:hover { border-color: #bbb; color: #000; background: #f9f9f9; }
-        .layer-label-group { display: flex; align-items: center; gap: 10px; pointer-events: none; flex: 1; }
+        .filter-btn:hover { border-color: #bbb; background: #fdfdfd; }
         
-        .layer-solo-btn {
-            font-size: 9px; background: #f0f0f0; color: #999;
-            padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
-            height: 20px; display: flex; align-items: center;
-        }
-        .layer-solo-btn:hover { background: var(--accent-nav); color: #fff; }
+        .layer-label-group { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; }
+        .layer-actions { display: flex; align-items: center; gap: 4px; }
 
-        @media (min-width: 769px) {
-            .layer-solo-btn { opacity: 0; transform: translateX(5px); }
-            .filter-btn:hover .layer-solo-btn { opacity: 1; transform: translateX(0); }
+        .layer-solo-btn {
+            font-size: 9px; background: #f0f0f0; color: #777;
+            padding: 0 8px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
+            height: 24px; display: flex; align-items: center; justify-content: center;
+            font-weight: 900; border: 1px solid transparent;
         }
+        .layer-solo-btn:hover { background: #e0e0e0; color: #333; }
         
-        .filter-btn.layer-hidden { opacity: 0.6; background: #f4f4f4; color: #aaa; }
+        /* Active State for Solo Button (Blue) */
+        .layer-solo-btn.active-solo { background: var(--accent-nav) !important; color: #fff !important; border-color: var(--accent-nav) !important; }
+
+        .layer-eye-btn {
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            color: #777; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-size: 14px;
+        }
+        .layer-eye-btn:hover { background: #eee; color: #000; }
+
+        .filter-btn.layer-hidden { background: #f8f8f8; }
+        .filter-btn.layer-hidden .layer-label-group { color: #aaa; }
         .filter-btn.layer-hidden .dot-indicator { background: #ccc !important; }
-        .filter-btn.layer-hidden .layer-eye { color: #ccc; }
-        .layer-eye { width: 16px; text-align: center; }
+        .filter-btn.layer-hidden .layer-eye-btn { color: #ccc; }
+        
         .dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: currentColor; }
 
-        .filter-btn.all-layers-btn { justify-content: center; background: #222; color: #fff; }
+        .filter-btn.all-layers-btn { justify-content: center; background: #222; color: #fff; cursor: pointer; }
         .filter-btn.all-layers-btn:hover { background: #444; }
 
         .console-separator { width: 100%; border-bottom: 1px solid #eee; margin: 10px 0; height: 1px; flex-shrink: 0; }
 
+        /* Fort Wall Info Box (Restored) */
         #wall-info { display: none; margin-top: 8px; padding: 10px; background: #fff4f4; border-left: 3px solid var(--accent-wall); font-size: 11px; color: #555; line-height: 1.4; border-radius: 2px; width: 100%; box-sizing: border-box; }
         #wall-info strong { display: block; margin-bottom: 3px; color: var(--accent-wall); text-transform: uppercase; font-weight: 800; font-size: 10px; }
 
@@ -279,7 +287,8 @@
             #layers-header { display: none; }
 
             .filter-btn { height: 50px; font-size: 13px; margin-bottom: 0; }
-            .layer-solo-btn { opacity: 1 !important; transform: none !important; height: 30px; padding: 0 12px; font-size: 10px; background: #f0f0f0; border: 1px solid #ddd; }
+            .layer-solo-btn { height: 30px; padding: 0 12px; font-size: 10px; background: #f0f0f0; border: 1px solid #ddd; }
+            .layer-eye-btn { width: 40px; height: 100%; font-size: 18px; }
             
             #side-panel { right: auto; left: 0; top: auto; bottom: 0; width: 100%; height: 80vh; transform: translateY(110%); border-radius: 20px 20px 0 0; border-top: 1px solid #eee; border-left: none; }
             #side-panel.open { transform: translateY(0); }
@@ -291,7 +300,16 @@
             .v-control-btn.active-control { background: #222; color: #fff; }
             
             #time-widget { bottom: 40px; width: 85%; padding: 25px; }
-            #toast { bottom: 90px; width: 80%; justify-content: center; }
+            
+            /* COMPACT MOBILE TOAST */
+            #toast { 
+                bottom: 80px; 
+                width: auto; 
+                max-width: 80%;
+                justify-content: center; 
+                padding: 8px 16px; 
+                font-size: 11px;
+            }
         }
     </style>
 </head>
@@ -342,8 +360,9 @@
     </div>
 
     <div id="vertical-controls">
-        <button class="v-control-btn" id="zoom-in-btn" data-msg="Zoomed In"><i class="fa-solid fa-plus"></i> <span>Zoom In</span></button>
-        <button class="v-control-btn" id="zoom-out-btn" data-msg="Zoomed Out"><i class="fa-solid fa-minus"></i> <span>Zoom Out</span></button>
+        <!-- Removed data-msg for Zoom controls to disable toast -->
+        <button class="v-control-btn" id="zoom-in-btn"><i class="fa-solid fa-plus"></i> <span>Zoom In</span></button>
+        <button class="v-control-btn" id="zoom-out-btn"><i class="fa-solid fa-minus"></i> <span>Zoom Out</span></button>
         <button class="v-control-btn" id="compass-btn" data-msg="Orientation Reset"><i class="fa-regular fa-compass"></i> <span>Reset North</span></button>
         <button class="v-control-btn" id="time-travel-btn" data-msg="Time Slider Active"><i class="fa-solid fa-clock-rotate-left"></i> <span>Time Travel</span></button>
         <button class="v-control-btn" id="map-1883-btn" data-msg="1883 Map Enabled"><i class="fa-solid fa-map-location-dot"></i> <span>1883 Map</span></button>
@@ -362,7 +381,10 @@
     <script>
         window.addEventListener('load', function() {
             initMap();
-            showToast("Try the Time Travel slider!", 2000);
+            // Only show intro toast on desktop
+            if(window.innerWidth > 768) {
+                showToast("Try the Time Travel slider!", 2000);
+            }
         });
         
         function showToast(message, duration = 2000) {
@@ -439,19 +461,37 @@
                 btn.className = 'filter-btn'; 
                 btn.setAttribute('data-cat', cat);
                 var color = config.colors[cat] || '#333';
+                
+                // New layout with separate actions
                 btn.innerHTML = `
-                    <div class="layer-label-group"><i class="fa-regular fa-eye layer-eye"></i><span class="dot-indicator" style="color:${color}"></span>${cat}</div>
-                    <span class="layer-solo-btn" title="Show Only This Layer">ONLY</span>
+                    <div class="layer-label-group">
+                        <span class="dot-indicator" style="color:${color}"></span>
+                        <span>${cat}</span>
+                    </div>
+                    <div class="layer-actions">
+                        <span class="layer-solo-btn" title="Show Only This Layer">ONLY</span>
+                        <div class="layer-eye-btn" title="Toggle Visibility"><i class="fa-regular fa-eye"></i></div>
+                    </div>
                 `;
-                btn.addEventListener('click', function(e) { 
-                    if(e.target.classList.contains('layer-solo-btn')) return;
-                    toggleCategory(cat, btn); 
+                
+                // Click on label toggles visibility
+                btn.querySelector('.layer-label-group').addEventListener('click', function() {
+                    toggleCategory(cat, btn);
                 });
+
+                // Click on Eye toggles visibility
+                btn.querySelector('.layer-eye-btn').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleCategory(cat, btn);
+                });
+
+                // Click on ONLY button
                 var soloBtn = btn.querySelector('.layer-solo-btn');
                 soloBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    soloCategory(cat);
+                    soloCategory(cat, soloBtn);
                 });
+
                 layersContent.appendChild(btn);
             });
 
@@ -480,36 +520,53 @@
 
             function toggleCategory(cat, btn) {
                 if (document.body.classList.contains('mode-1883')) return;
-                var icon = btn.querySelector('.layer-eye');
+                var icon = btn.querySelector('.layer-eye-btn i');
+                
                 if (disabledCategories.includes(cat)) {
+                    // Turn ON
                     disabledCategories = disabledCategories.filter(c => c !== cat);
                     btn.classList.remove('layer-hidden');
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
+                    icon.className = 'fa-regular fa-eye';
                 } else {
+                    // Turn OFF
                     disabledCategories.push(cat);
                     btn.classList.add('layer-hidden');
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
+                    icon.className = 'fa-regular fa-eye-slash';
                 }
+                
+                // If we are manually toggling, clear any "Solo" active states
+                document.querySelectorAll('.layer-solo-btn').forEach(b => b.classList.remove('active-solo'));
+                
                 updateMapState();
             }
 
-            function soloCategory(targetCat) {
+            function soloCategory(targetCat, soloBtnElement) {
                 if (document.body.classList.contains('mode-1883')) return;
+                
+                // Check if this button is already active
+                if (soloBtnElement.classList.contains('active-solo')) {
+                    // It was active, so we are de-activating (Resetting)
+                    resetFilters();
+                    return;
+                }
+
+                // Activate logic
                 disabledCategories = categories.filter(c => c !== targetCat);
                 var allBtns = document.querySelectorAll('.filter-btn[data-cat]');
+                
                 allBtns.forEach(b => {
                     var cat = b.getAttribute('data-cat');
-                    var icon = b.querySelector('.layer-eye');
+                    var icon = b.querySelector('.layer-eye-btn i');
+                    var currentSoloBtn = b.querySelector('.layer-solo-btn');
+                    
                     if (cat === targetCat) {
                         b.classList.remove('layer-hidden');
-                        icon.classList.remove('fa-eye-slash');
-                        icon.classList.add('fa-eye');
+                        icon.className = 'fa-regular fa-eye';
+                        currentSoloBtn.classList.add('active-solo'); // Set Blue
                     } else {
                         b.classList.add('layer-hidden');
-                        icon.classList.remove('fa-eye');
-                        icon.classList.add('fa-eye-slash');
+                        icon.className = 'fa-regular fa-eye-slash';
+                        currentSoloBtn.classList.remove('active-solo'); // Remove Blue
                     }
                 });
                 updateMapState();
@@ -521,11 +578,11 @@
                 var btns = document.querySelectorAll('.filter-btn:not(.all-layers-btn)');
                 btns.forEach(b => {
                     b.classList.remove('layer-hidden');
-                    var icon = b.querySelector('.layer-eye');
-                    if(icon) {
-                        icon.classList.remove('fa-eye-slash');
-                        icon.classList.add('fa-eye');
-                    }
+                    var icon = b.querySelector('.layer-eye-btn i');
+                    if(icon) icon.className = 'fa-regular fa-eye';
+                    
+                    var solo = b.querySelector('.layer-solo-btn');
+                    if(solo) solo.classList.remove('active-solo');
                 });
                 updateMapState();
             }
@@ -556,7 +613,8 @@
             wallBtn.innerHTML = '<div class="layer-label-group"><i class="fa-solid fa-archway"></i> Toggle 1860 Fort Wall</div>';
             wallBtn.onclick = function() { toggleLayer('fort-wall-layer', this); };
             layersContent.appendChild(wallBtn);
-
+            
+            // RESTORED WALL INFO BOX
             var wallInfo = document.createElement('div');
             wallInfo.id = 'wall-info';
             wallInfo.innerHTML = '<strong>The Invisible Ramparts</strong>This dashed line traces the demolished fortifications of the Bombay Fort (removed 1862).';
@@ -816,7 +874,6 @@
                 if (!preventCameraMove && window.innerWidth >= 768) { map.flyTo({ zoom: initialZoom, speed: 0.6 }); }
             }
 
-            // ADDED EVENT LISTENER FOR CLOSE BUTTON HERE
             document.getElementById('close-btn').addEventListener('click', function() {
                 closePanel(false);
             });
@@ -825,8 +882,18 @@
                 if (document.body.classList.contains('mode-1883')) return;
                 var visibility = map.getLayoutProperty(layerId, 'visibility');
                 var infoBox = document.getElementById('wall-info');
-                if (visibility === 'visible') { map.setLayoutProperty(layerId, 'visibility', 'none'); btn.classList.remove('active-control'); infoBox.style.display = 'none'; } 
-                else { map.setLayoutProperty(layerId, 'visibility', 'visible'); btn.classList.add('active-control'); infoBox.style.display = 'block'; }
+                
+                if (visibility === 'visible') { 
+                    // Turn OFF
+                    map.setLayoutProperty(layerId, 'visibility', 'none'); 
+                    btn.classList.remove('active-control'); 
+                    infoBox.style.display = 'none';
+                } else { 
+                    // Turn ON
+                    map.setLayoutProperty(layerId, 'visibility', 'visible'); 
+                    btn.classList.add('active-control'); 
+                    infoBox.style.display = 'block';
+                }
             };
 
             window.toggle1883Map = function(btn) {
