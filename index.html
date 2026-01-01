@@ -80,10 +80,10 @@
         .filter-btn { 
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 8px 0 12px; 
-            width: 100%; height: 38px; /* Fixed height for consistency */
+            width: 100%; height: 38px;
             font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; 
             border: 1px solid #e0e0e0; background: #fff; color: #555; cursor: pointer; border-radius: 6px; 
-            transition: all 0.2s; box-sizing: border-box;
+            transition: all 0.2s; box-sizing: border-box; flex-shrink: 0;
         }
         .filter-btn:hover { border-color: #bbb; color: #000; background: #f9f9f9; }
         .layer-label-group { display: flex; align-items: center; gap: 10px; pointer-events: none; flex: 1; }
@@ -96,13 +96,12 @@
         }
         .layer-solo-btn:hover { background: var(--accent-nav); color: #fff; }
 
-        /* Desktop: Hide SOLO until hover to reduce clutter */
+        /* Desktop: Hide SOLO until hover */
         @media (min-width: 769px) {
             .layer-solo-btn { opacity: 0; transform: translateX(5px); }
             .filter-btn:hover .layer-solo-btn { opacity: 1; transform: translateX(0); }
         }
         
-        /* Visibility States */
         .filter-btn.layer-hidden { opacity: 0.6; background: #f4f4f4; color: #aaa; }
         .filter-btn.layer-hidden .dot-indicator { background: #ccc !important; }
         .filter-btn.layer-hidden .layer-eye { color: #ccc; }
@@ -112,12 +111,11 @@
         .filter-btn.all-layers-btn { justify-content: center; background: #222; color: #fff; }
         .filter-btn.all-layers-btn:hover { background: #444; }
 
-        .console-separator { width: 100%; border-bottom: 1px solid #eee; margin: 10px 0; height: 1px; }
+        .console-separator { width: 100%; border-bottom: 1px solid #eee; margin: 10px 0; height: 1px; flex-shrink: 0; }
 
         #wall-info { display: none; margin-top: 8px; padding: 10px; background: #fff4f4; border-left: 3px solid var(--accent-wall); font-size: 11px; color: #555; line-height: 1.4; border-radius: 2px; width: 100%; box-sizing: border-box; }
         #wall-info strong { display: block; margin-bottom: 3px; color: var(--accent-wall); text-transform: uppercase; font-weight: 800; font-size: 10px; }
-
-        /* --- UI: TIME SLIDER --- */
+/* --- UI: TIME SLIDER (FIXED) --- */
         #time-controls {
             padding: 15px 15px; border: 1px solid #eee; margin-top: 5px;
             display: none; flex-direction: column; background: #fcfcfc; border-radius: 4px;
@@ -127,11 +125,44 @@
         .range-labels { display: flex; justify-content: space-between; font-size: 10px; color: #888; margin-bottom: 5px; font-weight: 700; }
         #year-display { text-align: center; font-family: 'Cardo', serif; font-size: 18px; color: var(--accent-wall); margin-bottom: 10px; font-weight: bold; }
 
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; height: 30px; }
+        /* Reset and Base Styles */
+        input[type=range] {
+            -webkit-appearance: none; /* Required for Chrome/Safari/Edge */
+            width: 100%;
+            background: transparent;
+            margin: 10px 0;
+            height: 30px; /* Keeps thumb within click area */
+        }
         input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; margin-top: 12px; }
-        input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: var(--gold-text); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); border: 2px solid #fff; }
 
+        /* --- WEBKIT (Chrome, Safari, Edge) --- */
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer;
+            background: #ddd; border-radius: 2px;
+            margin-top: 13px; /* Centers track in the 30px height */
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px; width: 18px; border-radius: 50%;
+            background: #cfa842; /* Fallback hex for var(--gold-text) */
+            background: var(--gold-text);
+            cursor: pointer;
+            margin-top: -7px; /* Centers thumb on track: (18px/2) - (4px/2) */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3); border: 2px solid #fff;
+        }
+
+        /* --- FIREFOX (Mozilla) --- */
+        input[type=range]::-moz-range-track {
+            width: 100%; height: 4px; cursor: pointer;
+            background: #ddd; border-radius: 2px;
+        }
+        input[type=range]::-moz-range-thumb {
+            height: 18px; width: 18px; border: 2px solid #fff;
+            border-radius: 50%;
+            background: #cfa842;
+            background: var(--gold-text);
+            cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
         /* --- UI: MARKERS & TOOLTIPS --- */
         .marker { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; box-shadow: 0 3px 8px rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; transition: transform 0.2s ease; z-index: 10; background-size: cover; }
         .marker:hover { transform: scale(1.15); z-index: 20; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
@@ -181,13 +212,12 @@
 
         /* ================= MOBILE MODE ================= */
         @media (max-width: 768px) {
-            /* Mobile Header: Floating Search Bar */
             #header { 
                 top: 15px; left: 15px; right: 15px; width: auto; 
                 max-height: none; background: transparent; box-shadow: none; border: none;
                 overflow: visible;
             }
-            #header h1, #header h2 { display: none; } /* Hide title to save space */
+            #header h1, #header h2 { display: none; }
             
             #search-container { padding: 0; background: transparent; display: flex; gap: 10px; }
             .search-wrapper { flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; background: #fff; }
@@ -195,7 +225,7 @@
             .search-icon { font-size: 16px; top: 17px; }
             #search-results { left: 0; right: 0; top: 55px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
             
-            /* Mobile "Filter" Toggle Button (New Element we will add in JS) */
+            /* Mobile "Filter" Toggle Button */
             #mobile-filter-toggle {
                 display: flex !important; width: 50px; height: 50px; flex-shrink: 0;
                 background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -203,38 +233,42 @@
                 cursor: pointer; transition: all 0.2s;
             }
 
-            /* Console (Layers) becomes a Bottom Sheet Drawer */
+            /* Console (Layers) Drawer */
             #console {
                 position: fixed; left: 0; right: 0; bottom: 0;
                 background: #fff; border-radius: 20px 20px 0 0;
                 box-shadow: 0 -5px 30px rgba(0,0,0,0.15);
                 padding: 20px; z-index: 150;
-                transform: translateY(110%); /* Hidden by default */
+                transform: translateY(110%); 
                 transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-                max-height: 70vh; overflow-y: auto;
+                max-height: 75vh; overflow-y: auto; /* Enable scrolling */
                 padding-bottom: calc(20px + var(--safe-area-bottom));
+                display: block; /* Ensure block layout */
             }
             #console.open { transform: translateY(0); }
             
-            /* Add a "Handle" to the drawer */
             #console::before {
                 content: ''; display: block; width: 40px; height: 5px; 
                 background: #ddd; margin: 0 auto 15px auto; border-radius: 3px;
             }
 
-            /* Force Expand Layers in Mobile Drawer */
-            #layers-content { max-height: none !important; opacity: 1; margin-top: 10px; }
-            #layers-header { display: none; } /* Hide the 'Filter Layers' text/arrow */
+            /* Stack items vertically on mobile to ensure all controls are seen */
+            #layers-content { 
+                max-height: none !important; 
+                opacity: 1; margin-top: 10px; 
+                display: flex; flex-direction: column; /* Force vertical stack */
+                gap: 10px;
+                overflow: visible; /* Let parent scroll */
+            }
+            #layers-header { display: none; }
 
-            /* Bigger Touch Targets for Mobile */
-            .filter-btn { height: 50px; font-size: 13px; margin-bottom: 8px; }
+            .filter-btn { height: 50px; font-size: 13px; margin-bottom: 0; }
             .layer-solo-btn {
                 opacity: 1 !important; transform: none !important;
                 height: 30px; padding: 0 12px; font-size: 10px;
                 background: #f0f0f0; border: 1px solid #ddd;
             }
             
-            /* Side Panel (Details) */
             #side-panel { 
                 right: auto; left: 0; top: auto; bottom: 0; width: 100%; 
                 height: 80vh; transform: translateY(110%); border-radius: 20px 20px 0 0; 
@@ -242,8 +276,6 @@
             }
             #side-panel.open { transform: translateY(0); }
             .panel-close { top: 20px; right: 20px; background: #fff; color: #000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-            
-            /* Vertical Controls Position */
             #vertical-controls { bottom: 30px; right: 15px; }
         }
     </style>
@@ -267,7 +299,7 @@
                 <input type="text" id="search-input" placeholder="Search buildings, styles..." autocomplete="off">
             </div>
             <div id="search-results"></div>
-            </div>
+        </div>
 
         <div id="console">
             <div id="layers-header">
@@ -585,16 +617,42 @@
 
             document.getElementById('zoom-in-btn').addEventListener('click', function() { map.zoomIn(); });
             document.getElementById('zoom-out-btn').addEventListener('click', function() { map.zoomOut(); });
-            document.getElementById('compass-btn').addEventListener('click', function() { map.flyTo({ bearing: 0, pitch: 0 }); });
             
+            // 3D BUTTON & VIEW LOGIC
             var is3D = true;
             var view3dBtn = document.getElementById('view-3d-btn');
             view3dBtn.classList.add('active-3d'); 
-            view3dBtn.addEventListener('click', function() {
-                if (is3D) { map.easeTo({ pitch: 0, bearing: 0 }); view3dBtn.classList.remove('active-3d'); is3D = false; } 
-                else { map.easeTo({ pitch: 45, bearing: -15 }); view3dBtn.classList.add('active-3d'); is3D = true; }
+            
+            function set3DState(enable) {
+                is3D = enable;
+                if (enable) {
+                    view3dBtn.classList.add('active-3d');
+                } else {
+                    view3dBtn.classList.remove('active-3d');
+                }
+            }
+
+            document.getElementById('compass-btn').addEventListener('click', function() { 
+                map.flyTo({ bearing: 0, pitch: 0 }); 
+                set3DState(false); 
             });
-            document.getElementById('reset-view-btn').addEventListener('click', function() { map.flyTo({ center: [72.8320, 18.9275], zoom: initialZoom, pitch: 45, bearing: -15, duration: 2000 }); is3D = true; view3dBtn.classList.add('active-3d'); closePanel(true); });
+
+            view3dBtn.addEventListener('click', function() {
+                if (is3D) { 
+                    map.easeTo({ pitch: 0, bearing: 0 }); 
+                    set3DState(false);
+                } else { 
+                    map.easeTo({ pitch: 45, bearing: -15 }); 
+                    set3DState(true);
+                }
+            });
+
+            document.getElementById('reset-view-btn').addEventListener('click', function() { 
+                map.flyTo({ center: [72.8320, 18.9275], zoom: initialZoom, pitch: 45, bearing: -15, duration: 2000 }); 
+                set3DState(true);
+                closePanel(true); 
+            });
+
             var geolocate = new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true });
             map.addControl(geolocate); 
             document.getElementById('locate-btn').addEventListener('click', function() { geolocate.trigger(); });
