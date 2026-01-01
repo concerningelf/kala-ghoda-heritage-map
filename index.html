@@ -20,7 +20,7 @@
             --border: #e0e0e0;
             --shadow: 0 2px 10px rgba(0,0,0,0.05);
             --accent-wall: #c0392b; 
-            --accent-nav: #2980b9; /* FIXED: Restored missing variable */
+            --accent-nav: #2980b9; 
             --gold-text: #cfa842; 
         }
         
@@ -31,7 +31,11 @@
         
         /* 1883 Map Mode Styling */
         body.mode-1883 #map canvas { filter: grayscale(1) contrast(0.9) brightness(1.1) !important; }
+        
+        /* Disable all filter buttons EXCEPT the 1883 button when in 1883 mode */
         body.mode-1883 .filter-btn:not(#btn-1883) { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+        
+        /* Also disable search in 1883 mode */
         body.mode-1883 #search-container { opacity: 0.4; pointer-events: none; }
 
         /* --- UI: HEADER --- */
@@ -40,6 +44,8 @@
             width: 340px; background: var(--bg); z-index: 100;
             box-shadow: var(--shadow); border: 1px solid var(--border); border-radius: 4px; 
             display: flex; flex-direction: column;
+            max-height: 85vh; 
+            overflow-y: auto; 
         }
 
         #header h1 { font-family: 'Cardo', serif; padding: 20px 20px 5px 20px; margin: 0; line-height: 1.2; }
@@ -69,7 +75,7 @@
         #layers-arrow { transition: transform 0.3s ease; }
         #layers-arrow.rotated { transform: rotate(180deg); }
         
-        #layers-content { display: flex; flex-wrap: wrap; gap: 8px; overflow: hidden; transition: max-height 0.4s ease; max-height: 800px; }
+        #layers-content { display: flex; flex-wrap: wrap; gap: 8px; overflow: hidden; transition: max-height 0.4s ease; max-height: 2000px; }
         #layers-content.collapsed { max-height: 0; margin-top: 0; }
 
         .filter-btn { 
@@ -96,7 +102,9 @@
             flex-direction: column;
             background: #fcfcfc;
             border-radius: 4px;
-            width: 100%; box-sizing: border-box;
+            width: 100%; 
+            flex-basis: 100%;
+            box-sizing: border-box;
         }
 
         #time-controls.active { display: flex; }
@@ -108,10 +116,16 @@
             margin-bottom: 10px; font-weight: bold;
         }
 
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; height: 30px; }
         input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; }
-        input[type=range]::-webkit-slider-thumb { height: 16px; width: 16px; border-radius: 50%; background: var(--gold-text); cursor: pointer; -webkit-appearance: none; margin-top: -6px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); border: 2px solid #fff; }
+        
+        /* Chrome/Safari */
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; margin-top: 12px; }
+        input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: var(--gold-text); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); border: 2px solid #fff; }
+        
+        /* Firefox */
+        input[type=range]::-moz-range-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; }
+        input[type=range]::-moz-range-thumb { height: 18px; width: 18px; border: 2px solid #fff; border-radius: 50%; background: var(--gold-text); cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
         /* --- UI: MARKERS --- */
         .marker { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; transition: transform 0.2s ease, opacity 0.3s; z-index: 10; }
@@ -136,12 +150,20 @@
         .panel-info-label { display: table-cell; padding: 8px 0; font-size: 10px; text-transform: uppercase; color: #999; letter-spacing: 1px; width: 30%; font-weight: 700; }
         .panel-info-val { display: table-cell; padding: 8px 0; font-size: 13px; color: #222; font-weight: 400; }
         
-        /* Restored variable usage here will now work */
         .panel-action-btn { display: block; width: 100%; margin-top: 25px; padding: 12px 0; text-align: center; text-decoration: none; background: var(--accent-nav); color: #fff; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; transition: all 0.2s; }
         .panel-action-btn:hover { background: #1a5276; }
         
         .panel-close { position: absolute; top: 15px; right: 15px; width: 32px; height: 32px; background: rgba(0,0,0,0.6); color: #fff; border: none; cursor: pointer; font-size: 18px; z-index: 300; display: flex; align-items: center; justify-content: center; transition: all 0.2s; border-radius: 50%; }
         .panel-close:hover { background: #000; }
+
+        /* --- UI: BEFORE/AFTER SLIDER --- */
+        .comparison-container { position: relative; width: 100%; height: 100%; overflow: hidden; }
+        .comp-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; user-select: none; }
+        .comp-overlay { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 2px solid var(--gold-text); background: #fff; z-index: 10; }
+        .comp-slider-handle { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: var(--gold-text); border: 2px solid #fff; border-radius: 50%; z-index: 20; cursor: ew-resize; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .comp-label { position: absolute; bottom: 10px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 6px; font-size: 9px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; pointer-events: none; z-index: 15; }
+        .label-old { left: 10px; }
+        .label-new { right: 10px; }
 
         /* --- UI: VERTICAL CONTROLS --- */
         #vertical-controls { position: fixed; right: 20px; bottom: 30px; display: flex; flex-direction: column; background: #fff; box-shadow: var(--shadow); border: 1px solid var(--border); border-radius: 4px; z-index: 95; overflow: hidden; }
@@ -222,7 +244,7 @@
                 colors: { 'Art Deco': '#2a9d8f', 'Victorian': '#e76f51', 'Modern': '#264653', 'Lettering': '#7b2cbf', 'Ghost Site': '#95a5a6', 'Street Furniture': '#4a69bd', 'Living Heritage': '#27ae60' },
                 icons: { 'Art Deco': 'fa-building', 'Victorian': 'fa-landmark', 'Modern': 'fa-square', 'Lettering': 'fa-font', 'Ghost Site': 'fa-ghost', 'Street Furniture': 'fa-road', 'Living Heritage': 'fa-users' },
                 chapters: [
-                    { id: 'regal', category: 'Art Deco', title: 'Regal Cinema', image: './images/regal.jpg', description: 'One of the earliest Art Deco cinemas in India.', year: '1933', architect: 'Charles Stevens', builder: 'Framji Sidhwa', location: { center: [72.8325, 18.9246] } },
+                    { id: 'regal', category: 'Art Deco', title: 'Regal Cinema', image: './images/regal.jpg', image_historic: './images/regal-old.jpg', description: 'One of the earliest Art Deco cinemas in India.', year: '1933', architect: 'Charles Stevens', builder: 'Framji Sidhwa', location: { center: [72.8325, 18.9246] } },
                     { id: 'museum', category: 'Victorian', title: 'CSMVS Museum', image: './images/csmvs.jpg', description: 'Indo Saracenic landmark constructed using grey Kurla basalt.', year: '1914', architect: 'George Wittet', builder: 'Govt. of Bombay', location: { center: [72.8322, 18.9269] } },
                     { id: 'elphinstone', category: 'Victorian', title: 'Elphinstone College', image: './images/elphinstone.jpg', description: 'Victorian Gothic Revival building with pointed arches.', year: '1871', architect: 'James Trubshawe', builder: 'Unknown', location: { center: [72.8309, 18.9271] } },
                     { id: 'sassoon', category: 'Victorian', title: 'David Sassoon Library', image: './images/sassoon.jpg', description: 'Victorian Gothic architecture defined by pointed arches.', year: '1870', architect: 'Campbell & Gosling', builder: 'Scott McClelland', location: { center: [72.8311, 18.9277] } },
@@ -244,13 +266,14 @@
                 ]
             };
 
-            // --- HELPER: Parse Years from Vague Strings ---
+            // --- HELPER: Parse Years ---
             function parseYear(yearStr) {
                 if (!yearStr) return 2025; 
                 yearStr = yearStr.toString().toLowerCase();
                 var match = yearStr.match(/(\d{4})/);
                 if (match) return parseInt(match[0]);
                 
+                // Historical Fallbacks
                 if (yearStr.includes('late 19th')) return 1890;
                 if (yearStr.includes('mid 19th')) return 1850;
                 if (yearStr.includes('early 19th')) return 1810;
@@ -260,7 +283,8 @@
                 if (yearStr.includes('late 20th')) return 1990;
                 if (yearStr.includes('20th century')) return 1950;
                 
-                // FIXED: Default to 2025 so undated/ongoing items hide when sliding back
+                // IMPORTANT: Default to 2025 so items without specific dates (Ongoing, etc.)
+                // disappear when you slide the timeline back.
                 return 2025; 
             }
 
@@ -297,8 +321,10 @@
             // --- Time Slider Container ---
             var timeControls = document.createElement('div');
             timeControls.id = 'time-controls';
-            var years = config.chapters.map(c => parseYear(c.year)).filter(y => y !== 2025);
-            var minYear = Math.min(...years) || 1850;
+            
+            // Validate years to prevent range crash
+            var parsedYears = config.chapters.map(c => parseYear(c.year)).filter(y => !isNaN(y) && y !== 2025);
+            var minYear = parsedYears.length > 0 ? Math.min(...parsedYears) : 1850;
             var maxYear = 2025;
 
             timeControls.innerHTML = `
@@ -464,6 +490,12 @@
                     allLayerBtns.forEach(b => b.style.opacity = '0.5');
                     allLayerBtns.forEach(b => b.style.pointerEvents = 'none'); 
                     slider.dispatchEvent(new Event('input'));
+                    
+                    // AUTO-SCROLL FIX: Scroll to bottom to reveal slider
+                    setTimeout(() => {
+                        var header = document.getElementById('header');
+                        header.scrollTo({ top: header.scrollHeight, behavior: 'smooth' });
+                    }, 100);
                 }
             };
 
@@ -496,12 +528,59 @@
                 if (selectedMarker) selectedMarker.classList.remove('selected');
                 markerEl.classList.add('selected');
                 selectedMarker = markerEl;
-                var infoHTML = '<div class="panel-info">' + '<div class="panel-info-row"><span class="panel-info-label">Year</span><span class="panel-info-val">' + record.year + '</span></div>' + '<div class="panel-info-row"><span class="panel-info-label">Architect</span><span class="panel-info-val">' + record.architect + '</span></div>' + '<div class="panel-info-row"><span class="panel-info-label">Builder</span><span class="panel-info-val">' + record.builder + '</span></div>' + '</div>';
+
+                var infoHTML = '<div class="panel-info">' + 
+                    '<div class="panel-info-row"><span class="panel-info-label">Year</span><span class="panel-info-val">' + record.year + '</span></div>' + 
+                    '<div class="panel-info-row"><span class="panel-info-label">Architect</span><span class="panel-info-val">' + record.architect + '</span></div>' + 
+                    '<div class="panel-info-row"><span class="panel-info-label">Builder</span><span class="panel-info-val">' + record.builder + '</span></div>' + 
+                '</div>';
+
                 var destLat = record.location.center[1]; var destLng = record.location.center[0];
                 var navUrl = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=walking`;
                 var navButton = `<a href="${navUrl}" target="_blank" class="panel-action-btn"><i class="fa-solid fa-diamond-turn-right"></i> Navigate Here</a>`;
-                var panelContent = '<div class="panel-img-container"><img src="' + record.image + '" class="panel-img"></div>' + '<div class="panel-content">' + '<span class="panel-cat" style="color:' + color + '">' + record.category + '</span>' + '<div class="panel-title">' + record.title + '</div>' + '<p class="panel-desc">' + record.description + '</p>' + infoHTML + navButton + '</div>';
-                document.getElementById('panel-inner').innerHTML = panelContent; document.getElementById('side-panel').classList.add('open');
+
+                // --- Then & Now Slider Logic ---
+                var imageHTML = '';
+                if (record.image_historic) {
+                    imageHTML = `
+                    <div class="panel-img-container" id="comparison-box">
+                        <img src="${record.image}" class="comp-img"> <span class="comp-label label-new">2024</span>
+                        <div class="comp-overlay" id="comp-overlay">
+                            <img src="${record.image_historic}" class="comp-img" style="width: 400px;"> 
+                            <span class="comp-label label-old">${record.year}</span>
+                        </div>
+                        <div class="comp-slider-handle" id="comp-handle"><i class="fa-solid fa-arrows-left-right"></i></div>
+                    </div>`;
+                } else {
+                    imageHTML = `<div class="panel-img-container"><img src="${record.image}" class="panel-img"></div>`;
+                }
+
+                var panelContent = imageHTML + 
+                    '<div class="panel-content">' + 
+                    '<span class="panel-cat" style="color:' + color + '">' + record.category + '</span>' + 
+                    '<div class="panel-title">' + record.title + '</div>' + 
+                    '<p class="panel-desc">' + record.description + '</p>' + 
+                    infoHTML + navButton + 
+                    '</div>';
+
+                document.getElementById('panel-inner').innerHTML = panelContent; 
+                document.getElementById('side-panel').classList.add('open');
+                
+                // Init Slider Events
+                var compBox = document.getElementById('comparison-box');
+                if (compBox) {
+                    var overlay = document.getElementById('comp-overlay');
+                    var handle = document.getElementById('comp-handle');
+                    var updateSlider = function(x) {
+                        var rect = compBox.getBoundingClientRect();
+                        if (x < 0) x = 0; if (x > rect.width) x = rect.width;
+                        overlay.style.width = x + 'px';
+                        handle.style.left = x + 'px';
+                    };
+                    compBox.addEventListener('mousemove', function(e) { updateSlider(e.clientX - compBox.getBoundingClientRect().left); });
+                    compBox.addEventListener('touchmove', function(e) { updateSlider(e.touches[0].clientX - compBox.getBoundingClientRect().left); });
+                }
+
                 if (window.innerWidth >= 768) {
                     map.flyTo({ center: record.location.center, zoom: 17.5, pitch: map.getPitch(), bearing: map.getBearing(), speed: 0.8, curve: 1 });
                 }
@@ -543,7 +622,9 @@
                 var layerId = 'layer-1883';
                 var visibility = map.getLayoutProperty(layerId, 'visibility');
                 var body = document.body;
+                
                 if (visibility === 'visible') {
+                    // Turn OFF 1883 Map
                     map.setLayoutProperty(layerId, 'visibility', 'none');
                     btn.classList.remove('active');
                     btn.innerHTML = '<i class="fa-solid fa-map-location-dot"></i> View 1883 Map';
@@ -552,6 +633,14 @@
                     var activeFilter = document.querySelector('.filter-btn.active:not(#wall-btn):not(#btn-1883)');
                     if (activeFilter) activeFilter.click(); else document.querySelector('.filter-btn').click();
                 } else {
+                    // Turn ON 1883 Map
+                    
+                    // FORCE CLOSE Time Travel if active
+                    if (isTimeTravelActive) {
+                        var timeBtn = document.getElementById('time-travel-btn');
+                        toggleTimeTravel(timeBtn); 
+                    }
+
                     map.setLayoutProperty(layerId, 'visibility', 'visible');
                     btn.classList.add('active');
                     btn.innerHTML = '<i class="fa-solid fa-times"></i> Exit 1883 Map';
