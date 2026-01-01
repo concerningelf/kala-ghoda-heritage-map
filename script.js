@@ -37,6 +37,9 @@ function initMobileGestures() {
     panel.addEventListener('touchstart', function(e) {
         const touchTarget = e.target;
         
+        // Prevent drag if touching the close button
+        if (touchTarget.closest('#panel-close-btn')) return;
+
         // Allow drag if touching the Handle OR if content is scrolled to very top
         const isAtTop = scrollArea.scrollTop <= 0;
         // Check if handle exists before checking containment
@@ -191,7 +194,8 @@ function initMap() {
             this.innerHTML = '<i class="fa-solid fa-xmark"></i>';
             this.style.background = '#333';
             this.style.color = '#fff';
-            closePanel(true);
+            // We do NOT call closePanel(true) here anymore, allowing layers & panel to coexist if needed,
+            // or effectively managing them separately. 
         }
     };
     
@@ -483,7 +487,7 @@ function initMap() {
         if (window.innerWidth >= 768) { map.flyTo({ center: record.location.center, zoom: 17.5, pitch: map.getPitch(), bearing: map.getBearing(), speed: 0.8, curve: 1 }); }
     }
 
-    document.getElementById('close-btn').addEventListener('click', function() { closePanel(false); });
+    document.getElementById('panel-close-btn').addEventListener('click', function() { closePanel(false); });
 
     // UPDATED: Toggle Layer with Mobile Toast logic
     window.toggleLayer = function(layerId, btn) {
