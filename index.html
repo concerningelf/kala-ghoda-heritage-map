@@ -60,6 +60,9 @@
         .title-main { display: block; font-size: 28px; font-weight: 400; color: var(--gold-text); margin-top: 5px; }
         #header h2 { font-family: 'Lato', sans-serif; font-size: 10px; color: #aaa; padding: 0 20px 15px 20px; margin: 0; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; border-bottom: 1px solid var(--border); }
 
+        /* Mobile Title Specifics */
+        #mobile-title { display: none; padding-bottom: 8px; padding-left: 5px; }
+        
         /* --- UI: SEARCH --- */
         #search-container { position: relative; padding: 15px 20px 5px 20px; }
         .search-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
@@ -107,8 +110,6 @@
             font-weight: 900; border: 1px solid transparent;
         }
         .layer-solo-btn:hover { background: #e0e0e0; color: #333; }
-        
-        /* Active State for Solo Button (Blue) */
         .layer-solo-btn.active-solo { background: var(--accent-nav) !important; color: #fff !important; border-color: var(--accent-nav) !important; }
 
         .layer-eye-btn {
@@ -226,6 +227,7 @@
             white-space: nowrap;
         }
         
+        /* Removed transition on icon for instant compass response */
         .v-control-btn i { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         
         .v-control-btn span {
@@ -256,6 +258,12 @@
             #header { top: 15px; left: 15px; right: 15px; width: auto; max-height: none; background: transparent; box-shadow: none; border: none; overflow: visible; }
             #header h1, #header h2 { display: none; }
             
+            /* Show Mobile Title */
+            #mobile-title { display: block; }
+            .m-sub { display: block; font-size: 9px; font-weight: 900; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+            /* UPDATED COLOR TO GOLD */
+            .m-main { display: block; font-family: 'Cardo', serif; font-size: 18px; color: var(--gold-text); line-height: 1; text-shadow: 0 1px 10px rgba(255,255,255,0.8); }
+
             #search-container { padding: 0; background: transparent; display: flex; gap: 10px; }
             .search-wrapper { flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; background: #fff; }
             #search-input { height: 50px; font-size: 16px; border: none; }
@@ -340,6 +348,12 @@
         </h1>
         <h2>Heritage Survey</h2>
         
+        <!-- NEW MOBILE TITLE ELEMENT -->
+        <div id="mobile-title">
+            <span class="m-sub">Visual Audit</span>
+            <span class="m-main">Kala Ghoda</span>
+        </div>
+
         <div id="search-container">
             <div class="search-wrapper">
                 <i class="fa-solid fa-search search-icon"></i>
@@ -360,10 +374,10 @@
     </div>
 
     <div id="vertical-controls">
-        <!-- Removed data-msg for Zoom controls to disable toast -->
         <button class="v-control-btn" id="zoom-in-btn"><i class="fa-solid fa-plus"></i> <span>Zoom In</span></button>
         <button class="v-control-btn" id="zoom-out-btn"><i class="fa-solid fa-minus"></i> <span>Zoom Out</span></button>
-        <button class="v-control-btn" id="compass-btn" data-msg="Orientation Reset"><i class="fa-regular fa-compass"></i> <span>Reset North</span></button>
+        <!-- UPDATED COMPASS ICON TO ARROW FOR CLEAR DIRECTIONALITY -->
+        <button class="v-control-btn" id="compass-btn" data-msg="Orientation Reset"><i class="fa-solid fa-arrow-up"></i> <span>Reset North</span></button>
         <button class="v-control-btn" id="time-travel-btn" data-msg="Time Slider Active"><i class="fa-solid fa-clock-rotate-left"></i> <span>Time Travel</span></button>
         <button class="v-control-btn" id="map-1883-btn" data-msg="1883 Map Enabled"><i class="fa-solid fa-map-location-dot"></i> <span>1883 Map</span></button>
         <button class="v-control-btn" id="view-3d-btn" data-msg="3D View Toggled"><i class="fa-solid fa-cube"></i> <span>3D View</span></button>
@@ -723,6 +737,20 @@
                 } else {
                     view3dBtn.classList.remove('active-control');
                 }
+            });
+            // Initial check for 3D view button state
+            map.on('load', function() {
+                if (map.getPitch() > 5) {
+                    view3dBtn.classList.add('active-control');
+                }
+            });
+
+            // ROTATING COMPASS LOGIC
+            map.on('rotate', function() {
+                var bearing = map.getBearing();
+                var compassIcon = document.querySelector('#compass-btn i');
+                // Rotate icon opposite to bearing to keep it pointing North
+                compassIcon.style.transform = `rotate(${-bearing}deg)`;
             });
 
             setupControl('compass-btn', () => { 
