@@ -80,16 +80,27 @@
             display: flex; align-items: center; gap: 8px; flex-grow: 0; transition: all 0.2s;
         }
         .filter-btn:hover { border-color: #bbb; color: #000; background: #f9f9f9; }
-        .filter-btn.active { background: #111; color: #fff; border-color: #111; }
+        
+        /* VISIBILITY TOGGLE STYLES */
+        .layer-eye { width: 14px; text-align: center; font-size: 12px; color: #888; }
+        
+        /* Hidden State (Eye Slash) */
+        .filter-btn.layer-hidden { opacity: 0.6; background: #f4f4f4; color: #aaa; border-color: #eee; }
+        .filter-btn.layer-hidden .dot-indicator { background: #ccc !important; }
+        .filter-btn.layer-hidden .layer-eye { color: #ccc; }
 
-        .dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: currentColor; flex-shrink: 0; }
+        /* All Layers Button */
+        .filter-btn.all-layers-btn { background: #222; color: #fff; border-color: #222; }
+        .filter-btn.all-layers-btn:hover { background: #444; }
+
+        .dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: currentColor; flex-shrink: 0; transition: background 0.2s; }
 
         .console-separator { width: 100%; border-bottom: 1px solid #eee; margin: 10px 0; height: 1px; }
 
         #wall-info { display: none; margin-top: 8px; padding: 10px; background: #fff4f4; border-left: 3px solid var(--accent-wall); font-size: 11px; color: #555; line-height: 1.4; border-radius: 2px; width: 100%; box-sizing: border-box; }
         #wall-info strong { display: block; margin-bottom: 3px; color: var(--accent-wall); text-transform: uppercase; font-weight: 800; font-size: 10px; }
 
-        /* --- UI: TIME SLIDER (YEARS) --- */
+        /* --- UI: TIME SLIDER --- */
         #time-controls {
             padding: 15px 15px;
             border: 1px solid #eee;
@@ -114,12 +125,8 @@
 
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; height: 30px; }
         input[type=range]:focus { outline: none; }
-        
-        /* Chrome/Safari */
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; margin-top: 12px; }
         input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: var(--gold-text); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); border: 2px solid #fff; }
-        
-        /* Firefox */
         input[type=range]::-moz-range-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; }
         input[type=range]::-moz-range-thumb { height: 18px; width: 18px; border: 2px solid #fff; border-radius: 50%; background: var(--gold-text); cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
@@ -243,7 +250,10 @@
                     { id: 'ropewalk', category: 'Street Furniture', title: 'Rope Walk Lane', image: './images/ropewalk.jpg', description: 'Historic lane characterised by enamel street signage.', year: '19th century', architect: 'Incremental', builder: 'Multiple', location: { center: [72.8323, 18.9278] } },
                     { id: 'army-lettering', category: 'Lettering', title: 'Army and Navy Signage', image: './images/army-lettering.jpg', description: 'Original carved and painted serif lettering.', year: 'Late 19th C.', architect: 'Unknown', builder: 'British Military', location: { center: [72.8313, 18.9282] } },
                     { id: 'ropewalk-signs', category: 'Lettering', title: 'Rope Walk Signs', image: './images/ropewalk-lettering.jpg', description: 'Blue enamel street signage with bilingual lettering.', year: '20th century', architect: 'Municipal signage', builder: 'BMC', location: { center: [72.8323, 18.9278] } },
-                    { id: 'lumiere', category: 'Ghost Site', title: 'Lumière Screening Site', image: './images/lumiere-placeholder.jpg', description: 'On July 7, 1896, the Lumière Brothers screened the first motion pictures.', year: '1896', architect: 'N/A', builder: 'Historic Event', location: { center: [72.8311, 18.9283] } },
+                    
+                    /* OFFSET FIX: Ghost site moved slightly to avoid hiding Esplanade Mansion */
+                    { id: 'lumiere', category: 'Ghost Site', title: 'Lumière Screening Site', image: './images/lumiere-placeholder.jpg', description: 'On July 7, 1896, the Lumière Brothers screened the first motion pictures.', year: '1896', architect: 'N/A', builder: 'Historic Event', location: { center: [72.83125, 18.92835] } },
+                    
                     { id: 'hydrant', category: 'Street Furniture', title: 'British Fire Hydrant', image: './images/hydrant.jpg', description: 'A cast-iron fire hydrant from the Bombay Municipal Corporation era.', year: 'Late 19th C.', architect: 'BMC', builder: 'Foundry Cast', location: { center: [72.8325, 18.9276] } },
                     { id: 'pavement', category: 'Living Heritage', title: 'The Pavement Gallery', image: './images/pavement.jpg', description: 'An informal exhibition space where aspiring artists display their work.', year: 'Ongoing', architect: 'The People', builder: 'Informal Usage', location: { center: [72.8316, 18.9275] } },
                     { id: 'booksellers', category: 'Living Heritage', title: 'Secondhand Book Sellers', image: './images/books.jpg', description: 'The lineage of street book vendors near Flora Fountain.', year: 'Mid 20th C.', architect: 'N/A', builder: 'Vendor Collective', location: { center: [72.8305, 18.9290] } },
@@ -253,14 +263,11 @@
                 ]
             };
 
-            // --- HELPER: Parse Years ---
             function parseYear(yearStr) {
                 if (!yearStr) return 2025; 
                 yearStr = yearStr.toString().toLowerCase();
                 var match = yearStr.match(/(\d{4})/);
                 if (match) return parseInt(match[0]);
-                
-                // Historical Fallbacks
                 if (yearStr.includes('late 19th')) return 1890;
                 if (yearStr.includes('mid 19th')) return 1850;
                 if (yearStr.includes('early 19th')) return 1810;
@@ -269,29 +276,96 @@
                 if (yearStr.includes('mid 20th')) return 1950;
                 if (yearStr.includes('late 20th')) return 1990;
                 if (yearStr.includes('20th century')) return 1950;
-                
-                // IMPORTANT: Default to 2025 so items without specific dates (Ongoing, etc.)
-                // disappear when you slide the timeline back.
                 return 2025; 
             }
+
+            // --- STATE MANAGEMENT ---
+            var disabledCategories = [];
+            var currentSliderYear = 2025;
 
             var layersContent = document.getElementById('layers-content');
             var categories = [...new Set(config.chapters.map(function(item) { return item.category; }))];
             
+            // "ALL LAYERS" (Reset) Button
             var allBtn = document.createElement('button');
-            allBtn.className = 'filter-btn active';
-            allBtn.innerHTML = 'All Layers';
-            allBtn.onclick = function() { filterMarkers('all', this); };
+            allBtn.className = 'filter-btn all-layers-btn active';
+            allBtn.innerHTML = 'Reset Visibility';
+            allBtn.onclick = function() { resetFilters(); };
             layersContent.appendChild(allBtn);
 
+            // CATEGORY BUTTONS (Eye Toggle Logic)
             categories.forEach(function(cat) {
                 var btn = document.createElement('button');
-                btn.className = 'filter-btn';
+                btn.className = 'filter-btn'; // Default State (Active)
+                btn.setAttribute('data-cat', cat);
                 var color = config.colors[cat] || '#333';
-                btn.innerHTML = '<span class="dot-indicator" style="color:' + color + '"></span> ' + cat;
-                btn.onclick = function() { filterMarkers(cat, this); };
+                
+                // Icon: Default is visible (Eye)
+                btn.innerHTML = `<i class="fa-regular fa-eye layer-eye"></i> <span class="dot-indicator" style="color:${color}"></span> ${cat}`;
+                
+                btn.onclick = function() { 
+                    toggleCategory(cat, btn); 
+                };
                 layersContent.appendChild(btn);
             });
+
+            function toggleCategory(cat, btn) {
+                if (document.body.classList.contains('mode-1883')) return;
+
+                var icon = btn.querySelector('.layer-eye');
+
+                // Toggle logic
+                if (disabledCategories.includes(cat)) {
+                    // Turn ON (Remove from disabled)
+                    disabledCategories = disabledCategories.filter(c => c !== cat);
+                    btn.classList.remove('layer-hidden');
+                    
+                    // Update Icon to Eye
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                } else {
+                    // Turn OFF (Add to disabled)
+                    disabledCategories.push(cat);
+                    btn.classList.add('layer-hidden');
+                    
+                    // Update Icon to Eye Slash
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
+                updateMapState();
+            }
+
+            function resetFilters() {
+                if (document.body.classList.contains('mode-1883')) return;
+                disabledCategories = [];
+                var btns = document.querySelectorAll('.filter-btn:not(.all-layers-btn)');
+                btns.forEach(b => {
+                    b.classList.remove('layer-hidden');
+                    var icon = b.querySelector('.layer-eye');
+                    if(icon) {
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+                updateMapState();
+            }
+
+            function updateMapState() {
+                markerObjects.forEach(function(m) {
+                    var categoryVisible = !disabledCategories.includes(m.category);
+                    var timeVisible = m.year <= currentSliderYear;
+
+                    if (categoryVisible && timeVisible) {
+                        m.element.style.display = 'flex';
+                        m.element.style.opacity = '1';
+                    } else {
+                        m.element.style.display = 'none';
+                    }
+                });
+                if (selectedMarker && selectedMarker.style.display === 'none') {
+                    closePanel(false);
+                }
+            }
 
             var separator = document.createElement('div');
             separator.className = 'console-separator';
@@ -309,7 +383,6 @@
             var timeControls = document.createElement('div');
             timeControls.id = 'time-controls';
             
-            // Validate years to prevent range crash
             var parsedYears = config.chapters.map(c => parseYear(c.year)).filter(y => !isNaN(y) && y !== 2025);
             var minYear = parsedYears.length > 0 ? Math.min(...parsedYears) : 1850;
             var maxYear = 2025;
@@ -467,18 +540,15 @@
                     isTimeTravelActive = false;
                     btn.classList.remove('active');
                     controls.classList.remove('active');
-                    markerObjects.forEach(m => m.element.style.opacity = '1');
-                    allLayerBtns.forEach(b => b.style.opacity = '1');
-                    allLayerBtns.forEach(b => b.style.pointerEvents = 'auto');
+                    currentSliderYear = 2025; // Reset Time
+                    updateMapState();
                 } else {
                     isTimeTravelActive = true;
                     btn.classList.add('active');
                     controls.classList.add('active');
-                    allLayerBtns.forEach(b => b.style.opacity = '0.5');
-                    allLayerBtns.forEach(b => b.style.pointerEvents = 'none'); 
                     slider.dispatchEvent(new Event('input'));
                     
-                    // AUTO-SCROLL FIX: Scroll to bottom to reveal slider
+                    // Auto scroll to reveal
                     setTimeout(() => {
                         var header = document.getElementById('header');
                         header.scrollTo({ top: header.scrollHeight, behavior: 'smooth' });
@@ -495,19 +565,8 @@
                     if (year === max) display.innerText = "Present Day";
                     else display.innerText = "Year: " + year;
 
-                    markerObjects.forEach(function(m) {
-                        if (m.year <= year) {
-                            m.element.style.display = 'flex';
-                            m.element.style.opacity = '1';
-                        } else {
-                            m.element.style.display = 'none';
-                            m.element.style.opacity = '0';
-                        }
-                    });
-                    
-                    if (selectedMarker && selectedMarker.style.display === 'none') {
-                        closePanel(false);
-                    }
+                    currentSliderYear = year;
+                    updateMapState();
                 }
             });
 
@@ -526,7 +585,7 @@
                 var navUrl = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=walking`;
                 var navButton = `<a href="${navUrl}" target="_blank" class="panel-action-btn"><i class="fa-solid fa-diamond-turn-right"></i> Navigate Here</a>`;
 
-                // STATIC IMAGE (NO SLIDER)
+                // STATIC IMAGE
                 var imageHTML = `<div class="panel-img-container"><img src="${record.image}" class="panel-img"></div>`;
 
                 var panelContent = imageHTML + 
@@ -551,24 +610,6 @@
                 if (!preventCameraMove && window.innerWidth >= 768) { map.flyTo({ zoom: initialZoom, speed: 0.6 }); }
             }
 
-            function filterMarkers(selectedCat, clickedBtn) {
-                if (document.body.classList.contains('mode-1883')) return;
-                if (isTimeTravelActive) return; 
-
-                var buttons = document.getElementsByClassName('filter-btn');
-                for (var i = 0; i < buttons.length; i++) {
-                    if(!buttons[i].id.includes('btn') && !buttons[i].id.includes('wall')) {
-                       buttons[i].classList.remove('active'); 
-                    }
-                }
-                if(clickedBtn) clickedBtn.classList.add('active');
-                markerObjects.forEach(function(m) {
-                    if (selectedCat === 'all' || m.category === selectedCat) { m.element.style.display = 'flex'; m.element.style.opacity = '1'; } 
-                    else { m.element.style.display = 'none'; }
-                });
-                if (selectedMarker && selectedMarker.style.display === 'none') closePanel(false);
-            }
-
             window.toggleLayer = function(layerId, btn) {
                 if (document.body.classList.contains('mode-1883')) return;
                 var visibility = map.getLayoutProperty(layerId, 'visibility');
@@ -588,9 +629,9 @@
                     btn.classList.remove('active');
                     btn.innerHTML = '<i class="fa-solid fa-map-location-dot"></i> View 1883 Map';
                     body.classList.remove('mode-1883');
-                    markerObjects.forEach(function(m) { m.element.style.display = 'flex'; });
-                    var activeFilter = document.querySelector('.filter-btn.active:not(#wall-btn):not(#btn-1883)');
-                    if (activeFilter) activeFilter.click(); else document.querySelector('.filter-btn').click();
+                    
+                    // Reset all
+                    updateMapState();
                 } else {
                     // Turn ON 1883 Map
                     
@@ -604,7 +645,10 @@
                     btn.classList.add('active');
                     btn.innerHTML = '<i class="fa-solid fa-times"></i> Exit 1883 Map';
                     body.classList.add('mode-1883');
+                    
+                    // Hide all markers
                     markerObjects.forEach(function(m) { m.element.style.display = 'none'; });
+                    
                     closePanel(true);
                     map.flyTo({ center: [72.8360, 18.9335], zoom: 14.5, pitch: 0, bearing: 0 });
                 }
