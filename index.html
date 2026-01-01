@@ -8,7 +8,6 @@
     <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
     
-    <!-- Added Merriweather as a fallback serif for map matching -->
     <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
@@ -35,7 +34,7 @@
         /* --- UI: HEADER --- */
         #header {
             position: absolute; top: 30px; left: 30px; 
-            width: 350px; /* Slightly narrower */
+            width: 380px;
             background: var(--bg);
             z-index: 100;
             box-shadow: var(--shadow);
@@ -43,7 +42,7 @@
             border-radius: 2px; 
             max-height: 90vh;
             display: flex; flex-direction: column;
-            transition: all 0.3s ease;
+            transition: max-height 0.3s ease;
         }
 
         #header h1 { 
@@ -72,21 +71,21 @@
         /* --- UI: SEARCH --- */
         #search-container {
             position: relative;
-            padding: 10px 20px;
+            padding: 15px 20px 10px 20px;
             transition: opacity 0.3s;
         }
         
         .search-wrapper { position: relative; display: flex; align-items: center; }
 
         #search-input {
-            width: 100%; padding: 8px 8px 8px 30px;
+            width: 100%; padding: 10px 10px 10px 35px;
             font-family: 'Lato', sans-serif; font-size: 13px;
             border: 1px solid #ccc; background: #fafafa;
             outline: none; transition: all 0.2s; border-radius: 2px;
         }
         #search-input:focus { border-color: #333; background: #fff; }
         
-        .search-icon { position: absolute; left: 10px; color: #999; font-size: 12px; pointer-events: none; }
+        .search-icon { position: absolute; left: 12px; color: #999; font-size: 12px; pointer-events: none; }
 
         #search-results {
             position: absolute; top: 100%; left: 20px; right: 20px;
@@ -102,13 +101,13 @@
 
         /* --- UI: COLLAPSIBLE FILTERS --- */
         #console { 
-            padding: 0 20px 15px 20px; 
+            padding: 0 20px 20px 20px; 
             display: flex; flex-direction: column;
             border-top: 1px solid #f0f0f0;
         }
 
         #layers-header {
-            padding: 12px 0; cursor: pointer;
+            padding: 15px 0 10px 0; cursor: pointer;
             display: flex; justify-content: space-between; align-items: center;
             font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
             color: var(--text-sub); user-select: none;
@@ -119,25 +118,35 @@
         #layers-arrow.rotated { transform: rotate(180deg); }
 
         #layers-content {
-            display: flex; flex-wrap: wrap; gap: 6px; 
+            display: flex; flex-wrap: wrap; gap: 8px; 
             overflow: hidden;
             transition: max-height 0.4s ease, opacity 0.4s ease;
-            max-height: 500px; opacity: 1;
+            max-height: 600px; opacity: 1;
         }
 
         #layers-content.collapsed { max-height: 0; opacity: 0; margin-top: 0; }
 
         .filter-btn {
-            padding: 5px 10px; font-size: 10px;
+            padding: 6px 12px; font-size: 10px;
             text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;
             border: 1px solid var(--border); background: #fff; color: var(--text-sub); 
             cursor: pointer; border-radius: 2px; transition: all 0.2s ease;
-            display: flex; align-items: center; gap: 5px; flex-grow: 1; justify-content: center;
+            display: flex; align-items: center; gap: 5px;
+            /* FIX: Removed flex-grow to prevent "Living Heritage" from stretching */
+            flex-grow: 0; 
         }
         .filter-btn:hover { border-color: #999; color: #000; background: #fafafa; }
         .filter-btn.active { background: var(--text-main); color: #fff; border-color: var(--text-main); }
         
-        #wall-btn, #btn-1883 { width: 100%; justify-content: center; margin-top: 4px; }
+        /* Dashed Line Separator */
+        .console-separator {
+            width: 100%;
+            border-bottom: 1px dashed #ccc;
+            margin: 8px 0;
+            height: 1px;
+        }
+
+        #wall-btn, #btn-1883 { width: 100%; justify-content: center; margin-top: 0; }
         #wall-btn.active, #btn-1883.active { background: var(--gold-text); border-color: var(--gold-text); color: #fff; }
         
         body.mode-1883 .filter-btn:not(#btn-1883) { opacity: 0.4; pointer-events: none; }
@@ -212,38 +221,15 @@
         .maplibregl-ctrl-top-right { display: none !important; }
         .maplibregl-ctrl-scale { background-color: rgba(255, 255, 255, 0.9) !important; border: 1px solid var(--border) !important; color: #333 !important; font-family: 'Lato', sans-serif !important; font-size: 10px !important; border-radius: 2px !important; box-shadow: none !important; }
 
-        /* --- MOBILE OPTIMIZATION (De-clustering) --- */
         @media (max-width: 768px) {
-            /* 1. Cleaner Header */
-            #header { 
-                top: 10px; left: 10px; right: 10px; width: auto; max-width: none; 
-                background: rgba(255,255,255,0.95); backdrop-filter: blur(5px);
-            }
+            #header { top: 15px; left: 15px; right: 15px; width: auto; max-width: none; }
             #header h1 { padding: 15px 15px 5px 15px; }
-            .title-main { font-size: 22px; margin-top: 2px; }
-            /* Hide the subtitle line on mobile to save space */
-            #header h2 { display: none; }
-            
-            #search-container { padding: 10px 15px; }
-            #console { padding: 0 15px 10px 15px; }
-            
-            /* 2. Side Panel as Bottom Sheet (50vh) */
-            #side-panel { 
-                right: auto; left: 0; bottom: -100vh; top: auto; 
-                width: 100%; height: 50vh; /* Reduced height to see map */
-                border-left: none; border-top: 1px solid #ccc; 
-                border-radius: 12px 12px 0 0; 
-                box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
-            }
+            .title-main { font-size: 24px; }
+            #header h2 { padding: 0 15px 10px 15px; border: none; }
+            #console { padding: 0 15px 15px 15px; }
+            #side-panel { right: auto; left: 0; bottom: -100vh; top: auto; width: 100%; height: 75vh; border-left: none; border-top: 1px solid #ccc; border-radius: 12px 12px 0 0; }
             #side-panel.open { bottom: 0; }
-            .panel-content { padding: 25px; }
-            .panel-img-container { height: 150px; }
-            .panel-title { font-size: 22px; margin-bottom: 10px; }
-            .panel-desc { font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
-            
-            /* 3. Controls moved up to avoid overlap */
-            #vertical-controls { bottom: 180px; right: 10px; }
-            .maplibregl-ctrl-scale { bottom: 180px; left: 10px; }
+            #vertical-controls { bottom: 100px; right: 20px; }
         }
     </style>
 </head>
@@ -263,7 +249,7 @@
         <div id="search-container">
             <div class="search-wrapper">
                 <i class="fa-solid fa-search search-icon"></i>
-                <input type="text" id="search-input" placeholder="Search..." autocomplete="off">
+                <input type="text" id="search-input" placeholder="Search buildings, styles..." autocomplete="off">
             </div>
             <div id="search-results"></div>
         </div>
@@ -348,6 +334,11 @@
                 btn.onclick = function() { filterMarkers(cat, this); };
                 layersContent.appendChild(btn);
             });
+
+            // ADD SEPARATOR
+            var separator = document.createElement('div');
+            separator.className = 'console-separator';
+            layersContent.appendChild(separator);
 
             var wallBtn = document.createElement('button');
             wallBtn.id = 'wall-btn';
@@ -436,17 +427,13 @@
             map.on("load", function () {
                 map.setSky({ 'sky-color': '#87CEEB', 'sky-horizon-blend': 0.5, 'horizon-color': '#ffffff', 'fog-color': '#888888', 'fog-ground-blend': 0.5 });
                 
-                // --- ATTEMPT TO STYLE MAP LABELS WITH SERIF FONTS ---
-                // We iterate over layers and change text-font to Noto Serif if available
                 var layers = map.getStyle().layers;
                 layers.forEach(function(layer) {
                     if (layer.type === 'symbol' && layer.layout && layer.layout['text-field']) {
                         map.setLayoutProperty(layer.id, 'text-font', ['Noto Serif Regular', 'Open Sans Regular', 'Arial Unicode MS Regular']);
-                        // Note: This only works if 'Noto Serif Regular' is in the glyphs source.
                     }
                 });
 
-                // COORDINATES for 1.32 Aspect Ratio Image
                 map.addSource('source-1883', {
                     'type': 'image',
                     'url': './images/fort-1883.jpg',
