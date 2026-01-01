@@ -3,7 +3,7 @@
 <head>
     <meta charset='utf-8' />
     <title>Visual Audit: Kala Ghoda Heritage</title>
-    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover' />
     
     <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
@@ -12,19 +12,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <style>
-        /* --- THEME: MUSEUM ARCHIVE --- */
+        /* --- THEME & VARIABLES --- */
         :root {
             --bg: #ffffff;
             --text-main: #222;
             --text-sub: #555;
             --border: #e0e0e0;
-            --shadow: 0 2px 10px rgba(0,0,0,0.05);
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
             --accent-wall: #c0392b; 
             --accent-nav: #2980b9; 
             --gold-text: #cfa842; 
+            --safe-area-bottom: env(safe-area-inset-bottom, 20px);
         }
         
-        body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; overflow: hidden; background: #f4f4f4; }
+        body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; overflow: hidden; background: #f4f4f4; -webkit-tap-highlight-color: transparent; }
         
         #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
         .maplibregl-canvas-container canvas { filter: sepia(0.1) contrast(0.95); transition: filter 0.5s ease; }
@@ -34,14 +35,14 @@
         body.mode-1883 .filter-btn:not(#btn-1883) { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
         body.mode-1883 #search-container { opacity: 0.4; pointer-events: none; }
 
-        /* --- UI: HEADER --- */
+        /* --- UI: HEADER (Desktop Default) --- */
         #header {
             position: absolute; top: 20px; left: 20px; 
             width: 340px; background: var(--bg); z-index: 100;
-            box-shadow: var(--shadow); border: 1px solid var(--border); border-radius: 4px; 
+            box-shadow: var(--shadow); border: 1px solid var(--border); border-radius: 8px; 
             display: flex; flex-direction: column;
-            max-height: 85vh; 
-            overflow-y: auto; 
+            max-height: 85vh; overflow-y: auto; 
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         #header h1 { font-family: 'Cardo', serif; padding: 20px 20px 5px 20px; margin: 0; line-height: 1.2; }
@@ -51,15 +52,16 @@
 
         /* --- UI: SEARCH --- */
         #search-container { position: relative; padding: 15px 20px 5px 20px; }
-        .search-wrapper { position: relative; display: flex; align-items: center; }
-        #search-input { width: 100%; padding: 12px 10px 12px 35px; font-family: 'Lato', sans-serif; font-size: 13px; border: 1px solid #ddd; background: #fafafa; outline: none; border-radius: 4px; transition: border 0.2s; }
-        #search-input:focus { border-color: #333; background: #fff; }
-        .search-icon { position: absolute; left: 12px; color: #999; font-size: 12px; pointer-events: none; }
-        #search-results { position: absolute; top: 100%; left: 20px; right: 20px; background: #fff; border: 1px solid var(--border); border-top: none; max-height: 200px; overflow-y: auto; z-index: 110; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .search-item { padding: 10px 12px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; flex-direction: column; }
+        .search-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
+        #search-input { width: 100%; padding: 12px 10px 12px 40px; font-family: 'Lato', sans-serif; font-size: 14px; border: 1px solid #ddd; background: #fafafa; outline: none; border-radius: 6px; transition: all 0.2s; height: 44px; box-sizing: border-box; }
+        #search-input:focus { border-color: #333; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .search-icon { position: absolute; left: 14px; color: #999; font-size: 14px; pointer-events: none; }
+        
+        #search-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-top: none; max-height: 250px; overflow-y: auto; z-index: 110; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 0 0 6px 6px; }
+        .search-item { padding: 14px 14px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; flex-direction: column; }
         .search-item:hover { background: #f9f9f9; }
-        .search-item-title { font-weight: 700; font-size: 12px; color: #333; }
-        .search-item-cat { font-size: 10px; color: #888; text-transform: uppercase; margin-top: 2px; }
+        .search-item-title { font-weight: 700; font-size: 13px; color: #333; }
+        .search-item-cat { font-size: 11px; color: #888; text-transform: uppercase; margin-top: 2px; }
 
         /* --- UI: LAYERS LIST --- */
         #console { padding: 0 20px 20px 20px; display: flex; flex-direction: column; }
@@ -74,67 +76,41 @@
         #layers-content { display: flex; flex-wrap: wrap; gap: 8px; overflow: hidden; transition: max-height 0.4s ease; max-height: 2000px; }
         #layers-content.collapsed { max-height: 0; margin-top: 0; }
 
-        /* --- FILTER BUTTON STYLES (UPDATED FOR SOLO MODE) --- */
+        /* --- FILTER BUTTONS --- */
         .filter-btn { 
-            /* Changed to flex for the 'Only' button layout */
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            padding: 6px 8px 6px 12px; 
-            width: 100%; 
-            box-sizing: border-box;
-            
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 8px 0 12px; 
+            width: 100%; height: 38px; /* Fixed height for consistency */
             font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; 
-            border: 1px solid #e0e0e0; background: #fff; color: #555; cursor: pointer; border-radius: 4px; 
-            margin-bottom: 0; transition: all 0.2s;
+            border: 1px solid #e0e0e0; background: #fff; color: #555; cursor: pointer; border-radius: 6px; 
+            transition: all 0.2s; box-sizing: border-box;
         }
         .filter-btn:hover { border-color: #bbb; color: #000; background: #f9f9f9; }
+        .layer-label-group { display: flex; align-items: center; gap: 10px; pointer-events: none; flex: 1; }
         
-        /* Container for Eye + Text */
-        .layer-label-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            pointer-events: none; /* Let clicks pass to parent */
-        }
-        
-        /* The New "ONLY" Button */
+        /* The SOLO Button */
         .layer-solo-btn {
-            font-size: 9px;
-            background: #eee;
-            color: #888;
-            padding: 2px 6px;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
+            font-size: 9px; background: #f0f0f0; color: #999;
+            padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
+            height: 20px; display: flex; align-items: center;
         }
-
-        .layer-solo-btn:hover {
-            background: var(--accent-nav);
-            color: #fff;
-            border-color: var(--accent-nav);
-        }
+        .layer-solo-btn:hover { background: var(--accent-nav); color: #fff; }
 
         /* Desktop: Hide SOLO until hover to reduce clutter */
         @media (min-width: 769px) {
             .layer-solo-btn { opacity: 0; transform: translateX(5px); }
             .filter-btn:hover .layer-solo-btn { opacity: 1; transform: translateX(0); }
         }
-
-        /* VISIBILITY TOGGLE STYLES */
-        .layer-eye { width: 14px; text-align: center; font-size: 12px; color: #888; }
         
-        /* Hidden State (Eye Slash) */
-        .filter-btn.layer-hidden { opacity: 0.6; background: #f4f4f4; color: #aaa; border-color: #eee; }
+        /* Visibility States */
+        .filter-btn.layer-hidden { opacity: 0.6; background: #f4f4f4; color: #aaa; }
         .filter-btn.layer-hidden .dot-indicator { background: #ccc !important; }
         .filter-btn.layer-hidden .layer-eye { color: #ccc; }
+        .layer-eye { width: 16px; text-align: center; }
+        .dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: currentColor; }
 
-        /* All Layers Button */
-        .filter-btn.all-layers-btn { background: #222; color: #fff; border-color: #222; justify-content: center; }
+        .filter-btn.all-layers-btn { justify-content: center; background: #222; color: #fff; }
         .filter-btn.all-layers-btn:hover { background: #444; }
-
-        .dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: currentColor; flex-shrink: 0; transition: background 0.2s; }
 
         .console-separator { width: 100%; border-bottom: 1px solid #eee; margin: 10px 0; height: 1px; }
 
@@ -143,78 +119,132 @@
 
         /* --- UI: TIME SLIDER --- */
         #time-controls {
-            padding: 15px 15px;
-            border: 1px solid #eee;
-            margin-top: 5px;
-            display: none; 
-            flex-direction: column;
-            background: #fcfcfc;
-            border-radius: 4px;
-            width: 100%; 
-            flex-basis: 100%;
-            box-sizing: border-box;
+            padding: 15px 15px; border: 1px solid #eee; margin-top: 5px;
+            display: none; flex-direction: column; background: #fcfcfc; border-radius: 4px;
+            width: 100%; flex-basis: 100%; box-sizing: border-box;
         }
-
         #time-controls.active { display: flex; }
-
         .range-labels { display: flex; justify-content: space-between; font-size: 10px; color: #888; margin-bottom: 5px; font-weight: 700; }
-        
-        #year-display {
-            text-align: center; font-family: 'Cardo', serif; font-size: 18px; color: var(--accent-wall);
-            margin-bottom: 10px; font-weight: bold;
-        }
+        #year-display { text-align: center; font-family: 'Cardo', serif; font-size: 18px; color: var(--accent-wall); margin-bottom: 10px; font-weight: bold; }
 
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; height: 30px; }
         input[type=range]:focus { outline: none; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; margin-top: 12px; }
         input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: var(--gold-text); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); border: 2px solid #fff; }
-        input[type=range]::-moz-range-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; }
-        input[type=range]::-moz-range-thumb { height: 18px; width: 18px; border: 2px solid #fff; border-radius: 50%; background: var(--gold-text); cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
-        /* --- UI: MARKERS --- */
-        .marker { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; transition: transform 0.2s ease, opacity 0.3s; z-index: 10; }
+        /* --- UI: MARKERS & TOOLTIPS --- */
+        .marker { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; box-shadow: 0 3px 8px rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; transition: transform 0.2s ease; z-index: 10; background-size: cover; }
         .marker:hover { transform: scale(1.15); z-index: 20; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
-        .marker.selected { transform: scale(1.2); z-index: 30; box-shadow: 0 0 0 2px #fff, 0 4px 15px rgba(0,0,0,0.3); }
-        
-        #tooltip { position: absolute; pointer-events: none; background: #111; color: #fff; padding: 5px 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 2px; opacity: 0; transform: translate(-50%, -10px); transition: opacity 0.2s, transform 0.2s; z-index: 500; white-space: nowrap; }
-        
-        /* --- UI: SIDE PANEL --- */
-        #side-panel { position: fixed; right: -450px; top: 0; bottom: 0; width: 400px; background: #fff; z-index: 200; box-shadow: -10px 0 30px rgba(0,0,0,0.05); transition: right 0.4s ease; border-left: 1px solid var(--border); display: flex; flex-direction: column; }
-        #side-panel.open { right: 0; }
-        
-        #panel-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; position: relative; }
-        .panel-img-container { position: relative; width: 100%; height: 280px; overflow: hidden; background: #eee; }
+        .marker.selected { transform: scale(1.3); z-index: 30; box-shadow: 0 0 0 3px #fff, 0 8px 20px rgba(0,0,0,0.3); }
+        #tooltip { position: absolute; pointer-events: none; background: #111; color: #fff; padding: 6px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 4px; opacity: 0; z-index: 500; white-space: nowrap; transform: translate(-50%, -10px); transition: opacity 0.2s; }
+
+        /* --- UI: SIDE PANEL (Bottom Sheet) --- */
+        #side-panel { 
+            position: fixed; right: -450px; top: 0; bottom: 0; width: 400px; 
+            background: #fff; z-index: 200; box-shadow: -10px 0 30px rgba(0,0,0,0.1); 
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex; flex-direction: column; border-left: 1px solid var(--border);
+        }
+        #side-panel.open { transform: translateX(-450px); }
+        #panel-scroll-area { flex: 1; overflow-y: auto; }
+        .panel-img-container { width: 100%; height: 260px; background: #eee; }
         .panel-img { width: 100%; height: 100%; object-fit: cover; }
-        .panel-content { padding: 30px; }
+        .panel-content { padding: 25px 30px; }
         .panel-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; color: #999; margin-bottom: 10px; display: inline-block; }
-        .panel-title { font-family: 'Cardo', serif; font-size: 28px; font-weight: 400; margin-bottom: 20px; color: #111; line-height: 1.1; }
-        .panel-desc { font-size: 14px; color: #444; line-height: 1.7; margin-bottom: 30px; }
+        .panel-title { font-family: 'Cardo', serif; font-size: 28px; margin-bottom: 15px; line-height: 1.1; color: #111; }
+        .panel-desc { line-height: 1.6; color: #444; font-size: 15px; margin-bottom: 25px; }
         .panel-info { display: table; width: 100%; border-top: 1px solid #eee; padding-top: 20px; }
         .panel-info-row { display: table-row; }
         .panel-info-label { display: table-cell; padding: 8px 0; font-size: 10px; text-transform: uppercase; color: #999; letter-spacing: 1px; width: 30%; font-weight: 700; }
         .panel-info-val { display: table-cell; padding: 8px 0; font-size: 13px; color: #222; font-weight: 400; }
         
-        .panel-action-btn { display: block; width: 100%; margin-top: 25px; padding: 12px 0; text-align: center; text-decoration: none; background: var(--accent-nav); color: #fff; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; transition: all 0.2s; }
-        .panel-action-btn:hover { background: #1a5276; }
-        
-        .panel-close { position: absolute; top: 15px; right: 15px; width: 32px; height: 32px; background: rgba(0,0,0,0.6); color: #fff; border: none; cursor: pointer; font-size: 18px; z-index: 300; display: flex; align-items: center; justify-content: center; transition: all 0.2s; border-radius: 50%; }
+        .panel-close { 
+            position: absolute; top: 15px; right: 15px; width: 36px; height: 36px; 
+            background: rgba(0,0,0,0.5); color: #fff; border: none; border-radius: 50%; 
+            cursor: pointer; font-size: 20px; z-index: 300; display: flex; align-items: center; justify-content: center;
+        }
         .panel-close:hover { background: #000; }
+        .panel-action-btn { display: block; width: 100%; margin-top: 20px; padding: 14px 0; text-align: center; text-decoration: none; background: var(--accent-nav); color: #fff; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-radius: 6px; }
 
-        /* --- UI: VERTICAL CONTROLS --- */
-        #vertical-controls { position: fixed; right: 20px; bottom: 30px; display: flex; flex-direction: column; background: #fff; box-shadow: var(--shadow); border: 1px solid var(--border); border-radius: 4px; z-index: 95; overflow: hidden; }
-        .v-control-btn { width: 36px; height: 36px; border: none; background: #fff; border-bottom: 1px solid #eee; color: #555; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .v-control-btn:last-child { border-bottom: none; }
-        .v-control-btn:hover { background: #f9f9f9; color: #000; }
+        /* --- UI: CONTROLS --- */
+        #vertical-controls { position: fixed; right: 20px; bottom: 30px; display: flex; flex-direction: column; gap: 8px; z-index: 95; }
+        .v-control-btn { 
+            width: 40px; height: 40px; border: none; background: #fff; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 8px; 
+            color: #555; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+        }
+        .v-control-btn:hover { background: #111; color: #fff; }
         .v-control-btn.active-3d { background: #111; color: #fff; }
         
         .maplibregl-ctrl-top-right { display: none !important; }
         .maplibregl-ctrl-scale { background-color: rgba(255, 255, 255, 0.9) !important; border: 1px solid var(--border) !important; color: #333 !important; font-family: 'Lato', sans-serif !important; font-size: 10px !important; border-radius: 2px !important; box-shadow: none !important; }
 
+        /* ================= MOBILE MODE ================= */
         @media (max-width: 768px) {
-            #header { top: 10px; left: 10px; right: 10px; width: auto; }
-            #side-panel { right: auto; left: 0; bottom: -100vh; top: auto; width: 100%; height: 70vh; border-left: none; border-top: 1px solid #ccc; border-radius: 12px 12px 0 0; }
-            #side-panel.open { bottom: 0; }
-            #vertical-controls { bottom: 20px; right: 10px; }
+            /* Mobile Header: Floating Search Bar */
+            #header { 
+                top: 15px; left: 15px; right: 15px; width: auto; 
+                max-height: none; background: transparent; box-shadow: none; border: none;
+                overflow: visible;
+            }
+            #header h1, #header h2 { display: none; } /* Hide title to save space */
+            
+            #search-container { padding: 0; background: transparent; display: flex; gap: 10px; }
+            .search-wrapper { flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; background: #fff; }
+            #search-input { height: 50px; font-size: 16px; border: none; }
+            .search-icon { font-size: 16px; top: 17px; }
+            #search-results { left: 0; right: 0; top: 55px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+            
+            /* Mobile "Filter" Toggle Button (New Element we will add in JS) */
+            #mobile-filter-toggle {
+                display: flex !important; width: 50px; height: 50px; flex-shrink: 0;
+                background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                align-items: center; justify-content: center; font-size: 18px; color: #333;
+                cursor: pointer; transition: all 0.2s;
+            }
+
+            /* Console (Layers) becomes a Bottom Sheet Drawer */
+            #console {
+                position: fixed; left: 0; right: 0; bottom: 0;
+                background: #fff; border-radius: 20px 20px 0 0;
+                box-shadow: 0 -5px 30px rgba(0,0,0,0.15);
+                padding: 20px; z-index: 150;
+                transform: translateY(110%); /* Hidden by default */
+                transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+                max-height: 70vh; overflow-y: auto;
+                padding-bottom: calc(20px + var(--safe-area-bottom));
+            }
+            #console.open { transform: translateY(0); }
+            
+            /* Add a "Handle" to the drawer */
+            #console::before {
+                content: ''; display: block; width: 40px; height: 5px; 
+                background: #ddd; margin: 0 auto 15px auto; border-radius: 3px;
+            }
+
+            /* Force Expand Layers in Mobile Drawer */
+            #layers-content { max-height: none !important; opacity: 1; margin-top: 10px; }
+            #layers-header { display: none; } /* Hide the 'Filter Layers' text/arrow */
+
+            /* Bigger Touch Targets for Mobile */
+            .filter-btn { height: 50px; font-size: 13px; margin-bottom: 8px; }
+            .layer-solo-btn {
+                opacity: 1 !important; transform: none !important;
+                height: 30px; padding: 0 12px; font-size: 10px;
+                background: #f0f0f0; border: 1px solid #ddd;
+            }
+            
+            /* Side Panel (Details) */
+            #side-panel { 
+                right: auto; left: 0; top: auto; bottom: 0; width: 100%; 
+                height: 80vh; transform: translateY(110%); border-radius: 20px 20px 0 0; 
+                border-top: 1px solid #eee; border-left: none;
+            }
+            #side-panel.open { transform: translateY(0); }
+            .panel-close { top: 20px; right: 20px; background: #fff; color: #000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            
+            /* Vertical Controls Position */
+            #vertical-controls { bottom: 30px; right: 15px; }
         }
     </style>
 </head>
@@ -237,7 +267,7 @@
                 <input type="text" id="search-input" placeholder="Search buildings, styles..." autocomplete="off">
             </div>
             <div id="search-results"></div>
-        </div>
+            </div>
 
         <div id="console">
             <div id="layers-header">
@@ -291,9 +321,7 @@
                     { id: 'ropewalk', category: 'Street Furniture', title: 'Rope Walk Lane', image: './images/ropewalk.jpg', description: 'Historic lane characterised by enamel street signage.', year: '19th century', architect: 'Incremental', builder: 'Multiple', location: { center: [72.8323, 18.9278] } },
                     { id: 'army-lettering', category: 'Lettering', title: 'Army and Navy Signage', image: './images/army-lettering.jpg', description: 'Original carved and painted serif lettering.', year: 'Late 19th C.', architect: 'Unknown', builder: 'British Military', location: { center: [72.8313, 18.9282] } },
                     { id: 'ropewalk-signs', category: 'Lettering', title: 'Rope Walk Signs', image: './images/ropewalk-lettering.jpg', description: 'Blue enamel street signage with bilingual lettering.', year: '20th century', architect: 'Municipal signage', builder: 'BMC', location: { center: [72.8323, 18.9278] } },
-                    
                     { id: 'lumiere', category: 'Ghost Site', title: 'Lumière Screening Site', image: './images/lumiere-placeholder.jpg', description: 'On July 7, 1896, the Lumière Brothers screened the first motion pictures.', year: '1896', architect: 'N/A', builder: 'Historic Event', location: { center: [72.83125, 18.92835] } },
-                    
                     { id: 'hydrant', category: 'Street Furniture', title: 'British Fire Hydrant', image: './images/hydrant.jpg', description: 'A cast-iron fire hydrant from the Bombay Municipal Corporation era.', year: 'Late 19th C.', architect: 'BMC', builder: 'Foundry Cast', location: { center: [72.8325, 18.9276] } },
                     { id: 'pavement', category: 'Living Heritage', title: 'The Pavement Gallery', image: './images/pavement.jpg', description: 'An informal exhibition space where aspiring artists display their work.', year: 'Ongoing', architect: 'The People', builder: 'Informal Usage', location: { center: [72.8316, 18.9275] } },
                     { id: 'booksellers', category: 'Living Heritage', title: 'Secondhand Book Sellers', image: './images/books.jpg', description: 'The lineage of street book vendors near Flora Fountain.', year: 'Mid 20th C.', architect: 'N/A', builder: 'Vendor Collective', location: { center: [72.8305, 18.9290] } },
@@ -335,8 +363,8 @@
 
             // CATEGORY BUTTONS (Eye Toggle Logic + SOLO Logic)
             categories.forEach(function(cat) {
-                var btn = document.createElement('div'); // Using div to allow inner button
-                btn.className = 'filter-btn'; // Default State (Active)
+                var btn = document.createElement('div'); 
+                btn.className = 'filter-btn'; 
                 btn.setAttribute('data-cat', cat);
                 var color = config.colors[cat] || '#333';
                 
@@ -366,6 +394,37 @@
                 layersContent.appendChild(btn);
             });
 
+            // --- MOBILE UI: Add Filter Toggle Button ---
+            // This button sits next to the search bar on mobile
+            var mobileFilterBtn = document.createElement('div');
+            mobileFilterBtn.id = 'mobile-filter-toggle';
+            mobileFilterBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i>';
+            mobileFilterBtn.style.display = 'none'; // Hidden by default (CSS handles flex display on mobile)
+            
+            // Insert it into the search container
+            document.getElementById('search-container').appendChild(mobileFilterBtn);
+
+            // Toggle the Console (Layers) Drawer
+            mobileFilterBtn.onclick = function() {
+                var consolePanel = document.getElementById('console');
+                var isOpen = consolePanel.classList.contains('open');
+                
+                if (isOpen) {
+                    consolePanel.classList.remove('open');
+                    this.innerHTML = '<i class="fa-solid fa-layer-group"></i>';
+                    this.style.background = '#fff';
+                    this.style.color = '#333';
+                } else {
+                    consolePanel.classList.add('open');
+                    this.innerHTML = '<i class="fa-solid fa-xmark"></i>'; // Change icon to X
+                    this.style.background = '#333';
+                    this.style.color = '#fff';
+                    
+                    // Close Details Panel if open to avoid overlap
+                    closePanel(true);
+                }
+            };
+
             function toggleCategory(cat, btn) {
                 if (document.body.classList.contains('mode-1883')) return;
 
@@ -388,7 +447,7 @@
                 updateMapState();
             }
 
-            // NEW: Logic to hide everything EXCEPT selected category
+            // SOLO MODE Logic
             function soloCategory(targetCat) {
                 if (document.body.classList.contains('mode-1883')) return;
 
@@ -608,7 +667,19 @@
 
             document.getElementById('close-btn').addEventListener('click', function() { closePanel(false); });
             document.addEventListener('keydown', function(event) { if (event.key === "Escape") closePanel(false); });
-            map.on('click', function() { closePanel(false); });
+            
+            // Map click closes panels AND Mobile Drawer
+            map.on('click', function() { 
+                closePanel(false); 
+                document.getElementById('console').classList.remove('open');
+                // Reset mobile button
+                var btn = document.getElementById('mobile-filter-toggle');
+                if(btn) {
+                    btn.innerHTML = '<i class="fa-solid fa-layer-group"></i>';
+                    btn.style.background = '#fff';
+                    btn.style.color = '#333';
+                }
+            });
 
             // --- Time Slider Logic ---
             var isTimeTravelActive = false;
@@ -632,8 +703,8 @@
                     
                     // Auto scroll to reveal
                     setTimeout(() => {
-                        var header = document.getElementById('header');
-                        header.scrollTo({ top: header.scrollHeight, behavior: 'smooth' });
+                        var container = (window.innerWidth <= 768) ? document.getElementById('console') : document.getElementById('header');
+                        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
                     }, 100);
                 }
             };
@@ -681,6 +752,17 @@
                 document.getElementById('panel-inner').innerHTML = panelContent; 
                 document.getElementById('side-panel').classList.add('open');
                 
+                // If opening panel on mobile, ensure filter drawer is closed
+                if(window.innerWidth <= 768) {
+                    document.getElementById('console').classList.remove('open');
+                    var filterBtn = document.getElementById('mobile-filter-toggle');
+                    if(filterBtn) {
+                        filterBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i>';
+                        filterBtn.style.background = '#fff';
+                        filterBtn.style.color = '#333';
+                    }
+                }
+
                 if (window.innerWidth >= 768) {
                     map.flyTo({ center: record.location.center, zoom: 17.5, pitch: map.getPitch(), bearing: map.getBearing(), speed: 0.8, curve: 1 });
                 }
