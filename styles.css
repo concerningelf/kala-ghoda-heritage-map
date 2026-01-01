@@ -33,6 +33,7 @@ body.mode-1883 #map-1883-btn { background: #222; color: #fff; border-color: #222
     display: flex; flex-direction: column;
     max-height: 85vh; overflow-y: auto; 
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    scrollbar-gutter: stable;
 }
 
 .info-icon-btn {
@@ -408,4 +409,33 @@ input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 
     #toast.show { top: auto; bottom: 80px; }
     
     #toast.wall-mode { bottom: 50%; top: auto; transform: translate(-50%, 50%); }
+}
+/* --- CHROMIUM SCROLLBAR FIX --- */
+/* Makes the scrollbar thin and unobtrusive on Chrome/Edge */
+
+#header::-webkit-scrollbar {
+    width: 6px; /* Much thinner than the default ~17px */
+}
+
+#header::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 10px 0; /* Keeps scrollbar away from rounded corners */
+}
+
+#header::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Subtle gray */
+    border-radius: 10px;    /* Rounded pill shape */
+}
+
+#header::-webkit-scrollbar-thumb:hover {
+    background-color: #999; /* Darker on hover interaction */
+}
+
+/* Optional: Apply to search results too for consistency */
+#search-results::-webkit-scrollbar {
+    width: 6px;
+}
+#search-results::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
 }
