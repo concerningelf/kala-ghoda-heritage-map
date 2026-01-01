@@ -22,6 +22,7 @@
             --accent-wall: #c0392b; 
             --accent-nav: #2980b9; 
             --gold-text: #cfa842; 
+            --gold-thumb: #d4af37;
             --safe-area-bottom: env(safe-area-inset-bottom, 20px);
         }
         
@@ -30,11 +31,19 @@
         #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
         .maplibregl-canvas-container canvas { filter: sepia(0.1) contrast(0.95); transition: filter 0.5s ease; }
         
-        /* 1883 Map Mode Styling */
+        /* --- 1883 MODE STYLING --- */
         body.mode-1883 #map canvas { filter: grayscale(1) contrast(0.9) brightness(1.1) !important; }
-        body.mode-1883 .filter-btn:not(#btn-1883) { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+        
+        body.mode-1883 .filter-btn { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
         body.mode-1883 #search-container { opacity: 0.4; pointer-events: none; }
-        body.mode-1883 #map-1883-btn { background: #222; color: #fff; border-color: #222; }
+        
+        /* Grey out controls except 1883 button, Zoom, Compass */
+        body.mode-1883 .v-control-btn:not(#map-1883-btn):not(#zoom-in-btn):not(#zoom-out-btn):not(#compass-btn) {
+            opacity: 0.4; pointer-events: none; background: #eee; color: #ccc;
+        }
+
+        body.mode-1883 #map-1883-btn { background: #222; color: #fff; border-color: #222; opacity: 1 !important; }
+
 
         /* --- UI: HEADER --- */
         #header {
@@ -90,7 +99,6 @@
         .filter-btn:hover { border-color: #bbb; color: #000; background: #f9f9f9; }
         .layer-label-group { display: flex; align-items: center; gap: 10px; pointer-events: none; flex: 1; }
         
-        /* The SOLO Button */
         .layer-solo-btn {
             font-size: 9px; background: #f0f0f0; color: #999;
             padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
@@ -117,49 +125,63 @@
         #wall-info { display: none; margin-top: 8px; padding: 10px; background: #fff4f4; border-left: 3px solid var(--accent-wall); font-size: 11px; color: #555; line-height: 1.4; border-radius: 2px; width: 100%; box-sizing: border-box; }
         #wall-info strong { display: block; margin-bottom: 3px; color: var(--accent-wall); text-transform: uppercase; font-weight: 800; font-size: 10px; }
 
-        /* --- UI: TIME SLIDER WIDGET (FLOATING) --- */
+        /* --- UI: TIME SLIDER WIDGET --- */
         #time-widget {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(200%);
-            width: 90%; max-width: 400px;
+            width: 90%; max-width: 380px;
             background: #fff; border-radius: 12px;
-            padding: 15px 20px; box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            padding: 25px 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             z-index: 120; display: flex; flex-direction: column;
             transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-sizing: border-box;
         }
         #time-widget.active { transform: translateX(-50%) translateY(0); }
 
-        /* Close button for time widget */
-        .widget-close { position: absolute; top: -10px; right: -10px; background: #222; color: #fff; border-radius: 50%; width: 24px; height: 24px; text-align: center; line-height: 24px; cursor: pointer; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .widget-close:hover { background: #000; }
+        .widget-close { 
+            position: absolute; top: 15px; right: 15px; 
+            background: transparent; color: #aaa; 
+            width: 24px; height: 24px; text-align: center; line-height: 24px; 
+            cursor: pointer; font-size: 20px; transition: color 0.2s;
+        }
+        .widget-close:hover { color: #222; }
 
-        #year-display { text-align: center; font-family: 'Cardo', serif; font-size: 20px; color: var(--accent-wall); margin-bottom: 5px; font-weight: bold; }
-        .range-labels { display: flex; justify-content: space-between; font-size: 11px; color: #888; font-weight: 700; margin-top: -5px; }
+        #year-display { 
+            text-align: center; font-family: 'Cardo', serif; font-size: 26px; 
+            color: var(--accent-wall); margin-bottom: 15px; font-weight: 400; 
+        }
+        
+        .range-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; font-weight: 700; margin-top: 5px; padding: 0 4px; }
 
-        /* Slider Styling (Cross-Browser) */
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; height: 30px; }
+        /* Slider Styling */
+        input[type=range] { 
+            -webkit-appearance: none; width: 100%; background: transparent; 
+            margin: 0; height: 30px; display: block; cursor: pointer;
+        }
         input[type=range]:focus { outline: none; }
         
-        /* Webkit */
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; margin-top: 13px; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--gold-text); cursor: pointer; margin-top: -8px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); border: 2px solid #fff; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e0e0e0; border-radius: 2px; margin-top: 13px; }
+        input[type=range]::-moz-range-track { width: 100%; height: 4px; cursor: pointer; background: #e0e0e0; border-radius: 2px; }
         
-        /* Firefox */
-        input[type=range]::-moz-range-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; }
-        input[type=range]::-moz-range-thumb { height: 20px; width: 20px; border: 2px solid #fff; border-radius: 50%; background: var(--gold-text); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        input[type=range]::-webkit-slider-thumb { 
+            -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; 
+            background: var(--gold-thumb); cursor: pointer; margin-top: -10px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 2px solid #fff; 
+        }
+        input[type=range]::-moz-range-thumb { 
+            height: 24px; width: 24px; border-radius: 50%; 
+            background: var(--gold-thumb); cursor: pointer; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 2px solid #fff; 
+        }
 
-        /* --- UI: MARKERS & TOOLTIPS --- */
+        /* --- UI: MARKERS --- */
         .marker { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; box-shadow: 0 3px 8px rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; transition: transform 0.2s ease; z-index: 10; background-size: cover; }
         .marker:hover { transform: scale(1.15); z-index: 20; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
         .marker.selected { transform: scale(1.3); z-index: 30; box-shadow: 0 0 0 3px #fff, 0 8px 20px rgba(0,0,0,0.3); }
         #tooltip { position: absolute; pointer-events: none; background: #111; color: #fff; padding: 6px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 4px; opacity: 0; z-index: 500; white-space: nowrap; transform: translate(-50%, -10px); transition: opacity 0.2s; }
 
         /* --- UI: SIDE PANEL --- */
-        #side-panel { 
-            position: fixed; right: -450px; top: 0; bottom: 0; width: 400px; 
-            background: #fff; z-index: 200; box-shadow: -10px 0 30px rgba(0,0,0,0.1); 
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            display: flex; flex-direction: column; border-left: 1px solid var(--border);
-        }
+        #side-panel { position: fixed; right: -450px; top: 0; bottom: 0; width: 400px; background: #fff; z-index: 200; box-shadow: -10px 0 30px rgba(0,0,0,0.1); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; border-left: 1px solid var(--border); }
         #side-panel.open { transform: translateX(-450px); }
         #panel-scroll-area { flex: 1; overflow-y: auto; }
         .panel-img-container { width: 100%; height: 260px; background: #eee; }
@@ -172,35 +194,58 @@
         .panel-info-row { display: table-row; }
         .panel-info-label { display: table-cell; padding: 8px 0; font-size: 10px; text-transform: uppercase; color: #999; letter-spacing: 1px; width: 30%; font-weight: 700; }
         .panel-info-val { display: table-cell; padding: 8px 0; font-size: 13px; color: #222; font-weight: 400; }
-        
-        .panel-close { 
-            position: absolute; top: 15px; right: 15px; width: 36px; height: 36px; 
-            background: rgba(0,0,0,0.5); color: #fff; border: none; border-radius: 50%; 
-            cursor: pointer; font-size: 20px; z-index: 300; display: flex; align-items: center; justify-content: center;
-        }
+        .panel-close { position: absolute; top: 15px; right: 15px; width: 36px; height: 36px; background: rgba(0,0,0,0.5); color: #fff; border: none; border-radius: 50%; cursor: pointer; font-size: 20px; z-index: 300; display: flex; align-items: center; justify-content: center; }
         .panel-close:hover { background: #000; }
         .panel-action-btn { display: block; width: 100%; margin-top: 20px; padding: 14px 0; text-align: center; text-decoration: none; background: var(--accent-nav); color: #fff; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-radius: 6px; }
 
-        /* --- UI: CONTROLS --- */
-        #vertical-controls { position: fixed; right: 20px; bottom: 30px; display: flex; flex-direction: column; gap: 8px; z-index: 95; }
+        /* --- UI: CONTROLS (SLIDE-OUT) --- */
+        #vertical-controls { 
+            position: fixed; right: 20px; bottom: 30px; 
+            display: flex; flex-direction: column; gap: 8px; z-index: 95;
+            align-items: flex-end; 
+        }
+        
         .v-control-btn { 
             width: 40px; height: 40px; border: none; background: #fff; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 8px; 
-            color: #555; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+            color: #555; font-size: 16px; cursor: pointer; 
+            display: flex; align-items: center; 
+            justify-content: flex-start;
+            flex-direction: row-reverse;
+            padding: 0; 
+            transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), background 0.2s, opacity 0.3s;
+            overflow: hidden;
+            white-space: nowrap;
         }
-        .v-control-btn:hover { background: #111; color: #fff; }
-        .v-control-btn.active-control { background: #222; color: #fff; } /* Generic active state */
+        
+        .v-control-btn i { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        
+        .v-control-btn span {
+            opacity: 0; padding-left: 12px; padding-right: 2px;
+            font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            transform: translateX(10px); transition: all 0.2s ease;
+        }
+        
+        .v-control-btn:hover { width: auto; padding-left: 10px; background: #111; color: #fff; }
+        .v-control-btn:hover span { opacity: 1; transform: translateX(0); }
+        .v-control-btn.active-control { background: #222; color: #fff; } 
         
         .maplibregl-ctrl-top-right { display: none !important; }
         .maplibregl-ctrl-scale { background-color: rgba(255, 255, 255, 0.9) !important; border: 1px solid var(--border) !important; color: #333 !important; font-family: 'Lato', sans-serif !important; font-size: 10px !important; border-radius: 2px !important; box-shadow: none !important; }
 
+        /* --- UI: TOAST --- */
+        #toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #222; color: #fff; padding: 12px 20px; border-radius: 30px;
+            font-size: 13px; font-weight: 600; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 1000; opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
+            display: flex; align-items: center; gap: 10px; white-space: nowrap;
+        }
+        #toast.show { opacity: 1; pointer-events: auto; }
+
         /* ================= MOBILE MODE ================= */
         @media (max-width: 768px) {
-            #header { 
-                top: 15px; left: 15px; right: 15px; width: auto; 
-                max-height: none; background: transparent; box-shadow: none; border: none;
-                overflow: visible;
-            }
+            #header { top: 15px; left: 15px; right: 15px; width: auto; max-height: none; background: transparent; box-shadow: none; border: none; overflow: visible; }
             #header h1, #header h2 { display: none; }
             
             #search-container { padding: 0; background: transparent; display: flex; gap: 10px; }
@@ -228,18 +273,9 @@
                 display: block; 
             }
             #console.open { transform: translateY(0); }
-            
-            #console::before {
-                content: ''; display: block; width: 40px; height: 5px; 
-                background: #ddd; margin: 0 auto 15px auto; border-radius: 3px;
-            }
+            #console::before { content: ''; display: block; width: 40px; height: 5px; background: #ddd; margin: 0 auto 15px auto; border-radius: 3px; }
 
-            #layers-content { 
-                max-height: none !important; 
-                opacity: 1; margin-top: 10px; 
-                display: flex; flex-direction: column; 
-                gap: 10px; overflow: visible; 
-            }
+            #layers-content { max-height: none !important; opacity: 1; margin-top: 10px; display: flex; flex-direction: column; gap: 10px; overflow: visible; }
             #layers-header { display: none; }
 
             .filter-btn { height: 50px; font-size: 13px; margin-bottom: 0; }
@@ -249,11 +285,13 @@
             #side-panel.open { transform: translateY(0); }
             .panel-close { top: 20px; right: 20px; background: #fff; color: #000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
             
-            /* Move Vertical Controls UP so they are accessible above the bottom controls */
             #vertical-controls { bottom: 30px; right: 15px; }
+            .v-control-btn:hover { width: 40px; padding-left: 0; background: #fff; color: #555; }
+            .v-control-btn:hover span { opacity: 0; }
+            .v-control-btn.active-control { background: #222; color: #fff; }
             
-            /* Position the Time Widget higher on mobile so it doesn't overlap controls */
-            #time-widget { bottom: 40px; }
+            #time-widget { bottom: 40px; width: 85%; padding: 25px; }
+            #toast { bottom: 90px; width: 80%; justify-content: center; }
         }
     </style>
 </head>
@@ -270,6 +308,11 @@
             <span id="label-min">1850</span>
             <span>Present</span>
         </div>
+    </div>
+
+    <div id="toast">
+        <i class="fa-solid fa-info-circle"></i>
+        <span id="toast-msg">Welcome to Kala Ghoda</span>
     </div>
 
     <div id="header">
@@ -299,14 +342,14 @@
     </div>
 
     <div id="vertical-controls">
-        <button class="v-control-btn" id="zoom-in-btn" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
-        <button class="v-control-btn" id="zoom-out-btn" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
-        <button class="v-control-btn" id="compass-btn" title="Reset North"><i class="fa-regular fa-compass"></i></button>
-        <button class="v-control-btn" id="time-travel-btn" title="Time Travel"><i class="fa-solid fa-clock-rotate-left"></i></button>
-        <button class="v-control-btn" id="map-1883-btn" title="Toggle 1883 Map Overlay"><i class="fa-solid fa-map-location-dot"></i></button>
-        <button class="v-control-btn" id="view-3d-btn" title="Toggle 3D View"><i class="fa-solid fa-cube"></i></button>
-        <button class="v-control-btn" id="reset-view-btn" title="Reset Camera"><i class="fa-solid fa-compress"></i></button>
-        <button class="v-control-btn" id="locate-btn" title="My Location"><i class="fa-solid fa-location-crosshairs"></i></button>
+        <button class="v-control-btn" id="zoom-in-btn" data-msg="Zoomed In"><i class="fa-solid fa-plus"></i> <span>Zoom In</span></button>
+        <button class="v-control-btn" id="zoom-out-btn" data-msg="Zoomed Out"><i class="fa-solid fa-minus"></i> <span>Zoom Out</span></button>
+        <button class="v-control-btn" id="compass-btn" data-msg="Orientation Reset"><i class="fa-regular fa-compass"></i> <span>Reset North</span></button>
+        <button class="v-control-btn" id="time-travel-btn" data-msg="Time Slider Active"><i class="fa-solid fa-clock-rotate-left"></i> <span>Time Travel</span></button>
+        <button class="v-control-btn" id="map-1883-btn" data-msg="1883 Map Enabled"><i class="fa-solid fa-map-location-dot"></i> <span>1883 Map</span></button>
+        <button class="v-control-btn" id="view-3d-btn" data-msg="3D View Toggled"><i class="fa-solid fa-cube"></i> <span>3D View</span></button>
+        <button class="v-control-btn" id="reset-view-btn" data-msg="Camera Reset"><i class="fa-solid fa-compress"></i> <span>Reset View</span></button>
+        <button class="v-control-btn" id="locate-btn" data-msg="Locating..."><i class="fa-solid fa-location-crosshairs"></i> <span>My Location</span></button>
     </div>
 
     <div id="side-panel">
@@ -319,7 +362,17 @@
     <script>
         window.addEventListener('load', function() {
             initMap();
+            showToast("Try the Time Travel slider!", 2000);
         });
+        
+        function showToast(message, duration = 2000) {
+            var toast = document.getElementById('toast');
+            var msg = document.getElementById('toast-msg');
+            msg.innerText = message;
+            toast.classList.add('show');
+            clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(function() { toast.classList.remove('show'); }, duration);
+        }
 
         function initMap() {
             var initialZoom = window.innerWidth < 768 ? 15.0 : 16.5;
@@ -339,11 +392,11 @@
                     { id: 'statue', category: 'Street Furniture', title: 'Kala Ghoda Statue', image: './images/placeholder.jpg', description: 'Bronze statue installed to mark the historic site.', year: '2017', architect: 'Commissioned artwork', builder: 'Kala Ghoda Association', location: { center: [72.8318, 18.9279] } },
                     { id: 'synagogue', category: 'Victorian', title: 'Keneseth Eliyahoo', image: './images/synagogue.jpg', description: 'Victorian era synagogue built for the Baghdadi Jewish community.', year: '1884', architect: 'Unknown', builder: 'Jewish Community', location: { center: [72.8326, 18.9281] } },
                     { id: 'ropewalk', category: 'Street Furniture', title: 'Rope Walk Lane', image: './images/ropewalk.jpg', description: 'Historic lane characterised by enamel street signage.', year: '19th century', architect: 'Incremental', builder: 'Multiple', location: { center: [72.8323, 18.9278] } },
-                    { id: 'army-lettering', category: 'Lettering', title: 'Army and Navy Signage', image: './images/army-lettering.jpg', description: 'Original carved and painted serif lettering.', year: 'Late 19th C.', architect: 'Unknown', builder: 'British Military', location: { center: [72.8313, 18.9282] } },
-                    { id: 'ropewalk-signs', category: 'Lettering', title: 'Rope Walk Signs', image: './images/ropewalk-lettering.jpg', description: 'Blue enamel street signage with bilingual lettering.', year: '20th century', architect: 'Municipal signage', builder: 'BMC', location: { center: [72.8323, 18.9278] } },
+                    { id: 'army-lettering', category: 'Lettering', title: 'Army and Navy Signage', image: './images/army-lettering.jpg', description: 'Original carved and painted serif lettering.', year: 'Late 19th C.', architect: 'Unknown', builder: 'British Military', location: { center: [72.83135, 18.9282] } }, /* Offset applied here */
+                    { id: 'ropewalk-signs', category: 'Lettering', title: 'Rope Walk Signs', image: './images/ropewalk-lettering.jpg', description: 'Blue enamel street signage with bilingual lettering.', year: '20th century', architect: 'Municipal signage', builder: 'BMC', location: { center: [72.83235, 18.9278] } }, /* Offset applied here */
                     { id: 'lumiere', category: 'Ghost Site', title: 'Lumière Screening Site', image: './images/lumiere-placeholder.jpg', description: 'On July 7, 1896, the Lumière Brothers screened the first motion pictures.', year: '1896', architect: 'N/A', builder: 'Historic Event', location: { center: [72.83125, 18.92835] } },
                     { id: 'hydrant', category: 'Street Furniture', title: 'British Fire Hydrant', image: './images/hydrant.jpg', description: 'A cast-iron fire hydrant from the Bombay Municipal Corporation era.', year: 'Late 19th C.', architect: 'BMC', builder: 'Foundry Cast', location: { center: [72.8325, 18.9276] } },
-                    { id: 'pavement', category: 'Living Heritage', title: 'The Pavement Gallery', image: './images/pavement.jpg', description: 'An informal exhibition space where aspiring artists display their work.', year: 'Ongoing', architect: 'The People', builder: 'Informal Usage', location: { center: [72.8316, 18.9275] } },
+                    { id: 'pavement', category: 'Living Heritage', title: 'The Pavement Gallery', image: './images/pavement.jpg', description: 'An informal exhibition space where aspiring artists display their work.', year: 'Ongoing', architect: 'The People', builder: 'Informal Usage', location: { center: [72.83165, 18.92745] } }, /* Offset applied here */
                     { id: 'booksellers', category: 'Living Heritage', title: 'Secondhand Book Sellers', image: './images/books.jpg', description: 'The lineage of street book vendors near Flora Fountain.', year: 'Mid 20th C.', architect: 'N/A', builder: 'Vendor Collective', location: { center: [72.8305, 18.9290] } },
                     { id: 'kerbstones', category: 'Street Furniture', title: 'Kurla Basalt Kerbstones', image: './images/kerb.jpg', description: 'Original massive blocks of grey Kurla basalt lining the pavement.', year: '19th Century', architect: 'City Engineers', builder: 'Public Works', location: { center: [72.8320, 18.9275] } },
                     { id: 'rhythm', category: 'Ghost Site', title: 'Rhythm House', image: './images/rhythm-house.jpg', description: 'Formerly the city\'s premier music store.', year: '1940s', architect: 'Unknown', builder: 'Mehmood Curmally', location: { center: [72.8318, 18.9272] } },
@@ -370,48 +423,38 @@
             // --- STATE MANAGEMENT ---
             var disabledCategories = [];
             var currentSliderYear = 2025;
+            var isTimeTravelActive = false;
 
             var layersContent = document.getElementById('layers-content');
             var categories = [...new Set(config.chapters.map(function(item) { return item.category; }))];
             
-            // "ALL LAYERS" (Reset) Button
             var allBtn = document.createElement('div');
             allBtn.className = 'filter-btn all-layers-btn active';
             allBtn.innerHTML = 'Reset Visibility';
             allBtn.onclick = function() { resetFilters(); };
             layersContent.appendChild(allBtn);
 
-            // CATEGORY BUTTONS
             categories.forEach(function(cat) {
                 var btn = document.createElement('div'); 
                 btn.className = 'filter-btn'; 
                 btn.setAttribute('data-cat', cat);
                 var color = config.colors[cat] || '#333';
-                
                 btn.innerHTML = `
-                    <div class="layer-label-group">
-                        <i class="fa-regular fa-eye layer-eye"></i> 
-                        <span class="dot-indicator" style="color:${color}"></span> 
-                        ${cat}
-                    </div>
+                    <div class="layer-label-group"><i class="fa-regular fa-eye layer-eye"></i><span class="dot-indicator" style="color:${color}"></span>${cat}</div>
                     <span class="layer-solo-btn" title="Show Only This Layer">ONLY</span>
                 `;
-                
                 btn.addEventListener('click', function(e) { 
                     if(e.target.classList.contains('layer-solo-btn')) return;
                     toggleCategory(cat, btn); 
                 });
-
                 var soloBtn = btn.querySelector('.layer-solo-btn');
                 soloBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     soloCategory(cat);
                 });
-
                 layersContent.appendChild(btn);
             });
 
-            // --- MOBILE UI: Filter Toggle ---
             var mobileFilterBtn = document.createElement('div');
             mobileFilterBtn.id = 'mobile-filter-toggle';
             mobileFilterBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i>';
@@ -421,7 +464,6 @@
             mobileFilterBtn.onclick = function() {
                 var consolePanel = document.getElementById('console');
                 var isOpen = consolePanel.classList.contains('open');
-                
                 if (isOpen) {
                     consolePanel.classList.remove('open');
                     this.innerHTML = '<i class="fa-solid fa-layer-group"></i>';
@@ -492,7 +534,6 @@
                 markerObjects.forEach(function(m) {
                     var categoryVisible = !disabledCategories.includes(m.category);
                     var timeVisible = m.year <= currentSliderYear;
-
                     if (categoryVisible && timeVisible) {
                         m.element.style.display = 'flex';
                         m.element.style.opacity = '1';
@@ -523,7 +564,6 @@
 
             var layersHeader = document.getElementById('layers-header');
             var layersArrow = document.getElementById('layers-arrow');
-            
             layersHeader.addEventListener('click', function() {
                 if (layersContent.classList.contains('collapsed')) {
                     layersContent.classList.remove('collapsed');
@@ -547,14 +587,13 @@
             map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
             map.addControl(new maplibregl.ScaleControl({ maxWidth: 100, unit: 'metric' }), 'bottom-left');
 
-            // --- TIME TRAVEL LOGIC (FLOATING WIDGET) ---
+            // --- TIME TRAVEL LOGIC ---
             var parsedYears = config.chapters.map(c => parseYear(c.year)).filter(y => !isNaN(y) && y !== 2025);
             var minYear = parsedYears.length > 0 ? Math.min(...parsedYears) : 1850;
             var maxYear = 2025;
             
             document.getElementById('label-min').innerText = minYear;
 
-            // Inject Range Slider
             var timeWidget = document.getElementById('time-widget');
             var sliderInput = document.createElement('input');
             sliderInput.type = 'range';
@@ -563,7 +602,6 @@
             sliderInput.value = maxYear;
             sliderInput.id = 'year-slider';
             
-            // Insert slider before the labels
             timeWidget.insertBefore(sliderInput, timeWidget.querySelector('.range-labels'));
 
             sliderInput.addEventListener('input', function(e) {
@@ -571,7 +609,6 @@
                 var display = document.getElementById('year-display');
                 if (year === parseInt(e.target.max)) display.innerText = "Present Day";
                 else display.innerText = "Year: " + year;
-
                 currentSliderYear = year;
                 updateMapState();
             });
@@ -579,66 +616,80 @@
             window.closeTimeWidget = function() {
                 document.getElementById('time-widget').classList.remove('active');
                 document.getElementById('time-travel-btn').classList.remove('active-control');
+                isTimeTravelActive = false;
             };
 
-            // Toggle Time Widget
             document.getElementById('time-travel-btn').addEventListener('click', function() {
                 var widget = document.getElementById('time-widget');
                 var btn = this;
                 
+                // If 1883 mode is on, we cannot use time travel
+                if (document.body.classList.contains('mode-1883')) {
+                    if(window.innerWidth <= 768) showToast("Time Travel unavailable in 1883 Mode");
+                    return;
+                }
+
                 if (widget.classList.contains('active')) {
                     closeTimeWidget();
                 } else {
                     widget.classList.add('active');
                     btn.classList.add('active-control');
-                    // Reset 1883 if it's on (optional UX choice)
+                    isTimeTravelActive = true;
                 }
             });
 
+            function setupControl(id, action) {
+                var btn = document.getElementById(id);
+                btn.addEventListener('click', function() {
+                    // Prevent other actions if 1883 mode is on (except exit)
+                    if(document.body.classList.contains('mode-1883') && id !== 'map-1883-btn' && id !== 'zoom-in-btn' && id !== 'zoom-out-btn' && id !== 'compass-btn') {
+                        return;
+                    }
 
-            document.getElementById('zoom-in-btn').addEventListener('click', function() { map.zoomIn(); });
-            document.getElementById('zoom-out-btn').addEventListener('click', function() { map.zoomOut(); });
+                    action();
+                    if (window.innerWidth <= 768) {
+                        var msg = btn.getAttribute('data-msg');
+                        if(msg) showToast(msg);
+                    }
+                });
+            }
+
+            setupControl('zoom-in-btn', () => map.zoomIn());
+            setupControl('zoom-out-btn', () => map.zoomOut());
             
-            // --- 3D BUTTON & STATE (Robust Listener Implementation) ---
             var view3dBtn = document.getElementById('view-3d-btn');
-
-            // Listen to map pitch changes to update button state
             map.on('pitch', function() {
                 var pitch = map.getPitch();
-                if (pitch > 5) { // Threshold to consider "3D"
+                if (pitch > 5) {
                     view3dBtn.classList.add('active-control');
                 } else {
                     view3dBtn.classList.remove('active-control');
                 }
             });
 
-            document.getElementById('compass-btn').addEventListener('click', function() { 
+            setupControl('compass-btn', () => { 
                 map.flyTo({ bearing: 0, pitch: 0 }); 
             });
 
-            view3dBtn.addEventListener('click', function() {
-                // Toggle based on current state
+            setupControl('view-3d-btn', () => {
                 var currentPitch = map.getPitch();
-                if (currentPitch > 5) { 
-                    map.easeTo({ pitch: 0, bearing: 0 }); 
-                } else { 
-                    map.easeTo({ pitch: 45, bearing: -15 }); 
-                }
+                if (currentPitch > 5) { map.easeTo({ pitch: 0, bearing: 0 }); } 
+                else { map.easeTo({ pitch: 45, bearing: -15 }); }
             });
 
-            document.getElementById('reset-view-btn').addEventListener('click', function() { 
+            setupControl('reset-view-btn', () => { 
                 map.flyTo({ center: [72.8320, 18.9275], zoom: initialZoom, pitch: 45, bearing: -15, duration: 2000 }); 
                 closePanel(true); 
             });
 
-            // --- 1883 MAP BUTTON ---
-            document.getElementById('map-1883-btn').addEventListener('click', function() {
-                toggle1883Map(this);
+            // --- 1883 MAP BUTTON (EXCLUSIVE MODE) ---
+            setupControl('map-1883-btn', function() {
+                toggle1883Map(document.getElementById('map-1883-btn'));
             });
 
             var geolocate = new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true });
             map.addControl(geolocate); 
-            document.getElementById('locate-btn').addEventListener('click', function() { geolocate.trigger(); });
+            setupControl('locate-btn', () => geolocate.trigger());
 
             window.mapInstance = map;
             var markerObjects = [];
@@ -651,10 +702,8 @@
                 const val = e.target.value.toLowerCase();
                 if (val.length < 1) { searchResults.style.display = 'none'; return; }
                 const matches = config.chapters.filter(item => item.title.toLowerCase().includes(val) || item.category.toLowerCase().includes(val));
-                
                 searchResults.innerHTML = ''; 
                 searchResults.style.display = 'block';
-
                 if (matches.length > 0) {
                     matches.forEach(item => {
                         const div = document.createElement('div'); div.className = 'search-item';
@@ -665,18 +714,25 @@
                                 targetObj.element.click(); 
                                 searchInput.value = ''; 
                                 searchResults.style.display = 'none'; 
-                                if(window.innerWidth <= 768) {
-                                    document.getElementById('search-input').blur(); 
-                                }
+                                if(window.innerWidth <= 768) { document.getElementById('search-input').blur(); }
                             } 
                         });
                         searchResults.appendChild(div);
                     });
-                } else { 
-                    searchResults.innerHTML = '<div class="search-empty">No results found</div>';
-                }
+                } else { searchResults.innerHTML = '<div class="search-empty">No results found</div>'; }
             });
             document.addEventListener('click', function(e) { if (!document.getElementById('search-container').contains(e.target)) { searchResults.style.display = 'none'; } });
+
+            // ESCAPE KEY LOGIC
+            document.addEventListener('keydown', function(event) {
+                if (event.key === "Escape") {
+                    if (document.body.classList.contains('mode-1883')) {
+                        toggle1883Map(document.getElementById('map-1883-btn'));
+                    } else {
+                        closePanel(false);
+                    }
+                }
+            });
 
             map.on("load", function () {
                 map.setSky({ 'sky-color': '#87CEEB', 'sky-horizon-blend': 0.5, 'horizon-color': '#ffffff', 'fog-color': '#888888', 'fog-ground-blend': 0.5 });
@@ -688,11 +744,7 @@
                     }
                 });
 
-                map.addSource('source-1883', {
-                    'type': 'image',
-                    'url': './images/fort-1883.jpg',
-                    'coordinates': [[72.8228, 18.9435], [72.8492, 18.9435], [72.8492, 18.9235], [72.8228, 18.9235]]
-                });
+                map.addSource('source-1883', { 'type': 'image', 'url': './images/fort-1883.jpg', 'coordinates': [[72.8228, 18.9435], [72.8492, 18.9435], [72.8492, 18.9235], [72.8228, 18.9235]] });
                 map.addLayer({ 'id': 'layer-1883', 'type': 'raster', 'source': 'source-1883', 'paint': { 'raster-fade-duration': 0 }, 'layout': { 'visibility': 'none' } });
 
                 map.addLayer({ 'id': '3d-buildings', 'source': 'openmaptiles', 'source-layer': 'building', 'type': 'fill-extrusion', 'minzoom': 15, 'paint': { 'fill-extrusion-color': '#f0f0f0', 'fill-extrusion-height': ['get', 'render_height'], 'fill-extrusion-base': ['get', 'render_min_height'], 'fill-extrusion-opacity': 0.9 } });
@@ -705,13 +757,8 @@
                     var color = config.colors[record.category] || '#333';
                     var iconClass = config.icons[record.category] || 'fa-map-marker-alt';
                     var el = document.createElement('div'); el.className = 'marker'; el.style.backgroundColor = color; el.innerHTML = '<i class="fa-solid ' + iconClass + '"></i>';
-                    
                     record.parsedYear = parseYear(record.year);
-
-                    el.onclick = function(e) { 
-                        e.stopPropagation(); 
-                        openPanel(record, color, el); 
-                    };
+                    el.onclick = function(e) { e.stopPropagation(); openPanel(record, color, el); };
                     if (window.matchMedia('(hover: hover)').matches) {
                         el.addEventListener('mouseenter', function(e) { tooltip.innerText = record.title; var rect = el.getBoundingClientRect(); tooltip.style.left = rect.left + (rect.width / 2) + 'px'; tooltip.style.top = rect.top + 'px'; tooltip.style.opacity = '1'; });
                         el.addEventListener('mouseleave', function() { tooltip.style.opacity = '0'; });
@@ -721,9 +768,7 @@
                 });
             });
 
-            document.getElementById('close-btn').addEventListener('click', function() { closePanel(false); });
-            document.addEventListener('keydown', function(event) { if (event.key === "Escape") closePanel(false); });
-            
+            // Map click closes panels AND Mobile Drawer
             map.on('click', function() { 
                 closePanel(false); 
                 document.getElementById('console').classList.remove('open');
@@ -739,30 +784,18 @@
                 if (selectedMarker) selectedMarker.classList.remove('selected');
                 markerEl.classList.add('selected');
                 selectedMarker = markerEl;
-
                 var infoHTML = '<div class="panel-info">' + 
                     '<div class="panel-info-row"><span class="panel-info-label">Year</span><span class="panel-info-val">' + record.year + '</span></div>' + 
                     '<div class="panel-info-row"><span class="panel-info-label">Architect</span><span class="panel-info-val">' + record.architect + '</span></div>' + 
                     '<div class="panel-info-row"><span class="panel-info-label">Builder</span><span class="panel-info-val">' + record.builder + '</span></div>' + 
                 '</div>';
-
                 var destLat = record.location.center[1]; var destLng = record.location.center[0];
                 var navUrl = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=walking`;
                 var navButton = `<a href="${navUrl}" target="_blank" class="panel-action-btn"><i class="fa-solid fa-diamond-turn-right"></i> Navigate Here</a>`;
-
                 var imageHTML = `<div class="panel-img-container"><img src="${record.image}" class="panel-img"></div>`;
-
-                var panelContent = imageHTML + 
-                    '<div class="panel-content">' + 
-                    '<span class="panel-cat" style="color:' + color + '">' + record.category + '</span>' + 
-                    '<div class="panel-title">' + record.title + '</div>' + 
-                    '<p class="panel-desc">' + record.description + '</p>' + 
-                    infoHTML + navButton + 
-                    '</div>';
-
+                var panelContent = imageHTML + '<div class="panel-content"><span class="panel-cat" style="color:' + color + '">' + record.category + '</span><div class="panel-title">' + record.title + '</div><p class="panel-desc">' + record.description + '</p>' + infoHTML + navButton + '</div>';
                 document.getElementById('panel-inner').innerHTML = panelContent; 
                 document.getElementById('side-panel').classList.add('open');
-                
                 if(window.innerWidth <= 768) {
                     document.getElementById('console').classList.remove('open');
                     var filterBtn = document.getElementById('mobile-filter-toggle');
@@ -772,7 +805,6 @@
                         filterBtn.style.color = '#333';
                     }
                 }
-
                 if (window.innerWidth >= 768) {
                     map.flyTo({ center: record.location.center, zoom: 17.5, pitch: map.getPitch(), bearing: map.getBearing(), speed: 0.8, curve: 1 });
                 }
@@ -783,6 +815,11 @@
                 if (selectedMarker) { selectedMarker.classList.remove('selected'); selectedMarker = null; }
                 if (!preventCameraMove && window.innerWidth >= 768) { map.flyTo({ zoom: initialZoom, speed: 0.6 }); }
             }
+
+            // ADDED EVENT LISTENER FOR CLOSE BUTTON HERE
+            document.getElementById('close-btn').addEventListener('click', function() {
+                closePanel(false);
+            });
 
             window.toggleLayer = function(layerId, btn) {
                 if (document.body.classList.contains('mode-1883')) return;
@@ -798,18 +835,45 @@
                 var body = document.body;
                 
                 if (visibility === 'visible') {
+                    // Turn OFF
                     map.setLayoutProperty(layerId, 'visibility', 'none');
                     btn.classList.remove('active-control');
                     body.classList.remove('mode-1883');
+                    // Restore 3D view check? No, let user decide.
                     updateMapState();
                 } else {
+                    // Turn ON: EXCLUSIVE MODE
+                    
+                    // 1. Close Time Widget
+                    closeTimeWidget();
+                    
+                    // 2. Clear Search
+                    document.getElementById('search-input').value = '';
+                    document.getElementById('search-results').style.display = 'none';
+                    
+                    // 3. FIT BOUNDS (The Fix)
+                    map.fitBounds([
+                        [72.8228, 18.9235], // Southwest coordinates
+                        [72.8492, 18.9435]  // Northeast coordinates
+                    ], {
+                        padding: {top: 100, bottom: 100, left: 50, right: 50}, // Adjust for header
+                        pitch: 0,
+                        bearing: 0
+                    });
+
+                    // 4. Activate Mode
                     map.setLayoutProperty(layerId, 'visibility', 'visible');
                     btn.classList.add('active-control');
                     body.classList.add('mode-1883');
                     
+                    // 5. Hide Markers
                     markerObjects.forEach(function(m) { m.element.style.display = 'none'; });
+                    
+                    // 6. Close panel
                     closePanel(true);
-                    map.flyTo({ center: [72.8360, 18.9335], zoom: 14.5, pitch: 0, bearing: 0 });
+                    
+                    // 7. Feedback
+                    if (window.innerWidth <= 768) showToast("1883 Mode Active: Other tools disabled");
                 }
             };
         }
