@@ -1,5 +1,6 @@
 window.addEventListener('load', function() {
     initMap();
+    initMobileGestures(); // New swipe logic
 });
 
 function showToast(message, duration = 2000) {
@@ -11,11 +12,55 @@ function showToast(message, duration = 2000) {
     window.toastTimeout = setTimeout(function() { toast.classList.remove('show'); }, duration);
 }
 
+// NEW: Swipe to close logic
+function initMobileGestures() {
+    const panel = document.getElementById('side-panel');
+    let startY = 0;
+    
+    panel.addEventListener('touchstart', function(e) {
+        // Only trigger if we are at the top of the scroll area (prevents conflicting with text scroll)
+        var scrollArea = document.getElementById('panel-scroll-area');
+        if (scrollArea.scrollTop === 0) {
+            startY = e.touches[0].clientY;
+        } else {
+            startY = -1; // invalid
+        }
+    }, {passive: true});
+
+    panel.addEventListener('touchmove', function(e) {
+        if (startY < 0) return;
+        const currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
+        
+        // If pulling down (positive diff)
+        if (diff > 0) {
+            // Visual feedback: drag the panel down slightly
+            panel.style.transform = `translateY(${diff}px)`;
+        }
+    }, {passive: true});
+
+    panel.addEventListener('touchend', function(e) {
+        if (startY < 0) return;
+        const endY = e.changedTouches[0].clientY;
+        const diff = endY - startY;
+        
+        // Clear manual transform
+        panel.style.transform = '';
+        
+        // Threshold: if dragged more than 80px down, close it
+        if (diff > 80) {
+            closePanel(false);
+        } else {
+            // Snap back to open if not dragged enough
+            if(panel.classList.contains('open')) {
+                panel.classList.add('open'); // Re-applies CSS transform
+            }
+        }
+    }, {passive: true});
+}
+
 function initMap() {
     var initialZoom = window.innerWidth < 768 ? 15.0 : 16.5;
-
-    // --- CONFIGURATION ---
-    // FINE TUNED CENTER: Shifted 30m North (Down visually)
     var startCenter = [72.8320, 18.9263]; 
 
     var config = {
@@ -121,7 +166,8 @@ function initMap() {
         }
     };
     
-    function closeMobileConsole() {
+    // EXPOSE for global use
+    window.closeMobileConsole = function() {
         var consolePanel = document.getElementById('console');
         var btn = document.getElementById('mobile-filter-toggle');
         if (consolePanel) consolePanel.classList.remove('open');
@@ -170,10 +216,7 @@ function initMap() {
     function resetFilters() {
         if (document.body.classList.contains('mode-1883')) return;
         disabledCategories = [];
-        
-        // --- FIX: Only reset buttons that have a 'data-cat' attribute ---
         var btns = document.querySelectorAll('.filter-btn[data-cat]');
-        
         btns.forEach(b => {
             b.classList.remove('layer-hidden');
             b.querySelector('.layer-eye-btn').innerText = 'HIDE';
@@ -214,7 +257,6 @@ function initMap() {
     wallInfo.innerHTML = '<strong>The Invisible Ramparts</strong>This dashed line traces the demolished fortifications of the Bombay Fort (removed 1862).';
     layersContent.appendChild(wallInfo);
 
-    // Filter List Expand/Collapse Arrow
     var layersHeader = document.getElementById('layers-header');
     var layersArrow = document.getElementById('layers-arrow');
     layersHeader.addEventListener('click', function() {
@@ -228,6 +270,9 @@ function initMap() {
     });
 
     // MAP INITIALIZATION
+    var defaultBottomPadding = window.innerWidth < 768 ? 0 : 300;
+    var mapPadding = { top: 0, bottom: defaultBottomPadding, left: 0, right: 0 };
+
     var map = new maplibregl.Map({
         container: 'map',
         style: config.style,
@@ -235,7 +280,8 @@ function initMap() {
         zoom: initialZoom,
         minZoom: 14.5, 
         maxBounds: [[72.8100, 18.9100], [72.8500, 18.9450]],
-        pitch: 45, bearing: -15, antialias: true, attributionControl: false
+        pitch: 45, bearing: -15, antialias: true, attributionControl: false,
+        padding: mapPadding
     });
     
     map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
@@ -269,7 +315,6 @@ function initMap() {
     var timeTravelBtn = document.getElementById('time-travel-btn');
     var timeWidgetEl = document.getElementById('time-widget');
     
-    // Auto-show only on Desktop
     if (window.innerWidth >= 768) {
         timeWidgetEl.classList.add('active');
         timeTravelBtn.classList.add('active-control');
@@ -315,7 +360,6 @@ function initMap() {
     setupControl('compass-btn', () => { map.flyTo({ bearing: 0, pitch: 0 }); });
     setupControl('view-3d-btn', () => { var currentPitch = map.getPitch(); if (currentPitch > 5) { map.easeTo({ pitch: 0, bearing: 0 }); } else { map.easeTo({ pitch: 45, bearing: -15 }); } });
     
-    // UPDATED RESET: Uses the same shifted center
     setupControl('reset-view-btn', () => { 
         map.flyTo({ center: startCenter, zoom: initialZoom, pitch: 45, bearing: -15, duration: 2000 }); 
         closePanel(true); 
@@ -388,6 +432,13 @@ function initMap() {
 
     map.on('click', function() { closePanel(false); closeMobileConsole(); });
 
+    // GLOBAL: Close Panel Function
+    window.closePanel = function(preventCameraMove) {
+        document.getElementById('side-panel').classList.remove('open');
+        if (selectedMarker) { selectedMarker.classList.remove('selected'); selectedMarker = null; }
+        if (!preventCameraMove && window.innerWidth >= 768) { map.flyTo({ zoom: initialZoom, speed: 0.6 }); }
+    }
+
     function openPanel(record, color, markerEl) {
         if (selectedMarker) selectedMarker.classList.remove('selected');
         markerEl.classList.add('selected'); selectedMarker = markerEl;
@@ -403,23 +454,30 @@ function initMap() {
         if (window.innerWidth >= 768) { map.flyTo({ center: record.location.center, zoom: 17.5, pitch: map.getPitch(), bearing: map.getBearing(), speed: 0.8, curve: 1 }); }
     }
 
-    function closePanel(preventCameraMove) {
-        document.getElementById('side-panel').classList.remove('open');
-        if (selectedMarker) { selectedMarker.classList.remove('selected'); selectedMarker = null; }
-        if (!preventCameraMove && window.innerWidth >= 768) { map.flyTo({ zoom: initialZoom, speed: 0.6 }); }
-    }
-
     document.getElementById('close-btn').addEventListener('click', function() { closePanel(false); });
 
     window.toggleLayer = function(layerId, btn) {
         if (document.body.classList.contains('mode-1883')) return;
         var visibility = map.getLayoutProperty(layerId, 'visibility');
         var infoBox = document.getElementById('wall-info');
+        
         if (visibility === 'visible') { 
-            map.setLayoutProperty(layerId, 'visibility', 'none'); btn.classList.remove('active-control'); infoBox.style.display = 'none';
+            // Turning OFF
+            map.setLayoutProperty(layerId, 'visibility', 'none'); 
+            btn.classList.remove('active-control'); 
+            infoBox.style.display = 'none';
         } else { 
-            map.setLayoutProperty(layerId, 'visibility', 'visible'); btn.classList.add('active-control'); infoBox.style.display = 'block';
+            // Turning ON
+            map.setLayoutProperty(layerId, 'visibility', 'visible'); 
+            btn.classList.add('active-control'); 
+            infoBox.style.display = 'block';
             setTimeout(function() { infoBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
+            
+            // ** MOBILE SPECIFIC: Close panel & Show Toast **
+            if (window.innerWidth <= 768) {
+                closeMobileConsole();
+                showToast("1860 Fort Wall Visible");
+            }
         }
     };
 
