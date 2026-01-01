@@ -15,7 +15,7 @@ function initMap() {
     var initialZoom = window.innerWidth < 768 ? 15.0 : 16.5;
 
     // --- CONFIGURATION ---
-    // FINE TUNED CENTER: Shifted 30m North (Down visually) from previous setting
+    // FINE TUNED CENTER: Shifted 30m North (Down visually)
     var startCenter = [72.8320, 18.9263]; 
 
     var config = {
@@ -170,7 +170,10 @@ function initMap() {
     function resetFilters() {
         if (document.body.classList.contains('mode-1883')) return;
         disabledCategories = [];
-        var btns = document.querySelectorAll('.filter-btn:not(.all-layers-btn)');
+        
+        // --- FIX: Only reset buttons that have a 'data-cat' attribute ---
+        var btns = document.querySelectorAll('.filter-btn[data-cat]');
+        
         btns.forEach(b => {
             b.classList.remove('layer-hidden');
             b.querySelector('.layer-eye-btn').innerText = 'HIDE';
