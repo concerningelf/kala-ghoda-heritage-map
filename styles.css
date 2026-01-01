@@ -64,7 +64,7 @@ body.mode-1883 #map-1883-btn { background: #222; color: #fff; border-color: #222
 .search-empty { padding: 15px; text-align: center; color: #999; font-size: 12px; font-style: italic; }
 
 /* --- UI: LAYERS LIST --- */
-#console { padding: 0 20px 20px 20px; display: flex; flex-direction: column; }
+#console { padding: 0 20px 20px 20px; display: flex; flex-direction: column; position: relative; }
 #layers-header { 
     padding: 15px 0 10px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
     font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #444; user-select: none;
@@ -188,17 +188,8 @@ input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 
 .panel-info-val { display: table-cell; padding: 8px 0; font-size: 13px; color: #222; font-weight: 400; }
 .panel-action-btn { display: block; width: 100%; margin-top: 20px; padding: 14px 0; text-align: center; text-decoration: none; background: var(--accent-nav); color: #fff; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-radius: 6px; }
 
-/* THE CLOSE BUTTON */
-#panel-close-btn { 
-    position: absolute; top: 15px; right: 15px; 
-    width: 36px; height: 36px; 
-    background: rgba(0,0,0,0.5); color: #fff; 
-    border: none; border-radius: 50%; cursor: pointer; 
-    font-size: 18px; z-index: 10; 
-    display: flex; align-items: center; justify-content: center; 
-    transition: background 0.2s;
-}
-#panel-close-btn:hover { background: #000; }
+/* CLOSE BUTTON - HIDDEN ON DESKTOP */
+.mobile-close-btn { display: none; }
 
 /* PANEL DRAG HANDLE (Hidden on desktop) */
 #panel-handle { display: none; }
@@ -252,6 +243,36 @@ input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 
 }
 
 /* ================= MOBILE MODE ================= */
+/* --- UI: CLOSE BUTTON (Desktop Override) --- */
+#panel-close-btn {
+    /* Force display flex to override the 'mobile-close-btn' class which hides it */
+    display: flex !important; 
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    
+    /* Styling: Black Circle */
+    width: 36px;
+    height: 36px;
+    background: #000; 
+    color: #fff;
+    border-radius: 50%;
+    
+    /* Layout & Interaction */
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    z-index: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, background 0.2s;
+}
+
+#panel-close-btn:hover {
+    transform: scale(1.1);
+    background: #222; /* Slightly lighter black on hover */
+}
 @media (max-width: 768px) {
     #header { top: 15px; left: 15px; right: 15px; width: auto; max-height: none; background: transparent; box-shadow: none; border: none; overflow: visible; }
     #header h1, #header h2 { display: none; }
@@ -315,21 +336,23 @@ input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 
     }
     #side-panel.open { transform: translateY(0); }
     
-    /* MOBILE SPECIFIC CLOSE BUTTON 
-       Positioned -60px from the top of the panel, creating a floating bubble effect.
-    */
-    #panel-close-btn { 
-        top: -60px; /* Floating ABOVE the panel */
-        right: 15px; 
-        background: #fff; 
-        color: #000; 
-        width: 44px; height: 44px; 
-        font-size: 16px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
-        z-index: 2000 !important; /* Critical High Z-index */
+    /* UNIVERSAL CLOSE BUTTON FOR MOBILE PANELS */
+    .mobile-close-btn {
+        display: flex; /* Visible on mobile */
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 32px;
+        height: 32px;
+        background: #eee;
+        color: #333;
         border-radius: 50%;
-        opacity: 1;
-        pointer-events: auto;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        cursor: pointer;
+        z-index: 1000;
+        border: none;
     }
     
     /* DRAG HANDLE VISIBLE ON MOBILE */

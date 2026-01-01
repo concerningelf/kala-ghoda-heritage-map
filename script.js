@@ -194,8 +194,8 @@ function initMap() {
             this.innerHTML = '<i class="fa-solid fa-xmark"></i>';
             this.style.background = '#333';
             this.style.color = '#fff';
-            // We do NOT call closePanel(true) here anymore, allowing layers & panel to coexist if needed,
-            // or effectively managing them separately. 
+            // Also close the time slider if it's open
+            if(window.innerWidth <= 768) window.closeTimeWidget();
         }
     };
     
@@ -209,6 +209,14 @@ function initMap() {
             btn.style.background = '#fff';
             btn.style.color = '#333';
         }
+    }
+
+    // NEW: Close Button for the Console itself
+    var consoleCloseBtn = document.getElementById('console-close-btn');
+    if(consoleCloseBtn) {
+        consoleCloseBtn.addEventListener('click', function() {
+            closeMobileConsole();
+        });
     }
 
     function toggleCategory(cat, btn) {
@@ -365,6 +373,8 @@ function initMap() {
         } else {
             timeWidgetEl.classList.add('active');
             btn.classList.add('active-control');
+            // If opening time slider on mobile, ensure console is closed
+            if (window.innerWidth <= 768) closeMobileConsole();
         }
     });
 
@@ -473,6 +483,11 @@ function initMap() {
     }
 
     function openPanel(record, color, markerEl) {
+        // NEW: Close Time Widget automatically on mobile if opening a panel
+        if (window.innerWidth <= 768) {
+            window.closeTimeWidget();
+        }
+
         if (selectedMarker) selectedMarker.classList.remove('selected');
         markerEl.classList.add('selected'); selectedMarker = markerEl;
         var infoHTML = `<div class="panel-info"><div class="panel-info-row"><span class="panel-info-label">Year</span><span class="panel-info-val">${record.year}</span></div><div class="panel-info-row"><span class="panel-info-label">Architect</span><span class="panel-info-val">${record.architect}</span></div><div class="panel-info-row"><span class="panel-info-label">Builder</span><span class="panel-info-val">${record.builder}</span></div></div>`;
