@@ -2,234 +2,160 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>Visual Audit: Kala Ghoda</title>
+    <title>Visual Audit: Kala Ghoda Heritage</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     
     <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
     
-    <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <style>
         /* --- THEME: MUSEUM ARCHIVE --- */
         :root {
             --bg: #ffffff;
-            --text-main: #111;
+            --text-main: #222;
             --text-sub: #555;
-            --border: #ddd;
-            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --border: #e0e0e0;
+            --shadow: 0 2px 10px rgba(0,0,0,0.05);
             --accent-wall: #c0392b; 
-            --accent-nav: #2980b9; 
             --gold-text: #cfa842; 
         }
         
-        body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; overflow: hidden; background: #eee; }
+        body { margin: 0; padding: 0; font-family: 'Lato', sans-serif; overflow: hidden; background: #f4f4f4; }
         
-        #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; transition: filter 0.5s ease; }
-
-        body.mode-1883 #map canvas { filter: grayscale(1) contrast(0.8) brightness(1.2) !important; }
-        .maplibregl-canvas-container canvas { filter: sepia(0.15) contrast(0.95); transition: filter 0.5s ease; }
+        #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+        .maplibregl-canvas-container canvas { filter: sepia(0.1) contrast(0.95); transition: filter 0.5s ease; }
+        
+        /* 1883 Map Mode Styling */
+        body.mode-1883 #map canvas { filter: grayscale(1) contrast(0.9) brightness(1.1) !important; }
+        body.mode-1883 .filter-btn:not(#btn-1883) { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+        body.mode-1883 #search-container { opacity: 0.4; pointer-events: none; }
 
         /* --- UI: HEADER --- */
         #header {
-            position: absolute; top: 30px; left: 30px; 
-            width: 380px;
-            background: var(--bg);
-            z-index: 100;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            border-radius: 2px; 
-            max-height: 90vh;
+            position: absolute; top: 20px; left: 20px; 
+            width: 340px; background: var(--bg); z-index: 100;
+            box-shadow: var(--shadow); border: 1px solid var(--border); border-radius: 4px; 
             display: flex; flex-direction: column;
-            transition: max-height 0.3s ease;
         }
 
-        #header h1 { 
-            font-family: 'Cardo', serif; 
-            padding: 20px 20px 5px 20px; margin: 0; 
-            line-height: 1.2;
-        }
-
-        .title-sub {
-            display: block; font-size: 14px; font-weight: 700;
-            color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        .title-main {
-            display: block; font-size: 32px; font-weight: 400;
-            color: var(--gold-text); margin-top: 5px;
-            text-transform: none; 
-        }
-
-        #header h2 { 
-            font-family: 'Lato', sans-serif; font-size: 10px; color: #999; 
-            padding: 0 20px 15px 20px; margin: 0; text-transform: uppercase; letter-spacing: 2px; 
-            font-weight: 700; border-bottom: 1px solid var(--border);
-        }
+        #header h1 { font-family: 'Cardo', serif; padding: 20px 20px 5px 20px; margin: 0; line-height: 1.2; }
+        .title-sub { display: block; font-size: 13px; font-weight: 900; color: #888; text-transform: uppercase; letter-spacing: 2px; }
+        .title-main { display: block; font-size: 28px; font-weight: 400; color: var(--gold-text); margin-top: 5px; }
+        #header h2 { font-family: 'Lato', sans-serif; font-size: 10px; color: #aaa; padding: 0 20px 15px 20px; margin: 0; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; border-bottom: 1px solid var(--border); }
 
         /* --- UI: SEARCH --- */
-        #search-container {
-            position: relative;
-            padding: 15px 20px 10px 20px;
-            transition: opacity 0.3s;
-        }
-        
+        #search-container { position: relative; padding: 15px 20px 5px 20px; }
         .search-wrapper { position: relative; display: flex; align-items: center; }
-
-        #search-input {
-            width: 100%; padding: 10px 10px 10px 35px;
-            font-family: 'Lato', sans-serif; font-size: 13px;
-            border: 1px solid #ccc; background: #fafafa;
-            outline: none; transition: all 0.2s; border-radius: 2px;
-        }
+        #search-input { width: 100%; padding: 12px 10px 12px 35px; font-family: 'Lato', sans-serif; font-size: 13px; border: 1px solid #ddd; background: #fafafa; outline: none; border-radius: 4px; transition: border 0.2s; }
         #search-input:focus { border-color: #333; background: #fff; }
-        
         .search-icon { position: absolute; left: 12px; color: #999; font-size: 12px; pointer-events: none; }
-
-        #search-results {
-            position: absolute; top: 100%; left: 20px; right: 20px;
-            background: #fff; border: 1px solid var(--border); border-top: none;
-            max-height: 200px; overflow-y: auto; z-index: 110; display: none;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
+        #search-results { position: absolute; top: 100%; left: 20px; right: 20px; background: #fff; border: 1px solid var(--border); border-top: none; max-height: 200px; overflow-y: auto; z-index: 110; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .search-item { padding: 10px 12px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; flex-direction: column; }
         .search-item:hover { background: #f9f9f9; }
         .search-item-title { font-weight: 700; font-size: 12px; color: #333; }
         .search-item-cat { font-size: 10px; color: #888; text-transform: uppercase; margin-top: 2px; }
 
-        /* --- UI: COLLAPSIBLE FILTERS --- */
-        #console { 
-            padding: 0 20px 20px 20px; 
-            display: flex; flex-direction: column;
-            border-top: 1px solid #f0f0f0;
+        /* --- UI: LAYERS LIST (MATCHING YOUR PREFERRED SCREENSHOT) --- */
+        #console { padding: 0 20px 20px 20px; display: flex; flex-direction: column; }
+        #layers-header { 
+            padding: 15px 0 10px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
+            font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #444; user-select: none;
         }
-
-        #layers-header {
-            padding: 15px 0 10px 0; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-            color: var(--text-sub); user-select: none;
-        }
-        #layers-header:hover { color: var(--text-main); }
-        
+        #layers-header:hover { color: #000; }
         #layers-arrow { transition: transform 0.3s ease; }
         #layers-arrow.rotated { transform: rotate(180deg); }
-
-        #layers-content {
-            display: flex; flex-wrap: wrap; gap: 8px; 
-            overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.4s ease;
-            max-height: 600px; opacity: 1;
-        }
-
-        #layers-content.collapsed { max-height: 0; opacity: 0; margin-top: 0; }
-
-        .filter-btn {
-            padding: 6px 12px; font-size: 10px;
-            text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;
-            border: 1px solid var(--border); background: #fff; color: var(--text-sub); 
-            cursor: pointer; border-radius: 2px; transition: all 0.2s ease;
-            display: flex; align-items: center; gap: 5px;
-            /* FIX: Removed flex-grow to prevent "Living Heritage" from stretching */
-            flex-grow: 0; 
-        }
-        .filter-btn:hover { border-color: #999; color: #000; background: #fafafa; }
-        .filter-btn.active { background: var(--text-main); color: #fff; border-color: var(--text-main); }
         
-        /* Dashed Line Separator */
-        .console-separator {
-            width: 100%;
-            border-bottom: 1px dashed #ccc;
-            margin: 8px 0;
-            height: 1px;
+        /* Reverted to row layout with wrap */
+        #layers-content { display: flex; flex-wrap: wrap; gap: 8px; overflow: hidden; transition: max-height 0.4s ease; max-height: 800px; }
+        #layers-content.collapsed { max-height: 0; margin-top: 0; }
+
+        /* Reverted button styling */
+        .filter-btn { 
+            padding: 8px 12px; font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; 
+            border: 1px solid #e0e0e0; background: #fff; color: #555; cursor: pointer; border-radius: 4px; 
+            display: flex; align-items: center; gap: 8px; flex-grow: 0; transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: #bbb; color: #000; background: #f9f9f9; }
+        .filter-btn.active { background: #111; color: #fff; border-color: #111; }
+
+        .dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: currentColor; flex-shrink: 0; }
+
+        .console-separator { width: 100%; border-bottom: 1px solid #eee; margin: 10px 0; height: 1px; }
+
+        #wall-info { display: none; margin-top: 8px; padding: 10px; background: #fff4f4; border-left: 3px solid var(--accent-wall); font-size: 11px; color: #555; line-height: 1.4; border-radius: 2px; width: 100%; box-sizing: border-box; }
+        #wall-info strong { display: block; margin-bottom: 3px; color: var(--accent-wall); text-transform: uppercase; font-weight: 800; font-size: 10px; }
+
+        /* --- UI: TIME SLIDER --- */
+        #time-controls {
+            padding: 15px 15px;
+            border: 1px solid #eee;
+            margin-top: 5px;
+            display: none; 
+            flex-direction: column;
+            background: #fcfcfc;
+            border-radius: 4px;
+            width: 100%; box-sizing: border-box;
         }
 
-        #wall-btn, #btn-1883 { width: 100%; justify-content: center; margin-top: 0; }
-        #wall-btn.active, #btn-1883.active { background: var(--gold-text); border-color: var(--gold-text); color: #fff; }
+        #time-controls.active { display: flex; }
+
+        .range-labels { display: flex; justify-content: space-between; font-size: 10px; color: #888; margin-bottom: 5px; font-weight: 700; }
         
-        body.mode-1883 .filter-btn:not(#btn-1883) { opacity: 0.4; pointer-events: none; }
-        body.mode-1883 #search-container { opacity: 0.4; pointer-events: none; }
-
-        #wall-info {
-            display: none; margin-top: 10px; padding: 10px;
-            background: #f9f9f9; border-left: 3px solid var(--gold-text); 
-            font-size: 11px; color: #333; line-height: 1.4;
+        #year-display {
+            text-align: center; font-family: 'Cardo', serif; font-size: 18px; color: var(--accent-wall);
+            margin-bottom: 10px; font-weight: bold;
         }
-        #wall-info strong { display: block; margin-bottom: 3px; color: var(--gold-text); }
 
-        .dot-indicator { width: 6px; height: 6px; border-radius: 50%; display: inline-block; background: currentColor; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #ddd; border-radius: 2px; }
+        input[type=range]::-webkit-slider-thumb { height: 16px; width: 16px; border-radius: 50%; background: var(--gold-text); cursor: pointer; -webkit-appearance: none; margin-top: -6px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); border: 2px solid #fff; }
 
         /* --- UI: MARKERS --- */
-        .marker {
-            width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; 
-            cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); 
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; color: #fff; transition: transform 0.2s ease, opacity 0.3s;
-            z-index: 10;
-        }
+        .marker { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; transition: transform 0.2s ease, opacity 0.3s; z-index: 10; }
         .marker:hover { transform: scale(1.15); z-index: 20; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
         .marker.selected { transform: scale(1.2); z-index: 30; box-shadow: 0 0 0 2px #fff, 0 4px 15px rgba(0,0,0,0.3); }
         
-        #tooltip {
-            position: absolute; pointer-events: none; background: #111; color: #fff;
-            padding: 5px 10px; font-size: 10px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 1px; border-radius: 2px; opacity: 0;
-            transform: translate(-50%, -10px); transition: opacity 0.2s, transform 0.2s; 
-            z-index: 500; white-space: nowrap;
-        }
-        @media (hover: none) { #tooltip { display: none !important; opacity: 0 !important; } }
+        #tooltip { position: absolute; pointer-events: none; background: #111; color: #fff; padding: 5px 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 2px; opacity: 0; transform: translate(-50%, -10px); transition: opacity 0.2s, transform 0.2s; z-index: 500; white-space: nowrap; }
         
         /* --- UI: SIDE PANEL --- */
-        #side-panel {
-            position: fixed; right: -450px; top: 0; bottom: 0; width: 400px;
-            background: #fff; z-index: 200;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.05);
-            transition: right 0.6s cubic-bezier(0.19, 1, 0.22, 1); 
-            border-left: 1px solid var(--border);
-            display: flex; flex-direction: column;
-        }
+        #side-panel { position: fixed; right: -450px; top: 0; bottom: 0; width: 400px; background: #fff; z-index: 200; box-shadow: -10px 0 30px rgba(0,0,0,0.05); transition: right 0.4s ease; border-left: 1px solid var(--border); display: flex; flex-direction: column; }
         #side-panel.open { right: 0; }
         
         #panel-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; position: relative; }
-        .panel-img-container { position: relative; width: 100%; height: 300px; overflow: hidden; background: #eee; }
-        .panel-img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.9); transition: transform 6s ease; }
-        #side-panel.open .panel-img { transform: scale(1.05); } 
-        .panel-content { padding: 40px; }
-        
-        .panel-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; color: #888; margin-bottom: 15px; display: inline-block; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .panel-title { font-family: 'Cardo', serif; font-size: 32px; font-weight: 400; margin-bottom: 25px; color: var(--text-main); line-height: 1.1; }
-        .panel-desc { font-size: 15px; color: #444; line-height: 1.7; margin-bottom: 40px; font-family: 'Cardo', serif; }
-        .panel-info { display: table; width: 100%; border-top: 1px solid var(--border); padding-top: 20px; }
+        .panel-img-container { position: relative; width: 100%; height: 280px; overflow: hidden; background: #eee; }
+        .panel-img { width: 100%; height: 100%; object-fit: cover; }
+        .panel-content { padding: 30px; }
+        .panel-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; color: #999; margin-bottom: 10px; display: inline-block; }
+        .panel-title { font-family: 'Cardo', serif; font-size: 28px; font-weight: 400; margin-bottom: 20px; color: #111; line-height: 1.1; }
+        .panel-desc { font-size: 14px; color: #444; line-height: 1.7; margin-bottom: 30px; }
+        .panel-info { display: table; width: 100%; border-top: 1px solid #eee; padding-top: 20px; }
         .panel-info-row { display: table-row; }
-        .panel-info-label { display: table-cell; padding: 6px 0; font-size: 10px; text-transform: uppercase; color: #888; letter-spacing: 1px; width: 30%; }
-        .panel-info-val { display: table-cell; padding: 6px 0; font-size: 13px; color: #111; font-weight: 400; }
-
-        .panel-action-btn { display: block; width: 100%; margin-top: 20px; padding: 12px 0; text-align: center; text-decoration: none; background: #fff; border: 1px solid var(--accent-nav); color: var(--accent-nav); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 2px; transition: all 0.2s; }
-        .panel-action-btn:hover { background: var(--accent-nav); color: #fff; }
-        .panel-close { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; background: rgba(255,255,255,0.9); color: #000; border: none; cursor: pointer; font-size: 20px; z-index: 300; display: flex; align-items: center; justify-content: center; transition: all 0.2s; backdrop-filter: blur(4px); border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .panel-close:hover { background: #000; color: #fff; }
+        .panel-info-label { display: table-cell; padding: 8px 0; font-size: 10px; text-transform: uppercase; color: #999; letter-spacing: 1px; width: 30%; font-weight: 700; }
+        .panel-info-val { display: table-cell; padding: 8px 0; font-size: 13px; color: #222; font-weight: 400; }
+        .panel-action-btn { display: block; width: 100%; margin-top: 25px; padding: 12px 0; text-align: center; text-decoration: none; background: var(--accent-nav); color: #fff; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; transition: all 0.2s; }
+        .panel-action-btn:hover { background: #1a5276; }
+        .panel-close { position: absolute; top: 15px; right: 15px; width: 32px; height: 32px; background: rgba(0,0,0,0.6); color: #fff; border: none; cursor: pointer; font-size: 18px; z-index: 300; display: flex; align-items: center; justify-content: center; transition: all 0.2s; border-radius: 50%; }
+        .panel-close:hover { background: #000; }
 
         /* --- UI: VERTICAL CONTROLS --- */
-        #vertical-controls { position: fixed; right: 30px; bottom: 80px; display: flex; flex-direction: column; background: #fff; box-shadow: var(--shadow); border: 1px solid var(--border); border-radius: 4px; z-index: 95; overflow: hidden; }
-        .v-control-btn { width: 36px; height: 36px; border: none; background: #fff; border-bottom: 1px solid #eee; color: #333; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        #vertical-controls { position: fixed; right: 20px; bottom: 30px; display: flex; flex-direction: column; background: #fff; box-shadow: var(--shadow); border: 1px solid var(--border); border-radius: 4px; z-index: 95; overflow: hidden; }
+        .v-control-btn { width: 36px; height: 36px; border: none; background: #fff; border-bottom: 1px solid #eee; color: #555; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .v-control-btn:last-child { border-bottom: none; }
-        .v-control-btn:hover { background: #f5f5f5; color: #000; }
-        .v-control-btn.active-3d { background: #333; color: #fff; }
+        .v-control-btn:hover { background: #f9f9f9; color: #000; }
+        .v-control-btn.active-3d { background: #111; color: #fff; }
         
         .maplibregl-ctrl-top-right { display: none !important; }
         .maplibregl-ctrl-scale { background-color: rgba(255, 255, 255, 0.9) !important; border: 1px solid var(--border) !important; color: #333 !important; font-family: 'Lato', sans-serif !important; font-size: 10px !important; border-radius: 2px !important; box-shadow: none !important; }
 
         @media (max-width: 768px) {
-            #header { top: 15px; left: 15px; right: 15px; width: auto; max-width: none; }
-            #header h1 { padding: 15px 15px 5px 15px; }
-            .title-main { font-size: 24px; }
-            #header h2 { padding: 0 15px 10px 15px; border: none; }
-            #console { padding: 0 15px 15px 15px; }
-            #side-panel { right: auto; left: 0; bottom: -100vh; top: auto; width: 100%; height: 75vh; border-left: none; border-top: 1px solid #ccc; border-radius: 12px 12px 0 0; }
+            #header { top: 10px; left: 10px; right: 10px; width: auto; }
+            #side-panel { right: auto; left: 0; bottom: -100vh; top: auto; width: 100%; height: 70vh; border-left: none; border-top: 1px solid #ccc; border-radius: 12px 12px 0 0; }
             #side-panel.open { bottom: 0; }
-            #vertical-controls { bottom: 100px; right: 20px; }
+            #vertical-controls { bottom: 20px; right: 10px; }
         }
     </style>
 </head>
@@ -261,8 +187,7 @@
             </div>
             
             <div id="layers-content" class="collapsed">
-                <!-- JS will inject buttons here -->
-            </div>
+                </div>
         </div>
     </div>
 
@@ -317,6 +242,27 @@
                 ]
             };
 
+            // --- HELPER: Parse Years from Vague Strings ---
+            function parseYear(yearStr) {
+                if (!yearStr) return 2025; 
+                yearStr = yearStr.toString().toLowerCase();
+                var match = yearStr.match(/(\d{4})/);
+                if (match) return parseInt(match[0]);
+                
+                if (yearStr.includes('late 19th')) return 1890;
+                if (yearStr.includes('mid 19th')) return 1850;
+                if (yearStr.includes('early 19th')) return 1810;
+                if (yearStr.includes('19th century')) return 1850;
+                if (yearStr.includes('early 20th')) return 1910;
+                if (yearStr.includes('mid 20th')) return 1950;
+                if (yearStr.includes('late 20th')) return 1990;
+                if (yearStr.includes('20th century')) return 1950;
+                
+                // Updated logic: "Ongoing" or unknown dates are set to the future
+                // so they disappear when sliding back in time.
+                return 2025; 
+            }
+
             var layersContent = document.getElementById('layers-content');
             var categories = [...new Set(config.chapters.map(function(item) { return item.category; }))];
             
@@ -335,10 +281,34 @@
                 layersContent.appendChild(btn);
             });
 
-            // ADD SEPARATOR
             var separator = document.createElement('div');
             separator.className = 'console-separator';
             layersContent.appendChild(separator);
+
+            // --- Time Travel Button ---
+            var timeBtn = document.createElement('button');
+            timeBtn.id = 'time-travel-btn';
+            timeBtn.className = 'filter-btn';
+            timeBtn.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Time Travel';
+            timeBtn.onclick = function() { toggleTimeTravel(this); };
+            layersContent.appendChild(timeBtn);
+
+            // --- Time Slider Container ---
+            var timeControls = document.createElement('div');
+            timeControls.id = 'time-controls';
+            var years = config.chapters.map(c => parseYear(c.year)).filter(y => y !== 2025);
+            var minYear = Math.min(...years) || 1850;
+            var maxYear = 2025;
+
+            timeControls.innerHTML = `
+                <div id="year-display">Present Day</div>
+                <input type="range" id="year-slider" min="${minYear}" max="${maxYear}" value="${maxYear}" step="1">
+                <div class="range-labels">
+                    <span>${minYear}</span>
+                    <span>Present</span>
+                </div>
+            `;
+            layersContent.appendChild(timeControls);
 
             var wallBtn = document.createElement('button');
             wallBtn.id = 'wall-btn';
@@ -437,12 +407,7 @@
                 map.addSource('source-1883', {
                     'type': 'image',
                     'url': './images/fort-1883.jpg',
-                    'coordinates': [
-                        [72.8228, 18.9435], 
-                        [72.8492, 18.9435], 
-                        [72.8492, 18.9235], 
-                        [72.8228, 18.9235]
-                    ]
+                    'coordinates': [[72.8228, 18.9435], [72.8492, 18.9435], [72.8492, 18.9235], [72.8228, 18.9235]]
                 });
                 map.addLayer({ 'id': 'layer-1883', 'type': 'raster', 'source': 'source-1883', 'paint': { 'raster-fade-duration': 0 }, 'layout': { 'visibility': 'none' } });
 
@@ -456,19 +421,75 @@
                     var color = config.colors[record.category] || '#333';
                     var iconClass = config.icons[record.category] || 'fa-map-marker-alt';
                     var el = document.createElement('div'); el.className = 'marker'; el.style.backgroundColor = color; el.innerHTML = '<i class="fa-solid ' + iconClass + '"></i>';
-                    el.onclick = function(e) { e.stopPropagation(); openPanel(record, color, el); };
+                    
+                    record.parsedYear = parseYear(record.year);
+
+                    el.onclick = function(e) { 
+                        e.stopPropagation(); 
+                        openPanel(record, color, el); 
+                    };
                     if (window.matchMedia('(hover: hover)').matches) {
                         el.addEventListener('mouseenter', function(e) { tooltip.innerText = record.title; var rect = el.getBoundingClientRect(); tooltip.style.left = rect.left + (rect.width / 2) + 'px'; tooltip.style.top = rect.top + 'px'; tooltip.style.opacity = '1'; });
                         el.addEventListener('mouseleave', function() { tooltip.style.opacity = '0'; });
                     }
                     var marker = new maplibregl.Marker({ element: el, anchor: 'bottom' }).setLngLat(record.location.center).addTo(map);
-                    markerObjects.push({ element: el, category: record.category, marker: marker, id: record.id, title: record.title });
+                    markerObjects.push({ element: el, category: record.category, marker: marker, id: record.id, title: record.title, year: record.parsedYear });
                 });
             });
 
             document.getElementById('close-btn').addEventListener('click', function() { closePanel(false); });
             document.addEventListener('keydown', function(event) { if (event.key === "Escape") closePanel(false); });
             map.on('click', function() { closePanel(false); });
+
+            // --- Time Slider Logic ---
+            var isTimeTravelActive = false;
+            
+            window.toggleTimeTravel = function(btn) {
+                var controls = document.getElementById('time-controls');
+                var slider = document.getElementById('year-slider');
+                var allLayerBtns = document.querySelectorAll('#layers-content .filter-btn:not(#time-travel-btn):not(#wall-btn):not(#btn-1883)');
+
+                if (isTimeTravelActive) {
+                    isTimeTravelActive = false;
+                    btn.classList.remove('active');
+                    controls.classList.remove('active');
+                    markerObjects.forEach(m => m.element.style.opacity = '1');
+                    allLayerBtns.forEach(b => b.style.opacity = '1');
+                    allLayerBtns.forEach(b => b.style.pointerEvents = 'auto');
+                } else {
+                    isTimeTravelActive = true;
+                    btn.classList.add('active');
+                    controls.classList.add('active');
+                    allLayerBtns.forEach(b => b.style.opacity = '0.5');
+                    allLayerBtns.forEach(b => b.style.pointerEvents = 'none'); 
+                    slider.dispatchEvent(new Event('input'));
+                }
+            };
+
+            document.addEventListener('input', function(e) {
+                if (e.target.id === 'year-slider') {
+                    var year = parseInt(e.target.value);
+                    var max = parseInt(e.target.max);
+                    var display = document.getElementById('year-display');
+                    
+                    if (year === max) display.innerText = "Present Day";
+                    else display.innerText = "Year: " + year;
+
+                    markerObjects.forEach(function(m) {
+                        if (m.year <= year) {
+                            m.element.style.display = 'flex';
+                            m.element.style.opacity = '1';
+                        } else {
+                            m.element.style.display = 'none';
+                            m.element.style.opacity = '0';
+                        }
+                    });
+                    
+                    if (selectedMarker && selectedMarker.style.display === 'none') {
+                        closePanel(false);
+                    }
+                }
+            });
 
             function openPanel(record, color, markerEl) {
                 if (selectedMarker) selectedMarker.classList.remove('selected');
@@ -480,8 +501,6 @@
                 var navButton = `<a href="${navUrl}" target="_blank" class="panel-action-btn"><i class="fa-solid fa-diamond-turn-right"></i> Navigate Here</a>`;
                 var panelContent = '<div class="panel-img-container"><img src="' + record.image + '" class="panel-img"></div>' + '<div class="panel-content">' + '<span class="panel-cat" style="color:' + color + '">' + record.category + '</span>' + '<div class="panel-title">' + record.title + '</div>' + '<p class="panel-desc">' + record.description + '</p>' + infoHTML + navButton + '</div>';
                 document.getElementById('panel-inner').innerHTML = panelContent; document.getElementById('side-panel').classList.add('open');
-                
-                // MOBILE INTERACTION FIX: Stop zooming/flying on small screens
                 if (window.innerWidth >= 768) {
                     map.flyTo({ center: record.location.center, zoom: 17.5, pitch: map.getPitch(), bearing: map.getBearing(), speed: 0.8, curve: 1 });
                 }
@@ -495,8 +514,14 @@
 
             function filterMarkers(selectedCat, clickedBtn) {
                 if (document.body.classList.contains('mode-1883')) return;
+                if (isTimeTravelActive) return; 
+
                 var buttons = document.getElementsByClassName('filter-btn');
-                for (var i = 0; i < buttons.length; i++) buttons[i].classList.remove('active');
+                for (var i = 0; i < buttons.length; i++) {
+                    if(!buttons[i].id.includes('btn') && !buttons[i].id.includes('wall')) {
+                       buttons[i].classList.remove('active'); 
+                    }
+                }
                 if(clickedBtn) clickedBtn.classList.add('active');
                 markerObjects.forEach(function(m) {
                     if (selectedCat === 'all' || m.category === selectedCat) { m.element.style.display = 'flex'; m.element.style.opacity = '1'; } 
@@ -517,7 +542,6 @@
                 var layerId = 'layer-1883';
                 var visibility = map.getLayoutProperty(layerId, 'visibility');
                 var body = document.body;
-                
                 if (visibility === 'visible') {
                     map.setLayoutProperty(layerId, 'visibility', 'none');
                     btn.classList.remove('active');
