@@ -21,7 +21,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="ux-enhancements.css" />
 </head>
 
 <body>
@@ -43,6 +42,45 @@
         <span id="toast-msg">Welcome to Kala Ghoda</span>
     </div>
 
+    <!-- Tutorial Overlay -->
+    <div id="tutorial-overlay">
+        <div class="tutorial-card">
+            <div class="tutorial-header">
+                <span class="tutorial-emoji">🗺️</span>
+                <span class="tutorial-sub">Welcome to</span>
+                <h2>Kala Ghoda</h2>
+                <span class="tutorial-subtitle">Heritage Map</span>
+            </div>
+            <div class="tutorial-content">
+                <div class="tutorial-tip">
+                    <span class="tip-icon"><i class="fa-solid fa-hand-pointer"></i></span>
+                    <div class="tip-text">
+                        <strong>Tap markers</strong> to explore heritage sites
+                    </div>
+                </div>
+                <div class="tutorial-tip">
+                    <span class="tip-icon"><i class="fa-solid fa-filter"></i></span>
+                    <div class="tip-text">
+                        <strong>Tap chips</strong> to show/hide layer types
+                    </div>
+                </div>
+                <div class="tutorial-tip">
+                    <span class="tip-icon"><i class="fa-solid fa-hand"></i></span>
+                    <div class="tip-text">
+                        <strong>Long-press chips</strong> for solo mode
+                    </div>
+                </div>
+                <div class="tutorial-tip">
+                    <span class="tip-icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                    <div class="tip-text">
+                        <strong>Time slider</strong> to filter by year built
+                    </div>
+                </div>
+            </div>
+            <button id="tutorial-dismiss" class="tutorial-btn">Got it, let's explore</button>
+        </div>
+    </div>
+
     <div id="header" class="fade-on-move">
         <a href="about.html" class="info-icon-btn" title="About This Project">
             <i class="fa-solid fa-circle-info"></i>
@@ -60,14 +98,40 @@
         </div>
 
         <div id="search-container" class="fade-on-move">
+            <!-- Desktop Search Bar -->
             <div class="search-wrapper">
                 <i class="fa-solid fa-search search-icon"></i>
-                <input type="text" id="search-input" placeholder="Search buildings, styles..." autocomplete="off">
-                <div id="search-results"></div>
+                <input type="text" id="search-input-desktop" class="search-input-field"
+                    placeholder="Search buildings, styles..." autocomplete="off">
             </div>
+
+            <!-- Mobile Two-Pill Layout -->
+            <div class="mobile-header-pills">
+                <!-- Brand Pill -->
+                <a href="about.html" class="brand-pill">
+                    <div class="brand-text">
+                        <span class="brand-sub">Visual Audit</span>
+                        <span class="brand-main">Kala Ghoda</span>
+                    </div>
+                    <div class="brand-info-btn">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+                </a>
+
+                <!-- Search Pill -->
+                <div class="search-pill">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Search..." autocomplete="off">
+                </div>
+            </div>
+
+            <div id="search-results"></div>
         </div>
 
-        <div class="category-chips-container" id="category-chips"></div>
+        <!-- Mobile Chip Filter Bar -->
+        <div id="chip-filter-bar" class="fade-on-move">
+            <!-- Chips will be populated by JavaScript -->
+        </div>
 
         <div id="console">
             <div id="console-handle"></div>
@@ -101,11 +165,6 @@
         <button class="v-control-btn" id="locate-btn" data-msg="Locating..."><i
                 class="fa-solid fa-location-crosshairs"></i> <span>My Location</span></button>
     </div>
-
-    <button id="recenter-btn" class="recenter-btn" style="display: none;">
-        <i class="fa-solid fa-crosshairs"></i>
-        <span>Return to Location</span>
-    </button>
 
     <div id="side-panel">
         <button id="panel-close-btn" class="mobile-close-btn">
@@ -149,9 +208,7 @@
             });
         }
     </script>
-    <script src="ux-enhancements.js"></script>
     <script src="script.js"></script>
-    <script src="ux-init.js"></script>
 </body>
 
 </html>
