@@ -129,6 +129,35 @@ function showToast(message, duration = 3000, isHtml = false, className = '') {
     window.toastTimeout = setTimeout(function () { toast.classList.remove('show'); }, duration);
 }
 
+// Copy to Clipboard Helper (Fallback for Share)
+function copyToClipboard(record) {
+    var shareText = `${record.title}\n${record.description}\n${window.location.href}`;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareText).then(() => {
+            showToast('Link copied to clipboard!');
+        }).catch(() => {
+            showToast('Unable to copy link');
+        });
+    } else {
+        // Older fallback
+        var textArea = document.createElement('textarea');
+        textArea.value = shareText;
+        textArea.style.position = 'fixed';
+        textArea.style.top = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast('Link copied to clipboard!');
+        } catch (err) {
+            showToast('Unable to copy link');
+        }
+        document.body.removeChild(textArea);
+    }
+}
+
+
 // Mobile Gestures
 function initMobileGestures() {
     // 1. Setup Side Panel
@@ -296,6 +325,12 @@ function initMap() {
             { id: 'synagogue', category: 'Victorian', title: 'Keneseth Eliyahoo', image: './images/synagogue.jpg', description: 'Victorian era synagogue with a distinctive blue facade.', year: '1884', architect: 'Gostling & Morris', builder: 'Jacob Elias Sassoon', location: { center: [18.92811, 72.83257] } },
             // Synagogue Lettering (User Submission)
             { id: 'synagogue-lettering', category: 'Lettering', title: 'Keneseth Eliyahoo Lettering', image: './images/synagogue-lettering.jpg', description: 'Hebrew inscription above the entrance: "This is the gate of the Lord; the righteous shall enter through it" (Psalm 118:20).', year: '1884', architect: 'Unknown', builder: 'Jacob Elias Sassoon', location: { center: [18.92814, 72.83260] } },
+            // Homji Street Sign (User Submission)
+            { id: 'homji-street', category: 'Street Sign', title: 'Homji Street Sign', image: './images/homji-street-sign.jpg', description: 'Weathered bilingual street sign in English and Hindi, mounted on stone steps. A classic example of Mumbai\'s historic street signage.', year: 'Unknown', architect: 'BMC', builder: 'BMC', location: { center: [18.932722, 72.835056] } },
+            // R.K. Laxman Sculpture (User Submission)
+            { id: 'rk-laxman', category: 'Street Furniture', title: 'R.K. Laxman\'s Common Man Sculpture', image: './images/rk-laxman-sculpture.jpg', description: 'Bronze sculpture depicting cartoonist R.K. Laxman\'s iconic "Common Man" character facing a bull, installed as a tribute to the legendary artist and his satirical commentary on Indian society.', year: '2014', architect: 'Ram V. Sutar', builder: 'Kala Ghoda Association', location: { center: [18.931778, 72.834194] } },
+            // 1923 Date Stone (User Submission)
+            { id: '1923-datestone', category: 'Lettering', title: '1923 Date Stone', image: './images/1923-datestone.jpg', description: 'Carved date marker on rusticated stone facade, commemorating the year of construction. These architectural details help date the neighborhood\'s development.', year: '1923', architect: 'Unknown', builder: 'Private', location: { center: [18.935944, 72.833889] } },
             // 14. Oricon (North side of street)
             { id: 'oricon', category: 'Modern', title: 'Oricon House', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Mumbai_Skyline_at_Night.jpg/800px-Mumbai_Skyline_at_Night.jpg', description: 'A mid-century modern commercial high-rise.', year: '1960', architect: 'Unknown', builder: 'Oricon Enterprises', location: { center: [18.92790, 72.83220] } },
 
@@ -396,6 +431,10 @@ function initMap() {
             { id: 'central-bank', category: 'Neoclassical', title: 'Central Bank of India', image: './images/central-bank.jpg', description: 'A grand heritage building with a distinctive dome and curved facade, established in 1911 as one of the first truly Indian owned banks.', year: '1911', architect: 'Unknown', builder: 'Sir Sorabji Pochkhanawala', location: { center: [18.931722, 72.831750] } },
             // Siddharth College (User Submission)
             { id: 'siddharth-college', category: 'Victorian', title: 'Siddharth College (Anand Bhavan)', image: './images/siddharth-college.jpg', description: 'A Grade II heritage structure (formerly Albert Building), acquired by Dr. B.R. Ambedkar in 1951 to house the first college of the People\'s Education Society.', year: '1900', architect: 'Unknown', builder: 'People\'s Education Society', location: { center: [18.933889, 72.832389] } },
+            // Davar Building (User Submission)
+            { id: 'davar-building', category: 'Lettering', title: 'Davar Building Lettering', image: './images/davar-building.jpg', description: 'Carved stone lettering above an arched entrance passage, exemplifying the bold typography of early 20th century commercial buildings in the Fort area.', year: '1900', architect: 'Unknown', builder: 'Private', location: { center: [18.932222, 72.831694] } },
+            // Sunder Woodwork (User Submission)
+            { id: 'sunder-woodwork', category: 'Lettering', title: 'Sunder Woodwork Signage', image: './images/sunder-woodwork.jpg', description: 'Art Deco style signage reading "WOOD SUNDER WORK" with dimensional lettering and a distinctive red outline, located above an arched stone entrance.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.932250, 72.831667] } },
             // Standard Building (User Submission)
             { id: 'standard-building', category: 'Neoclassical', title: 'Standard Building', image: './images/standard-building.jpg', description: 'Designed by F.W. Stevens and completed by his son Charles Stevens. A prime example of the Neo-Classical style on D.N. Road, featuring buff-coloured basalt and intricate carvings.', year: '1902', architect: 'F.W. Stevens / Charles Stevens', builder: 'Standard Life Assurance', location: { center: [18.933900, 72.832100] } },
             // U.N. Pursram (User Submission)
@@ -406,6 +445,8 @@ function initMap() {
             { id: 'thomas-cook', category: 'Neoclassical', title: 'Thomas Cook Building', image: './images/thomas-cook-building.jpg', description: 'A distinguished Grade II-A heritage structure featuring Classical elements like Corinthian columns and arched windows. Originally the Indian headquarters for Eastman Kodak.', year: '1900', architect: 'Unknown', builder: 'Eastman Kodak', location: { center: [18.934167, 72.832611] } },
             // J.N. Petit Institute (User Submission)
             { id: 'jn-petit', category: 'Victorian', title: 'J.N. Petit Institute', image: './images/jn-petit.jpg', description: 'A magnificent Neo-Gothic library and reading room built in 1898. Its facade features polychromatic stone, stained glass, and pointed arches. Recipient of a UNESCO Heritage Award.', year: '1898', architect: 'Merwanjee Bana', builder: 'Petit Family', location: { center: [18.934194, 72.832639] } },
+            // Fort Gate Remnant (User Submission)
+            { id: 'fort-gate', category: 'Victorian', title: 'Fort Gate Remnant', image: './images/fort-gate-remnant.jpg', description: 'A surviving basalt stone archway, likely a remnant from the original Fort walls demolished in the 1860s. Now integrated into the urban fabric near DN Road.', year: '1860', architect: 'British Military Engineers', builder: 'Public Works', location: { center: [18.933667, 72.832361] } },
             // Booksellers (Nudged North West along the curve)
             { id: 'booksellers', category: 'Living Heritage', title: 'Secondhand Book Sellers', image: './images/books.jpg', description: 'The lineage of street book vendors near Flora Fountain.', year: '1950', architect: 'N/A', builder: 'Vendor Collective', location: { center: [18.93250, 72.83150] } },
 
@@ -752,10 +793,17 @@ function initMap() {
         if (window.innerWidth <= 768) { window.closeTimeWidget(); }
         if (selectedMarker) selectedMarker.classList.remove('selected');
         markerEl.classList.add('selected'); selectedMarker = markerEl;
-        var infoHTML = `<div class="panel-info"><div class="panel-info-row"><span class="panel-info-label">Year</span><span class="panel-info-val">${record.year}</span></div><div class="panel-info-row"><span class="panel-info-label">Architect</span><span class="panel-info-val">${record.architect}</span></div><div class="panel-info-row"><span class="panel-info-label">Builder</span><span class="panel-info-val">${record.builder}</span></div></div>`;
+        var infoHTML = `<div class="panel-info">
+            <div class="panel-info-row"><i class="fa-solid fa-calendar"></i><span class="panel-info-label">Year</span><span class="panel-info-val">${record.year}</span></div>
+            <div class="panel-info-row"><i class="fa-solid fa-pencil-ruler"></i><span class="panel-info-label">Architect</span><span class="panel-info-val">${record.architect}</span></div>
+            <div class="panel-info-row"><i class="fa-solid fa-hammer"></i><span class="panel-info-label">Builder</span><span class="panel-info-val">${record.builder}</span></div>
+        </div>`;
         var destLat = record.location.center[1]; var destLng = record.location.center[0];
         var navUrl = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=walking`;
-        var navButton = `<a href="${navUrl}" target="_blank" class="panel-action-btn"><i class="fa-solid fa-diamond-turn-right"></i> Navigate Here</a>`;
+        var quickActions = `<div class="panel-quick-actions">
+            <a href="${navUrl}" target="_blank" class="panel-action-btn primary"><i class="fa-solid fa-diamond-turn-right"></i><span>Navigate</span></a>
+            <button id="share-btn" class="panel-action-btn secondary"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
+        </div>`;
 
         // SKELETON LOADING LOGIC
         var imageContainer = document.createElement('div');
@@ -768,6 +816,12 @@ function initMap() {
             imageContainer.classList.remove('skeleton'); // Remove shimmer
             img.classList.remove('loading'); // Fade in
         };
+
+        img.onerror = function () {
+            imageContainer.classList.remove('skeleton');
+            img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23f0f0f0" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" fill="%23999" font-size="18" font-family="sans-serif"%3EImage not available%3C/text%3E%3C/svg%3E';
+            img.classList.remove('loading');
+        };
         imageContainer.appendChild(img);
 
         // Combine content
@@ -777,8 +831,39 @@ function initMap() {
 
         var textContent = document.createElement('div');
         textContent.className = 'panel-content';
-        textContent.innerHTML = `<span class="panel-cat" style="color:${color}">${record.category}</span><div class="panel-title">${record.title}</div><p class="panel-desc">${record.description}</p>${infoHTML}${navButton}`;
+        textContent.innerHTML = `<div class="panel-header"><span class="panel-cat" style="background:${color}">${record.category}</span></div><h2 class="panel-title">${record.title}</h2><p class="panel-desc">${record.description}</p>${infoHTML}${quickActions}`;
         panelInner.appendChild(textContent);
+
+        // Add share button functionality
+        setTimeout(() => {
+            var shareBtn = document.getElementById('share-btn');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', async function () {
+                    triggerHaptic();
+                    var shareData = {
+                        title: record.title,
+                        text: `${record.description} - Kala Ghoda Heritage Map`,
+                        url: window.location.href
+                    };
+
+                    // Check if Web Share API is supported
+                    if (navigator.share) {
+                        try {
+                            await navigator.share(shareData);
+                            showToast('Shared successfully!');
+                        } catch (err) {
+                            if (err.name !== 'AbortError') {
+                                console.log('Share failed:', err);
+                                copyToClipboard(record);
+                            }
+                        }
+                    } else {
+                        // Fallback: copy to clipboard
+                        copyToClipboard(record);
+                    }
+                });
+            }
+        }, 100);
 
         document.getElementById('side-panel').classList.add('open');
         closeMobileConsole();

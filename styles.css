@@ -583,6 +583,7 @@ body.mode-1883 #map-1883-btn {
 
 input[type=range] {
     -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     background: transparent;
     margin: 0;
@@ -720,32 +721,39 @@ input[type=range]::-moz-range-thumb {
 }
 
 .panel-content {
-    padding: 25px 30px;
+    padding: 24px;
+}
+
+.panel-header {
+    margin-bottom: 12px;
 }
 
 .panel-cat {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 800;
-    color: #999;
-    margin-bottom: 10px;
     display: inline-block;
+    padding: 6px 14px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 20px;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .panel-title {
     font-family: 'Cardo', serif;
-    font-size: 28px;
-    margin-bottom: 15px;
-    line-height: 1.1;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.3;
     color: #111;
+    margin: 16px 0 12px 0;
 }
 
 .panel-desc {
-    line-height: 1.6;
-    color: #444;
     font-size: 15px;
-    margin-bottom: 25px;
+    line-height: 1.65;
+    color: #444;
+    margin: 0 0 20px 0;
 }
 
 .panel-info {
@@ -756,42 +764,90 @@ input[type=range]::-moz-range-thumb {
 }
 
 .panel-info-row {
-    display: table-row;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+}
+
+.panel-info-row i {
+    width: 18px;
+    font-size: 14px;
+    color: #999;
+    flex-shrink: 0;
 }
 
 .panel-info-label {
-    display: table-cell;
-    padding: 8px 0;
-    font-size: 10px;
+    font-size: 11px;
     text-transform: uppercase;
     color: #999;
     letter-spacing: 1px;
-    width: 30%;
     font-weight: 700;
+    min-width: 80px;
 }
 
 .panel-info-val {
-    display: table-cell;
-    padding: 8px 0;
-    font-size: 13px;
+    font-size: 14px;
     color: #222;
-    font-weight: 400;
+    font-weight: 500;
+    flex: 1;
+}
+
+
+.panel-quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 24px;
 }
 
 .panel-action-btn {
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-    padding: 14px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
     text-align: center;
     text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.panel-action-btn.primary {
     background: var(--accent-nav);
     color: #fff;
+    box-shadow: 0 2px 8px rgba(41, 128, 185, 0.3);
+}
+
+.panel-action-btn.primary:hover {
+    background: #1f6494;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(41, 128, 185, 0.4);
+}
+
+.panel-action-btn.secondary {
+    background: #f5f5f5;
+    color: #555;
+    border: 1px solid #ddd;
+}
+
+.panel-action-btn.secondary:hover {
+    background: #e8e8e8;
+    border-color: #ccc;
+}
+
+.panel-action-btn i {
+    font-size: 16px;
+}
+
+.panel-action-btn span {
     font-size: 12px;
-    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    border-radius: 6px;
+    letter-spacing: 0.5px;
 }
 
 /* CLOSE BUTTON - HIDDEN ON DESKTOP */

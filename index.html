@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="ux-enhancements.css" />
 </head>
 
 <body>
@@ -66,6 +67,8 @@
             </div>
         </div>
 
+        <div class="category-chips-container" id="category-chips"></div>
+
         <div id="console">
             <div id="console-handle"></div>
             <div id="console-close-btn" class="mobile-close-btn">
@@ -98,6 +101,11 @@
         <button class="v-control-btn" id="locate-btn" data-msg="Locating..."><i
                 class="fa-solid fa-location-crosshairs"></i> <span>My Location</span></button>
     </div>
+
+    <button id="recenter-btn" class="recenter-btn" style="display: none;">
+        <i class="fa-solid fa-crosshairs"></i>
+        <span>Return to Location</span>
+    </button>
 
     <div id="side-panel">
         <button id="panel-close-btn" class="mobile-close-btn">
@@ -141,7 +149,9 @@
             });
         }
     </script>
+    <script src="ux-enhancements.js"></script>
     <script src="script.js"></script>
+    <script src="ux-init.js"></script>
 </body>
 
 </html>

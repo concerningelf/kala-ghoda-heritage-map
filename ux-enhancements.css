@@ -1,0 +1,147 @@
+/* UX Enhancements - Append to styles.css */
+
+/* 3. Recenter Button */
+.recenter-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--accent-nav);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    z-index: 96;
+    box-shadow: 0 4px 16px rgba(41, 128, 185, 0.4);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+    opacity: 0;
+}
+
+.recenter-btn.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.recenter-btn:hover {
+    background: #1f6494;
+    box-shadow: 0 6px 20px rgba(41, 128, 185, 0.5);
+}
+
+.recenter-btn:active {
+    transform: translateX(-50%) scale(0.95);
+}
+
+/* 5. Recent Searches */
+.recent-searches {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.recent-searches-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #999;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.recent-search-item {
+    padding: 8px 12px;
+    margin: 4px 0;
+    background: #f9f9f9;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.recent-search-item:hover {
+    background: #f0f0f0;
+}
+
+.recent-search-item i {
+    font-size: 11px;
+    color: #999;
+}
+
+/* 6. Category Filter Chips */
+.category-chips-container {
+    padding: 10px 20px 5px 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.category-chips-container::-webkit-scrollbar {
+    display: none;
+}
+
+.category-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    margin-right: 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 2px solid;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    user-select: none;
+}
+
+.category-chip i {
+    font-size: 12px;
+}
+
+.category-chip.active {
+    color: #fff !important;
+    transform: scale(1.05);
+}
+
+.category-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 8. Spring Animations */
+.spring-transition {
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.panel-action-btn,
+.filter-btn,
+.search-item,
+.category-chip {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .recenter-btn {
+        bottom: 80px;
+        font-size: 13px;
+        padding: 10px 20px;
+    }
+
+    .category-chips-container {
+        padding: 10px 15px 5px 15px;
+    }
+}
