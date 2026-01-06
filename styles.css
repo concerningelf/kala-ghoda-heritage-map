@@ -2,7 +2,7 @@
 
 /* 1. Immersive Mode: Fade UI when moving map */
 .fade-on-move {
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
 body.map-moving .fade-on-move {
@@ -391,7 +391,8 @@ input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 
     .search-icon { font-size: 18px; left: 16px; top: 50%; transform: translateY(-50%); }
     
     #search-results { 
-        left: 16px; right: 16px; top: calc(var(--safe-area-top) + 110px); /* Adjust based on header height */
+        left: 16px; right: 16px; 
+        top: 55px; /* Fixed: Anchors directly below the 48px input */
         box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
         border-radius: 12px; overflow: hidden; border: none;
     }
@@ -514,11 +515,11 @@ input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 
         gap: 12px;
     }
     .v-control-btn { 
-        width: 48px; height: 48px; 
+        width: 40px; height: 40px; 
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
-    .v-control-btn i { width: 48px; height: 48px; font-size: 20px; }
+    .v-control-btn i { width: 40px; height: 40px; font-size: 16px; }
     
     #time-widget { 
         transform: translateX(-50%) translateY(200%); 

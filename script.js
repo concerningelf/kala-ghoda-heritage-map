@@ -6,7 +6,7 @@ window.addEventListener('load', function() {
 // Top Tier: Haptic Feedback Helper
 function triggerHaptic() {
     if (navigator.vibrate) {
-        navigator.vibrate(10); // Light tap
+        navigator.vibrate(15); // Light tap
     }
 }
 
