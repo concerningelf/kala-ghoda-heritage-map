@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset='utf-8' />
     <title>Visual Audit: Kala Ghoda Heritage</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover' />
-    
+
+    <!-- PWA / App Mode Settings -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="manifest" href="manifest.json">
+
     <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <link rel="stylesheet" href="styles.css" />
@@ -17,10 +26,10 @@
 <body>
 
     <div id="map"></div>
-    <div id="tooltip"></div> 
-    
+    <div id="tooltip"></div>
+
     <div id="time-widget">
-        <div class="widget-close" onclick="closeTimeWidget()">×</div>
+        <button id="time-widget-close-btn" class="widget-close" aria-label="Close">×</button>
         <div id="year-display">Present Day</div>
         <div class="range-labels">
             <span id="label-min">1850</span>
@@ -43,18 +52,18 @@
             <span class="title-main">Kala Ghoda</span>
         </h1>
         <h2>Heritage Survey</h2>
-        
+
         <div id="mobile-title">
             <span class="m-sub">Visual Audit</span>
             <span class="m-main">Kala Ghoda</span>
         </div>
 
-        <div id="search-container">
+        <div id="search-container" class="fade-on-move">
             <div class="search-wrapper">
                 <i class="fa-solid fa-search search-icon"></i>
                 <input type="text" id="search-input" placeholder="Search buildings, styles..." autocomplete="off">
+                <div id="search-results"></div>
             </div>
-            <div id="search-results"></div>
         </div>
 
         <div id="console">
@@ -67,21 +76,27 @@
                 <span><i class="fa-solid fa-layer-group"></i> Filter Layers</span>
                 <i class="fa-solid fa-chevron-down" id="layers-arrow"></i>
             </div>
-            
+
             <div id="layers-content" class="collapsed">
-                </div>
+            </div>
         </div>
     </div>
 
     <div id="vertical-controls" class="fade-on-move">
-        <button class="v-control-btn" id="zoom-in-btn"><i class="fa-solid fa-plus"></i> <span>Zoom In</span></button>
-        <button class="v-control-btn" id="zoom-out-btn"><i class="fa-solid fa-minus"></i> <span>Zoom Out</span></button>
-        <button class="v-control-btn" id="compass-btn" data-msg="Orientation Reset"><i class="fa-solid fa-arrow-up"></i> <span>Reset North</span></button>
-        <button class="v-control-btn" id="time-travel-btn" data-msg="Time Slider Active"><i class="fa-solid fa-clock-rotate-left"></i> <span>Time Travel</span></button>
-        <button class="v-control-btn" id="map-1883-btn" data-msg="1883 Map Enabled"><i class="fa-solid fa-map-location-dot"></i> <span>1883 Map</span></button>
-        <button class="v-control-btn" id="view-3d-btn" data-msg="3D View Toggled"><i class="fa-solid fa-cube"></i> <span>3D View</span></button>
-        <button class="v-control-btn" id="reset-view-btn" data-msg="Camera Reset"><i class="fa-solid fa-compress"></i> <span>Reset View</span></button>
-        <button class="v-control-btn" id="locate-btn" data-msg="Locating..."><i class="fa-solid fa-location-crosshairs"></i> <span>My Location</span></button>
+        <button class="v-control-btn" id="zoom-in-btn"><i class="fa-solid fa-plus"></i></button>
+        <button class="v-control-btn" id="zoom-out-btn"><i class="fa-solid fa-minus"></i></button>
+        <button class="v-control-btn" id="compass-btn" data-msg="Orientation Reset"><i class="fa-solid fa-arrow-up"></i>
+            <span>Reset North</span></button>
+        <button class="v-control-btn" id="time-travel-btn" data-msg="Time Slider Active"><i
+                class="fa-solid fa-clock-rotate-left"></i> <span>Time Travel</span></button>
+        <button class="v-control-btn" id="map-1883-btn" data-msg="1883 Map Enabled"><i
+                class="fa-solid fa-map-location-dot"></i> <span>1883 Map</span></button>
+        <button class="v-control-btn" id="view-3d-btn" data-msg="3D View Toggled"><i class="fa-solid fa-cube"></i>
+            <span>3D View</span></button>
+        <button class="v-control-btn" id="reset-view-btn" data-msg="Camera Reset"><i class="fa-solid fa-compress"></i>
+            <span>Reset View</span></button>
+        <button class="v-control-btn" id="locate-btn" data-msg="Locating..."><i
+                class="fa-solid fa-location-crosshairs"></i> <span>My Location</span></button>
     </div>
 
     <div id="side-panel">
@@ -96,6 +111,37 @@
         </div>
     </div>
 
+    <div id="bottom-nav">
+        <div class="nav-item active" id="nav-explore">
+            <i class="fa-solid fa-map"></i>
+            <span>Explore</span>
+        </div>
+        <div class="nav-item" id="nav-layers">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Layers</span>
+        </div>
+        <div class="nav-item" id="nav-time">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Time</span>
+        </div>
+        <div class="nav-item" id="nav-about">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>About</span>
+        </div>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(req => {
+                    console.log('Service Worker Registered');
+                }).catch(err => {
+                    console.log('Service Worker registration failed', err);
+                });
+            });
+        }
+    </script>
     <script src="script.js"></script>
 </body>
+
 </html>
