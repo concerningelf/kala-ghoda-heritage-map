@@ -1279,7 +1279,7 @@ input[type=range]::-moz-range-thumb {
 }
 
 /* --- TUTORIAL OVERLAY --- */
-/* Hidden on desktop - only shown on mobile */
+/* Hidden on desktop - only shown on mobile after loading */
 #tutorial-overlay {
     position: fixed;
     top: 0;
@@ -1290,12 +1290,16 @@ input[type=range]::-moz-range-thumb {
     backdrop-filter: blur(8px);
     z-index: 9999;
     display: none;
-    /* Hidden on desktop by default */
+    /* Hidden by default - JS controls visibility */
     align-items: center;
     justify-content: center;
     padding: 20px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#tutorial-overlay.visible {
     opacity: 1;
-    transition: opacity 0.4s ease;
 }
 
 #tutorial-overlay.hidden {
@@ -1310,7 +1314,14 @@ input[type=range]::-moz-range-thumb {
     max-width: 360px;
     width: 100%;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: tutorial-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+}
+
+#tutorial-overlay.visible .tutorial-card {
+    transform: scale(1) translateY(0);
+    opacity: 1;
 }
 
 @keyframes tutorial-pop {
@@ -1463,9 +1474,9 @@ input[type=range]::-moz-range-thumb {
 /* ================= MOBILE MODE ================= */
 @media (max-width: 768px) {
 
-    /* Show tutorial on mobile */
+    /* Tutorial is hidden by default on mobile - JavaScript shows it after loading screen */
     #tutorial-overlay {
-        display: flex;
+        display: none;
     }
 
     /* --- HEADER & TITLES --- */
@@ -1983,19 +1994,62 @@ input[type=range]::-moz-range-thumb {
         font-size: 32px;
     }
 
+    .panel-quick-actions {
+        display: flex;
+        gap: 12px;
+        padding: 0 4px;
+        margin-top: 20px;
+    }
+
     .panel-action-btn {
-        height: 40px;
-        font-size: 12px;
+        flex: 1;
+        height: 52px;
+        font-size: 13px;
+        font-weight: 700;
         display: flex;
         align-items: center;
         justify-content: center;
-        /* Make it less massive: Pill shape, not full width */
-        width: auto;
-        padding: 0 24px;
-        border-radius: 8px;
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 200px;
+        gap: 10px;
+        padding: 0 20px;
+        border-radius: 14px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .panel-action-btn i {
+        font-size: 18px;
+    }
+
+    .panel-action-btn span {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .panel-action-btn.primary {
+        background: linear-gradient(135deg, #2980b9 0%, #1a5a8a 100%);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(41, 128, 185, 0.35);
+    }
+
+    .panel-action-btn.primary:active {
+        transform: scale(0.96);
+        box-shadow: 0 2px 8px rgba(41, 128, 185, 0.3);
+    }
+
+    .panel-action-btn.secondary {
+        background: #f8f8f8;
+        color: #333;
+        border: 1.5px solid #e0e0e0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .panel-action-btn.secondary:active {
+        transform: scale(0.96);
+        background: #f0f0f0;
     }
 
     /* --- FLOATING CONTROLS --- */

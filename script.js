@@ -44,29 +44,21 @@ function initTutorial() {
 
     if (!overlay) return;
 
-    // Check if user has seen the tutorial before
-    var hasSeenTutorial = localStorage.getItem('kgmap-tutorial-seen');
-
-    if (hasSeenTutorial) {
-        // User has seen it, hide immediately
-        overlay.classList.add('hidden');
-        overlay.style.display = 'none';
-    } else {
-        // First visit, show tutorial
-        overlay.classList.remove('hidden');
-    }
+    // Always hide tutorial initially - it will be shown after loading screen completes
+    overlay.classList.remove('visible');
+    overlay.style.display = 'none';
 
     // Dismiss button handler
     if (dismissBtn) {
         dismissBtn.addEventListener('click', function () {
             triggerHaptic();
-            overlay.classList.add('hidden');
+            overlay.classList.remove('visible');
             // Remember that user has seen the tutorial
             localStorage.setItem('kgmap-tutorial-seen', 'true');
-            // Fully hide after animation
+            // Fully hide after animation completes
             setTimeout(function () {
                 overlay.style.display = 'none';
-            }, 400);
+            }, 500);
         });
     }
 
@@ -76,6 +68,30 @@ function initTutorial() {
             dismissBtn.click();
         }
     });
+}
+
+// Show tutorial after loading screen completes (only on mobile and only if not seen before)
+function showTutorial() {
+    var overlay = document.getElementById('tutorial-overlay');
+    if (!overlay) return;
+
+    // Only show on mobile
+    if (window.innerWidth > 768) return;
+
+    // Check if user has seen the tutorial before
+    var hasSeenTutorial = localStorage.getItem('kgmap-tutorial-seen');
+    if (hasSeenTutorial) return;
+
+    // Show tutorial with a smooth fade-in
+    setTimeout(function () {
+        overlay.style.display = 'flex';
+        // Allow display to apply before adding visible class for animation
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                overlay.classList.add('visible');
+            });
+        });
+    }, 400);
 }
 
 // Bottom Nav Logic
@@ -507,6 +523,8 @@ function initMap() {
             { id: 'davar-building', category: 'Lettering', title: 'Davar Building Lettering', image: './images/davar-building.jpg', description: 'Carved stone lettering above an arched entrance passage, exemplifying the bold typography of early 20th century commercial buildings in the Fort area.', year: '1900', architect: 'Unknown', builder: 'Private', location: { center: [18.932222, 72.831694] } },
             // Sunder Woodwork (User Submission)
             { id: 'sunder-woodwork', category: 'Lettering', title: 'Sunder Woodwork Signage', image: './images/sunder-woodwork.jpg', description: 'Art Deco style signage reading "WOOD SUNDER WORK" with dimensional lettering and a distinctive red outline, located above an arched stone entrance.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.932250, 72.831667] } },
+            // CIP Building / ICP Fort Heritage (User Submission)
+            { id: 'cip-building', category: 'Neoclassical', title: 'ICP Fort Heritage (CIP Building)', image: './images/cip-building.jpg', description: 'A grand heritage building on Nagindas Master Road, originally constructed in 1913. The facade features a prominent pediment with the year "1913" carved in relief, along with decorative cornices and Corinthian-style pilasters. It currently houses the flagship store of fashion designer Sabyasachi.', year: '1913', architect: 'Unknown', builder: 'Private', location: { center: [18.932456, 72.833428] } },
             // Standard Building (User Submission)
             { id: 'standard-building', category: 'Neoclassical', title: 'Standard Building', image: './images/standard-building.jpg', description: 'Designed by F.W. Stevens and completed by his son Charles Stevens. A prime example of the Neo-Classical style on D.N. Road, featuring buff-coloured basalt and intricate carvings.', year: '1902', architect: 'F.W. Stevens / Charles Stevens', builder: 'Standard Life Assurance', location: { center: [18.933900, 72.832100] } },
             // U.N. Pursram (User Submission)
@@ -545,7 +563,23 @@ function initMap() {
             { id: 'keystone-heads', category: 'Urban Texture', title: 'Keystone Sculptures', image: './images/keystone-heads.jpg', description: 'Intricate sculpted heads (mascarons) adorning the keystones of the arches on this heritage façade. These bearded faces, possibly depicting European or mythological figures, watch over the street from above the shopfronts (currently Bademiya).', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.931444, 72.835194] } },
             // Oriental Building (User Submission)
             { id: 'oriental-building', category: 'Victorian', title: 'Oriental Building', image: './images/oriental-building.jpg', description: 'A magnificent Venetian Gothic structure completed in 1885. Its facade is a masterpiece of stone carving, featuring prominent arches, decorative balconies, and the signature "mascaron" heads on its keystones. Originally built for the Oriental Life Assurance Company, it is now an iconic part of the Fort district\'s architectural fabric.', year: '1885', architect: 'Frederick William Stevens', builder: 'Oriental Life Assurance', location: { center: [18.931444, 72.835194] } },
-
+            // BMC Plaque - Horniman Circle (User Submission)
+            { id: 'bmc-plaque-horniman', category: 'Street Sign', title: 'BMC Garden Plaque', image: './images/bmc-plaque-horniman.jpg', description: 'The official colorful seal of the Brihanmumbai Municipal Corporation (BMC) mounted on the historic iron railings of Horniman Circle Garden. The seal features iconic Mumbai landmarks like the Gateway of India and a factory, representing the city’s heritage and industry.', year: 'Unknown', architect: 'BMC', builder: 'Municipal Corp', location: { center: [18.932167, 72.835556] } },
+            // Asiatic Society of Mumbai (User Submission)
+            { id: 'asiatic-society', category: 'Neoclassical', title: 'Asiatic Society of Mumbai (Town Hall)', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/The_Asiatic_Society_of_Mumbai_in_May_2025.jpg/1024px-The_Asiatic_Society_of_Mumbai_in_May_2025.jpg', description: 'Completed in 1833, the Town Hall is one of the most magnificent Neoclassical buildings in Mumbai. Inspired by Greek and Roman architecture, it features a grand portico with eight Doric columns and a famous flight of steps that serves as a popular public space.', year: '1833', architect: 'Colonel Thomas Cowper', builder: 'Government of Bombay', location: { center: [18.931813, 72.836155] } },
+            // Horniman Circle Garden (User Submission)
+            { id: 'horniman-garden', category: 'Public Space', title: 'Horniman Circle Garden', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Mumbai%2C_giardini_di_horniman_circle%2C_03.jpg/1024px-Mumbai%2C_giardini_di_horniman_circle%2C_03.jpg', description: 'A historic park at the center of Horniman Circle, originally known as Elphinstone Circle. Laid out in 1872, the garden is a rare example of circular urban planning in Mumbai, surrounded by palm trees and grand Victorian buildings. It remains a tranquil green lung in the heart of the business district.', year: '1872', architect: 'Unknown', builder: 'Govt. of Bombay', location: { center: [18.931907, 72.835007] } },
+            { id: 'bharat-insurance', categories: ['Neoclassical', 'Lettering'], title: 'Bharat Insurance Building', images: ['./images/bharat-insurance.jpg', './images/bharat-insurance-lettering.jpg'], description: 'A stately Neoclassical building on Horniman Circle. The facade features a graceful curve, recurring arched windows with decorative "mascaron" keystone heads, and prominent raised lettering for the "BHARAT INSURANCE BUILDING". It currently houses the flagship Hermes store, blending historic grandeur with modern luxury.', year: 'Unknown', architect: 'Unknown', builder: 'Bharat Insurance Co.', location: { center: [18.933329, 72.835815] } },
+            // Sir H.C. Dinshaw Building (User Submission)
+            { id: 'hc-dinshaw-building', categories: ['Neoclassical', 'Lettering'], title: 'Sir H.C. Dinshaw Building', images: ['./images/hc-dinshaw-building.jpg', './images/hc-dinshaw-lettering.jpg'], description: 'A grand heritage building on Horniman Circle, part of the precinct\'s iconic curved architecture. The facade is adorned with intricate stone carvings, including "mascaron" heads on the window keystones. Notable gold-engraved lettering above the entrance and within the archways bears the name "SIR H. C. DINSHAW BUILDING".', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.932915, 72.835373] } },
+            // Mumbai Samachar (User Submission)
+            { id: 'mumbai-samachar', categories: ['Victorian', 'Lettering', 'Living Heritage'], title: 'Mumbai Samachar Building', images: ['./images/mumbai-samachar.jpg', './images/mumbai-samachar-lettering.jpg'], description: 'The home of Asia\'s oldest continuously published newspaper (est. 1822). This striking red-brick building is a landmark of Mumbai\'s journalism history. The facade is a fine example of Victorian commercial architecture, featuring multilingual signage and elegant arched windows.', year: '1822', architect: 'Unknown', builder: 'Cama Family', location: { center: [18.932820, 72.834456] } },
+            // Elphinstone Building (User Submission)
+            { id: 'elphinstone-building', categories: ['Victorian', 'Lettering'], title: 'Elphinstone Building', images: ['./images/elphinstone-building.jpg', './images/elphinstone-lettering.jpg'], description: 'A stately Victorian Gothic building with prominent arched windows and intricate stone ornamentation. The facade features the "ELPHINSTONE BUILDING" nameplate carved into the masonry. Today, it stands as a prime example of the 19th-century commercial grandness of the Fort district, housing modern retail like Starbucks.', year: '1870', architect: 'James Trubshawe', builder: 'Unknown', location: { center: [18.933358, 72.834229] } },
+            // Brady House (User Submission)
+            { id: 'brady-house', categories: ['Neoclassical', 'Lettering'], title: 'Brady House', images: ['./images/brady-house.jpg', './images/brady-house-lettering.jpg'], description: 'An elegant heritage building featuring a distinctive shield-shaped pediment with the "BRADY HOUSE" nameplate. The structure displays refined architectural detailing with arched windows and a symmetrical facade, characteristic of early 20th-century commercial buildings in Mumbai\'s business district.', year: 'Unknown', architect: 'Unknown', builder: 'W.H. Brady & Co.', location: { center: [18.932474, 72.833778] } },
+            // Pardiwala Paper Mart (User Submission)
+            { id: 'pardiwala-sign', categories: ['Lettering', 'Ghost Site'], title: 'Pardiwala Paper Mart Sign', image: './images/pardiwala-paper.jpg', description: 'A weathered wooden sign with bold relief lettering for "PARDIWALA PAPER MART", hanging under a stone Gothic arch. A classic example of Mumbai\'s historic commercial signage and a "ghost site" of a former paper trading business.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.932354, 72.834335] } },
             // Heritage Lettering (User Submission)
             { id: '1923-lettering', category: 'Lettering', title: '1923 Lettering', image: './images/lettering-north-fort.jpg', description: 'Carved stone lettering displaying the year "1923" adorned with decorative floral motifs.', year: '1923', architect: 'Unknown', builder: 'Private', location: { center: [18.935944, 72.833889] } },
 
@@ -578,17 +612,21 @@ function initMap() {
             return;
         }
 
-        // Failsafe: If loading takes too long (e.g. 10s), force close
+        // Failsafe: If loading takes too long, force close
         setTimeout(function () {
             if (screen && screen.style.display !== 'none') {
                 console.warn('Preloader timed out, forcing close.');
                 if (bar) bar.style.width = '100%';
                 if (screen) {
                     screen.style.opacity = '0';
-                    setTimeout(function () { screen.style.display = 'none'; }, 500);
+                    setTimeout(function () {
+                        screen.style.display = 'none';
+                        // Show tutorial after loading screen is hidden
+                        showTutorial();
+                    }, 300);
                 }
             }
-        }, 15000);
+        }, 8000); // Reduced from 15s to 8s
 
         function checkDone() {
             loaded++;
@@ -597,12 +635,17 @@ function initMap() {
             if (text) text.innerText = 'Loading Map... ' + percent + '%';
 
             if (loaded >= total) {
+                // Reduced delay before fade out
                 setTimeout(function () {
                     if (screen) {
                         screen.style.opacity = '0';
-                        setTimeout(function () { screen.style.display = 'none'; }, 500);
+                        setTimeout(function () {
+                            screen.style.display = 'none';
+                            // Show tutorial after loading screen is hidden
+                            showTutorial();
+                        }, 300); // Reduced from 500ms
                     }
-                }, 800);
+                }, 200); // Reduced from 800ms
             }
         }
 
@@ -677,12 +720,12 @@ function initMap() {
             triggerHaptic();
             resetFilters();
             updateChipStates();
-            // Fly back to original location
+            // Fly back to original location with 3D view
             map.flyTo({
                 center: [72.8322, 18.9270],
-                zoom: 15.0,
-                pitch: 0,
-                bearing: 0,
+                zoom: 16,  // Zoom 16 to show individual markers instead of clusters
+                pitch: 45,
+                bearing: -15,
                 duration: 1000
             });
             showToast('View reset');
@@ -869,7 +912,14 @@ function initMap() {
         if (window.updateChipStates) window.updateChipStates();
     }
 
+    // Zoom threshold for showing individual markers vs clusters
+    var CLUSTER_ZOOM_THRESHOLD = 16;
+
     function updateMapState() {
+        // Check if map exists and get current zoom (may be called before map is ready)
+        var currentZoom = (typeof map !== 'undefined' && map.getZoom) ? map.getZoom() : 17;
+        var showMarkersBasedOnZoom = currentZoom >= CLUSTER_ZOOM_THRESHOLD;
+
         markerObjects.forEach(function (m) {
             // For multi-category support: visible if ANY category is not disabled
             var markerCategories = m.categories || [m.category];
@@ -877,7 +927,12 @@ function initMap() {
                 return !disabledCategories.includes(cat);
             });
             var timeVisible = m.year <= currentSliderYear;
-            if (categoryVisible && timeVisible) { m.element.style.display = 'flex'; m.element.style.opacity = '1'; }
+
+            // Show marker only if: zoom is high enough AND category/time filters allow
+            if (showMarkersBasedOnZoom && categoryVisible && timeVisible) {
+                m.element.style.display = 'flex';
+                m.element.style.opacity = '1';
+            }
             else { m.element.style.display = 'none'; }
         });
         if (selectedMarker && selectedMarker.style.display === 'none') { closePanel(false); }
@@ -995,7 +1050,12 @@ function initMap() {
     });
     setupControl('view-3d-btn', () => { var currentPitch = map.getPitch(); if (currentPitch > 5) { map.easeTo({ pitch: 0, bearing: 0 }); } else { map.easeTo({ pitch: 45, bearing: -15 }); } });
 
-    setupControl('reset-view-btn', () => { map.flyTo({ center: startCenter, zoom: initialZoom, pitch: 45, bearing: -15, duration: 2000 }); closePanel(true); });
+    setupControl('reset-view-btn', () => {
+        // Use zoom 16 on mobile to ensure markers (not clusters) are visible after reset
+        var resetZoom = window.innerWidth < 768 ? 16 : initialZoom;
+        map.flyTo({ center: startCenter, zoom: resetZoom, pitch: 45, bearing: -15, duration: 2000 });
+        closePanel(true);
+    });
 
     setupControl('map-1883-btn', function () { toggle1883Map(document.getElementById('map-1883-btn')); });
 
@@ -1111,6 +1171,152 @@ function initMap() {
         map.addSource('fort-wall', { 'type': 'geojson', 'data': fortWallGeoJSON });
         map.addLayer({ 'id': 'fort-wall-layer', 'type': 'line', 'source': 'fort-wall', 'layout': { 'line-join': 'round', 'line-cap': 'round', 'visibility': 'none' }, 'paint': { 'line-color': '#c0392b', 'line-width': 4, 'line-dasharray': [2, 4] } });
 
+        // --- CLUSTERING SETUP ---
+        // Create GeoJSON from chapters for clustering
+        var clusterGeoJSON = {
+            "type": "FeatureCollection",
+            "features": config.chapters.map(function (record, index) {
+                // AUTO-FIX: Handle Google Maps Format (Lat, Lng) -> (Lng, Lat)
+                if (record.location.center[0] < record.location.center[1]) {
+                    record.location.center = [record.location.center[1], record.location.center[0]];
+                }
+                var recordCategories = getCategories(record);
+                var primaryCategory = recordCategories[0] || 'Unknown';
+                return {
+                    "type": "Feature",
+                    "properties": {
+                        "id": record.id,
+                        "index": index,
+                        "title": record.title,
+                        "category": primaryCategory,
+                        "color": config.colors[primaryCategory] || '#333'
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": record.location.center
+                    }
+                };
+            })
+        };
+
+        // Add clustering source
+        map.addSource('heritage-clusters', {
+            type: 'geojson',
+            data: clusterGeoJSON,
+            cluster: true,
+            clusterMaxZoom: 17, // Continue clustering up to zoom 17 (layer hides at 16)
+            clusterRadius: 50  // Radius of each cluster when clustering points
+        });
+
+        // Cluster circles layer - hidden at zoom 16+
+        map.addLayer({
+            id: 'clusters',
+            type: 'circle',
+            source: 'heritage-clusters',
+            filter: ['has', 'point_count'],
+            maxzoom: 16, // Hide clusters at zoom 16 and above
+            paint: {
+                'circle-color': [
+                    'step',
+                    ['get', 'point_count'],
+                    '#2980b9',  // Small clusters (blue)
+                    10,
+                    '#8e44ad',  // Medium clusters (purple)
+                    25,
+                    '#c0392b'   // Large clusters (red)
+                ],
+                'circle-radius': [
+                    'step',
+                    ['get', 'point_count'],
+                    18,   // Small clusters
+                    10,
+                    24,   // Medium clusters
+                    25,
+                    30    // Large clusters
+                ],
+                'circle-stroke-width': 3,
+                'circle-stroke-color': '#fff'
+            }
+        });
+
+        // Cluster count labels - hidden at zoom 16+
+        map.addLayer({
+            id: 'cluster-count',
+            type: 'symbol',
+            source: 'heritage-clusters',
+            filter: ['has', 'point_count'],
+            maxzoom: 16, // Hide cluster labels at zoom 16 and above
+            layout: {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                'text-size': 12
+            },
+            paint: {
+                'text-color': '#ffffff'
+            }
+        });
+
+        // Click on cluster to zoom in
+        // NOTE: Using layer click event for cluster interaction
+        map.on('click', 'clusters', function (e) {
+            var features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+
+            if (!features || features.length === 0) return;
+
+            var clusterId = features[0].properties.cluster_id;
+            var coordinates = features[0].geometry.coordinates.slice();
+            var clusterSource = map.getSource('heritage-clusters');
+
+            if (!clusterSource) return;
+
+            // Haptic feedback on mobile
+            triggerHaptic();
+
+            // MapLibre 4.x uses Promises instead of callbacks
+            var expansionZoomResult = clusterSource.getClusterExpansionZoom(clusterId);
+
+            // Check if it's a Promise (modern API) or uses callbacks (legacy)
+            if (expansionZoomResult && typeof expansionZoomResult.then === 'function') {
+                // Promise-based API (MapLibre 4.x+)
+                expansionZoomResult.then(function (zoom) {
+                    var targetZoom = Math.min(zoom + 0.5, 18);
+                    map.flyTo({
+                        center: coordinates,
+                        zoom: targetZoom,
+                        duration: 500
+                    });
+                }).catch(function (err) {
+                    console.error('Cluster expansion error:', err);
+                    // Fallback: zoom in by 2 levels
+                    map.flyTo({
+                        center: coordinates,
+                        zoom: Math.min(map.getZoom() + 2, 18),
+                        duration: 500
+                    });
+                });
+            } else {
+                // Fallback: just zoom in by 2 levels
+                map.flyTo({
+                    center: coordinates,
+                    zoom: Math.min(map.getZoom() + 2, 18),
+                    duration: 500
+                });
+            }
+        });
+
+        // Change cursor on cluster hover
+        map.on('mouseenter', 'clusters', function () {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', 'clusters', function () {
+            map.getCanvas().style.cursor = '';
+        });
+
+        // Listen for zoom changes to show/hide markers based on cluster threshold
+        map.on('zoom', function () {
+            updateMapState();
+        });
+
         config.chapters.forEach(function (record) {
             // Optimization: Use Wikimedia Thumbnails
             if (window.optimizeWikiImage) {
@@ -1155,6 +1361,9 @@ function initMap() {
             markerObjects.push({ element: el, category: primaryCategory, categories: recordCategories, marker: marker, id: record.id, title: record.title, year: record.parsedYear });
         });
 
+        // Set initial marker visibility based on zoom level and filters
+        updateMapState();
+
         // Check for deep link URL parameter (?site=xyz)
         var urlParams = new URLSearchParams(window.location.search);
         var siteId = urlParams.get('site');
@@ -1172,7 +1381,24 @@ function initMap() {
         }
     });
 
-    map.on('click', function () { closePanel(false); closeMobileConsole(); });
+    // General map click handler - close panels when clicking empty areas
+    map.on('click', function (e) {
+        // Check if click was on a cluster
+        try {
+            if (map.getLayer('clusters')) {
+                var clusterFeatures = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                if (clusterFeatures && clusterFeatures.length > 0) {
+                    // Click was on cluster - don't close panels, let cluster handler deal with it
+                    return;
+                }
+            }
+        } catch (err) {
+            // Layer might not exist yet
+        }
+
+        closePanel(false);
+        closeMobileConsole();
+    });
 
     window.closePanel = function (preventCameraMove) {
         document.getElementById('side-panel').classList.remove('open');
