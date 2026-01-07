@@ -285,7 +285,7 @@ function attachDragGesture(panel, scrollArea, handle, closeCallback) {
 }
 
 function initMap() {
-    var initialZoom = window.innerWidth < 768 ? 15.0 : 16.5;
+    var initialZoom = 16.5;
     var startCenter = [72.8322, 18.9270];
 
     var config = {
@@ -294,7 +294,7 @@ function initMap() {
             'Art Deco': '#2a9d8f', 'Victorian': '#e76f51', 'Modern': '#00cec9',
             'Indo-Saracenic': '#b33939', 'Neoclassical': '#8e44ad', 'Public Space': '#27ae60',
             'Lettering': '#e84393', 'Ghost Site': '#95a5a6', 'Street Furniture': '#57606f',
-            'Living Heritage': '#f39c12', 'Street Sign': '#3742fa', 'Vernacular': '#d35400', 'Urban Texture': '#EAB543'
+            'Living Heritage': '#f39c12', 'Street Sign': '#3742fa', 'Vernacular': '#d35400', 'Urban Texture': '#8d6e63'
         },
         icons: {
             'Art Deco': 'fa-building', 'Victorian': 'fa-landmark', 'Modern': 'fa-square',
@@ -582,6 +582,42 @@ function initMap() {
             { id: 'pardiwala-sign', categories: ['Lettering', 'Ghost Site'], title: 'Pardiwala Paper Mart Sign', image: './images/pardiwala-paper.jpg', description: 'A weathered wooden sign with bold relief lettering for "PARDIWALA PAPER MART", hanging under a stone Gothic arch. A classic example of Mumbai\'s historic commercial signage and a "ghost site" of a former paper trading business.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.932354, 72.834335] } },
             // Heritage Lettering (User Submission)
             { id: '1923-lettering', category: 'Lettering', title: '1923 Lettering', image: './images/lettering-north-fort.jpg', description: 'Carved stone lettering displaying the year "1923" adorned with decorative floral motifs.', year: '1923', architect: 'Unknown', builder: 'Private', location: { center: [18.935944, 72.833889] } },
+            // Readymoney Mansion (User Submission)
+            { id: 'readymoney-mansion', categories: ['Vernacular', 'Lettering'], title: 'Readymoney Mansion', images: ['./images/readymoney-mansion-building.jpg', './images/readymoney-mansion-lettering.jpg'], description: 'A striking heritage building featuring a stone facade and intricate wooden balconies. The name "READYMONEY MANSION" is carved in bold relief above the entrance.', year: 'Unknown', architect: 'Unknown', builder: 'Readymoney Family', location: { center: [18.931944, 72.830534] } },
+            // Churchgate House (User Submission)
+            { id: 'churchgate-house', categories: ['Lettering', 'Victorian'], title: 'Churchgate House Lettering', image: './images/churchgate-house-lettering.jpg', description: 'Classic serif lettering for "CHURCHGATE HOUSE" mounted on the stone facade of a heritage building, now housing a modern bank branch.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.932546, 72.832911] } },
+            // Elite Shopping Centre (User Submission)
+            { id: 'elite-shopping-centre', category: 'Lettering', title: 'Elite Shopping Centre Signage', image: './images/elite-shopping-centre-lettering.jpg', description: 'A vibrant arched blue sign for the "ELITE SHOPPING CENTRE" marking a busy commercial passage on Nariman Road.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.932250, 72.832917] } },
+            // Rustom Building (User Submission)
+            { id: 'rustom-building', categories: ['Lettering', 'Victorian'], title: 'Rustom Building Lettering', image: './images/rustom-building-lettering.jpg', description: 'Bold relief lettering for "RUSTOM BUILDING" set against a stone facade. The building features decorative iron balconies and classic stone detailing, characteristic of the district\'s commercial heritage.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.932614, 72.833245] } },
+            // St. Thomas Cathedral (User Submission)
+            { id: 'st-thomas-cathedral', categories: ['Victorian', 'Lettering'], title: 'St. Thomas Cathedral', images: ['./images/st-thomas-building.jpg', './images/st-thomas-lettering.jpg'], description: 'The first Anglican church in Mumbai, consecrated in 1718. A landmark of colonial architecture, it gave its name to the nearby Churchgate station. The cathedral features a blend of Gothic and Neoclassical styles with a distinctive white tower.', year: '1718', architect: 'Unknown', builder: 'East India Company', location: { center: [18.932995, 72.833599] } },
+            // Fish & Star Reliefs (User Submission)
+            { id: 'fish-relief-wall', category: 'Urban Texture', title: 'Fish & Star Reliefs', image: './images/fish-relief-wall.jpg', description: 'A unique vernacular detail featuring red-painted relief sculptures of stars and two fish meeting head-to-head on the gable wall of a building in the Fort precinct.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.932972, 72.833500] } },
+            // Heritage Balconies (User Submission)
+            { id: 'heritage-balconies-fort', category: 'Vernacular', title: 'Heritage Balconies', image: './images/heritage-balconies-fort.jpg', description: 'A striking example of early 20th-century residential architecture in Fort, featuring ornate wrought-iron balconies, a Greek-key pattern frieze, and classic stone facing.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.932889, 72.833389] } },
+            // MCGB Fire Hydrant (User Submission)
+            { id: 'fire-hydrant-mcgb', category: 'Street Furniture', title: 'MCGB Fire Hydrant', image: './images/fire-hydrant-mcgb.jpg', description: 'A classic cylindrical cast-iron fire hydrant with the inscription "MCGB" (Municipal Corporation of Greater Bombay) and "IS 908", reflecting the city\'s municipal infrastructure history.', year: 'Unknown', architect: 'Unknown', builder: 'Municipal Corp', location: { center: [18.932694, 72.833333] } },
+            // Yazdani Bakery (User Submission)
+            { id: 'yazdani-bakery', categories: ['Living Heritage', 'Lettering', 'Vernacular'], title: 'Yazdani Restaurant & Bakery', images: ['./images/yazdani-bakery-facade.jpg', './images/yazdani-bakery-sign.jpg', './images/yazdani-la-boulangerie.jpg'], description: 'An iconic Iranian bakery and restaurant established in 1953, housed in a charming colonial-era structure with a distinctive red-trim gabled roof. Famous for its ginger biscuits, brun maska, and wood-fired ovens.', year: '1953', architect: 'Unknown', builder: 'Zend Meherwan Abadan', location: { center: [18.933451, 72.833699] } },
+            // French Bank Building (User Submission)
+            { id: 'french-bank-building', categories: ['Lettering', 'Ghost Site'], title: 'French Bank Building Signage', image: './images/french-bank-building.jpg', description: 'Prominent sans-serif lettering for the "FRENCH BANK BUILDING" above the entrance. To the right, a faint "BNP" ghost sign is visible on the facade, a relic of the building\'s former life as the Mumbai headquarters for the French bank BNP Paribas.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.933314, 72.835043] } },
+            // Gool Mansion (User Submission)
+            { id: 'gool-mansion', category: 'Lettering', title: 'Gool Mansion Lettering', image: './images/gool-mansion-lettering.jpg', description: 'Art Deco style gold lettering on a red granite plaque marking "GOOL MANSION", integrated into the facade of this heritage residential building on Nariman Road.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.934023, 72.835087] } },
+            // Fluted Heritage Facade (User Submission)
+            { id: 'fluted-facade-plant', categories: ['Neoclassical', 'Urban Texture'], title: 'Fluted Heritage Facade', image: './images/baroda-facade-plant.jpg', description: 'A grand heritage facade featuring monumental fluted pilasters. A young Ficus tree has taken root in the decorative iron balcony, a common sight where nature reclaims the masonry joints of the Fort precinct.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.933417, 72.835250] } },
+
+
+
+
+
+
+
+
+
+
+
+
 
             // Small extras
             { id: 'hydrant', category: 'Street Furniture', title: 'British Fire Hydrant', image: './images/hydrant.jpg', description: 'A hexagonal cast-iron fire hydrant, a sturdy relic of the colonial municipal water infrastructure.', year: '1895', architect: 'BMC', builder: 'Foundry Cast', location: { center: [18.928139, 72.831917] } },
@@ -880,6 +916,7 @@ function initMap() {
         }
         document.querySelectorAll('.layer-solo-btn').forEach(b => b.classList.remove('active-solo'));
         updateMapState();
+        updateClusterSource();
         if (window.updateChipStates) window.updateChipStates();
     }
 
@@ -896,6 +933,7 @@ function initMap() {
             else { b.classList.add('layer-hidden'); textBtn.innerText = 'SHOW'; currentSoloBtn.classList.remove('active-solo'); }
         });
         updateMapState();
+        updateClusterSource();
         if (window.updateChipStates) window.updateChipStates();
     }
 
@@ -909,12 +947,17 @@ function initMap() {
             b.querySelector('.layer-solo-btn').classList.remove('active-solo');
         });
         updateMapState();
+        updateClusterSource();
         if (window.updateChipStates) window.updateChipStates();
     }
 
     // Zoom threshold for showing individual markers vs clusters
     var CLUSTER_ZOOM_THRESHOLD = 16;
 
+    // Track last filter state to avoid unnecessary cluster updates
+    var lastFilterState = { categories: [], year: 2025 };
+
+    // Update marker visibility based on zoom and filters
     function updateMapState() {
         // Check if map exists and get current zoom (may be called before map is ready)
         var currentZoom = (typeof map !== 'undefined' && map.getZoom) ? map.getZoom() : 17;
@@ -936,6 +979,71 @@ function initMap() {
             else { m.element.style.display = 'none'; }
         });
         if (selectedMarker && selectedMarker.style.display === 'none') { closePanel(false); }
+    }
+
+    // Update cluster source - call this only when filters change, not on zoom
+    function updateClusterSource() {
+        // Check if map and source exist
+        if (typeof map === 'undefined' || !map.getSource || !map.getSource('heritage-clusters')) {
+            return;
+        }
+
+        // Check if filters actually changed
+        var currentFilterState = JSON.stringify({ categories: disabledCategories, year: currentSliderYear });
+        var lastFilterStateStr = JSON.stringify(lastFilterState);
+
+        if (currentFilterState === lastFilterStateStr) {
+            return; // No change, skip update
+        }
+
+        // Update last state
+        lastFilterState = { categories: disabledCategories.slice(), year: currentSliderYear };
+
+        // Build filtered GeoJSON for clusters
+        var filteredFeatures = config.chapters.filter(function (record) {
+            // Check category visibility
+            var recordCategories = getCategories(record);
+            var categoryVisible = recordCategories.some(function (cat) {
+                return !disabledCategories.includes(cat);
+            });
+
+            // Check time visibility
+            var parsedYear = parseYear(record.year);
+            var timeVisible = parsedYear <= currentSliderYear;
+
+            return categoryVisible && timeVisible;
+        }).map(function (record) {
+            // Fix coordinates if needed
+            var coords = record.location.center.slice();
+            if (coords[0] < coords[1]) {
+                coords = [coords[1], coords[0]];
+            }
+
+            var recordCategories = getCategories(record);
+            var primaryCategory = recordCategories[0] || 'Unknown';
+
+            return {
+                "type": "Feature",
+                "properties": {
+                    "id": record.id,
+                    "title": record.title,
+                    "category": primaryCategory,
+                    "color": config.colors[primaryCategory] || '#333'
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": coords
+                }
+            };
+        });
+
+        var filteredGeoJSON = {
+            "type": "FeatureCollection",
+            "features": filteredFeatures
+        };
+
+        // Update the cluster source data
+        map.getSource('heritage-clusters').setData(filteredGeoJSON);
     }
 
     var separator = document.createElement('div');
@@ -990,6 +1098,7 @@ function initMap() {
         document.getElementById('year-display').innerText = (year === parseInt(e.target.max)) ? "Present Day" : "Year: " + year;
         currentSliderYear = year;
         updateMapState();
+        updateClusterSource();
     });
 
     // window.closeTimeWidget is now global.
@@ -1666,6 +1775,7 @@ function initMap() {
             document.getElementById('search-input').value = '';
             document.getElementById('search-results').style.display = 'none';
             map.fitBounds([[72.8228, 18.9235], [72.8492, 18.9435]], { padding: { top: 100, bottom: 100, left: 50, right: 50 }, pitch: 0, bearing: 0 });
+            map.moveLayer(layerId); // Ensure it renders on top
             map.setLayoutProperty(layerId, 'visibility', 'visible');
             btn.classList.add('active-control'); body.classList.add('mode-1883');
             markerObjects.forEach(function (m) { m.element.style.display = 'none'; });
