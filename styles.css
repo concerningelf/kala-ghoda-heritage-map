@@ -2138,12 +2138,41 @@ input[type=range]::-moz-range-thumb {
         /* No shadow on mobile either */
     }
 
-    /* FIX: Force zoom buttons to stay 44px on mobile, overriding desktop styles */
+    /* FIX: Prevent expansion on mobile even if hover is triggered (Chrome Mobile fix) */
+    /* Note: We must include ID selectors for zoom buttons to override desktop ID specificity */
+    .v-control-btn:hover,
+    .v-control-btn:active,
+    .v-control-btn:focus,
+    #zoom-in-btn:hover,
+    #zoom-out-btn:hover,
     #zoom-in-btn:active,
     #zoom-out-btn:active,
-    #zoom-in-btn:hover,
-    #zoom-out-btn:hover {
+    #zoom-in-btn:focus,
+    #zoom-out-btn:focus {
         width: 44px !important;
+        padding: 0 !important;
+    }
+
+    /* Prevent hover color change on mobile unless active - BUT allow active state to show */
+    .v-control-btn:not(.active-control):hover {
+        background: #fff !important;
+        color: #555 !important;
+        border-color: #e0e0e0 !important;
+    }
+
+    /* Restore tactile feedback (turn black on press) */
+    .v-control-btn:not(.active-control):active {
+        background: #111 !important;
+        color: #fff !important;
+        border-color: #111 !important;
+    }
+
+    /* Ensure text label is never shown on mobile hover */
+    .v-control-btn:hover span,
+    .v-control-btn:active span,
+    .v-control-btn:focus span {
+        display: none !important;
+        opacity: 0 !important;
     }
 
     .v-control-btn i {
