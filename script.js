@@ -370,7 +370,7 @@ function initMap() {
             // Heritage Stone Paving (User Submission)
             { id: 'heritage-paving', category: 'Urban Texture', title: 'Historic Basalt Paving', image: './images/stone-paving.jpg', description: 'Remnants of the original heavy rectangular basalt stone paving that once lined many of the Fort precinct\'s streets, providing a durable surface for carriages and trams.', year: 'Unknown', architect: 'City Engineers', builder: 'Public Works', location: { center: [18.928806, 72.832333] } },
             // 11. Synagogue (Further East)
-            { id: 'synagogue', categories: ['Victorian', 'Lettering'], title: 'Keneseth Eliyahoo', images: ['images/synagogue.jpg', 'images/synagogue-lettering.jpg'], description: 'Victorian era synagogue with a distinctive blue facade. The Hebrew inscription above the entrance reads: "This is the gate of the Lord; the righteous shall enter through it" (Psalm 118:20).', year: '1884', architect: 'Gostling & Morris', builder: 'Jacob Elias Sassoon', location: { center: [18.92811, 72.83257] } },
+            { id: 'synagogue', categories: ['Victorian', 'Lettering'], title: 'Keneseth Eliyahoo', images: ['./images/synagogue.jpg', './images/synagogue-lettering.jpg'], description: 'Victorian era synagogue with a distinctive blue facade. The Hebrew inscription above the entrance reads: "This is the gate of the Lord; the righteous shall enter through it" (Psalm 118:20).', year: '1884', architect: 'Gostling & Morris', builder: 'Jacob Elias Sassoon', location: { center: [18.92811, 72.83257] } },
             // Numbered Signage (User Submission)
             { id: 'numbered-sign', category: 'Lettering', title: '52-54-56 Signage', image: './images/numbered-sign.jpg', description: 'A distinctive metal building number sign "52-54-56" mounted against a backdrop of contemporary street art featuring a stylized bird.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.928222, 72.832556] } },
             // Homji Street Sign (User Submission)
@@ -972,9 +972,13 @@ function initMap() {
             var timeVisible = m.year <= currentSliderYear;
 
             // Show marker only if: zoom is high enough AND category/time filters allow
-            if (showMarkersBasedOnZoom && categoryVisible && timeVisible) {
+            // OR if it is the currently selected marker (ensure it stays visible during flyTo/zoom transitions)
+            var isSelected = m.element.classList.contains('selected');
+
+            if ((showMarkersBasedOnZoom || isSelected) && categoryVisible && timeVisible) {
                 m.element.style.display = 'flex';
                 m.element.style.opacity = '1';
+                // Ensure z-index is prioritized if selected (handled by CSS .selected)
             }
             else { m.element.style.display = 'none'; }
         });
@@ -1550,12 +1554,6 @@ function initMap() {
             imageContainer.classList.remove('skeleton');
             img.classList.remove('loading');
         };
-        img.onerror = function () {
-            console.log('Failed to load image:', images[0]);
-            img.src = 'images/placeholder.jpg';
-            imageContainer.classList.remove('skeleton');
-            img.classList.remove('loading');
-        };
         imageContainer.appendChild(img);
 
         // Add gallery navigation if multiple images
@@ -1606,12 +1604,6 @@ function initMap() {
                 imageContainer.classList.add('skeleton');
                 img.src = images[idx];
                 img.onload = function () {
-                    imageContainer.classList.remove('skeleton');
-                    img.classList.remove('loading');
-                };
-                img.onerror = function () {
-                    console.log('Failed to load image:', images[idx]);
-                    img.src = 'images/placeholder.jpg';
                     imageContainer.classList.remove('skeleton');
                     img.classList.remove('loading');
                 };
