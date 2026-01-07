@@ -10,6 +10,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#ffffff">
+
+    <!-- Prevent caching of index.html -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
     <link rel="manifest" href="manifest.json">
 
     <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
@@ -20,10 +26,23 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 
 <body>
+
+    <div id="loading-screen">
+        <div id="loading-content">
+            <div class="loader-brand">
+                <span class="loader-sub">Visual Audit</span>
+                <span class="loader-main">Kala Ghoda</span>
+            </div>
+            <div class="loading-bar-container">
+                <div id="loading-bar" class="loading-bar"></div>
+            </div>
+            <div id="loading-text">Loading Map...</div>
+        </div>
+    </div>
 
     <div id="map"></div>
     <div id="tooltip"></div>
@@ -201,15 +220,16 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(req => {
-                    console.log('Service Worker Registered');
+                // Register the "No Cache" service worker to clean up any old caches
+                navigator.serviceWorker.register('./sw.js').then(registration => {
+                    console.log('Service Worker Registered (Network Only Mode)');
                 }).catch(err => {
                     console.log('Service Worker registration failed', err);
                 });
             });
         }
     </script>
-    <script src="script.js"></script>
+    <script src="script.js?v=4"></script>
 </body>
 
 </html>

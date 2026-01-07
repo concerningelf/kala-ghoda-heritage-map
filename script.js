@@ -314,10 +314,8 @@ function initMap() {
             { id: 'museum', category: 'Indo-Saracenic', title: 'CSMVS Museum', image: './images/csmvs.jpg', description: 'Indo Saracenic landmark constructed using grey Kurla basalt. Formerly the Prince of Wales Museum.', year: '1914', architect: 'George Wittet', builder: 'Govt. of Bombay', location: { center: [18.92666, 72.83222] } },
             // Buddha Sculpture (User Submission)
             { id: 'buddha-sculpture', category: 'Street Furniture', title: 'The Buddhas Within', image: './images/buddha-head.jpg', description: 'A monumental copper sculpture by Satish Gupta. The serene head reveals a hollow cave-like interior housing a sleeping Buddha and 1,500 miniature figures.', year: '2016', architect: 'Satish Gupta', builder: 'CSMVS/Private', location: { center: [18.926611, 72.831722] } },
-            // 16. Cama Oriental (Nudged North East)
-            { id: 'cama', category: 'Indo-Saracenic', title: 'Cama Oriental Institute', image: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/The_K.R._Cama_Oriental_Institute_in_Fort%2C_Mumbai.jpg', description: 'A premier institute for Indology and Persian studies, inaugurated in 1916.', year: '1916', architect: 'Unknown', builder: 'Sukhadwala Family', location: { center: [18.927298478217665, 72.83370883446398] } },
-            // 16. Cama Oriental (Nudged North East)
-            { id: 'camal', category: 'Lettering', title: 'Cama Oriental Lettering', image: './images/camal.jpg', description: 'A premier institute for Indology and Persian studies, inaugurated in 1916.', year: '1916', architect: 'Unknown', builder: 'Sukhadwala Family', location: { center: [18.927352307697504, 72.83372155899576] } },
+            // 16. K.R. Cama Oriental Institute (User Submission)
+            { id: 'cama', categories: ['Indo-Saracenic', 'Lettering'], title: 'K.R. Cama Oriental Institute', images: ['https://upload.wikimedia.org/wikipedia/commons/b/b8/The_K.R._Cama_Oriental_Institute_in_Fort%2C_Mumbai.jpg', './images/camal.jpg'], description: 'A premier institute for Indology and Persian studies, inaugurated in 1916. The building features elegant Indo-Saracenic arches and a distinctive stone-carved nameplate above the entrance.', year: '1916', architect: 'Unknown', builder: 'Sukhadwala Family', location: { center: [18.927298, 72.833709] } },
             // 19. Lion's Gate
             { id: 'lions-gate', category: 'Victorian', title: 'Lion’s Gate', image: 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Naval_Dockyard_Mumbai.jpg', description: 'The main entrance to the Naval Dockyard, guarded by two stone lions.', year: '1890', architect: 'Royal Navy', builder: 'Bombay Dockyard', location: { center: [18.926268371527307, 72.83421608761844] } },
             // Naval Dockyard Weather Vane (User Submission)
@@ -368,7 +366,7 @@ function initMap() {
 
             // --- UNIVERSITY & OVAL ---
             // 5. City Civil Court (South end of Oval strip)
-            { id: 'civil-court', category: 'Victorian', title: 'Old Secretariat (City Court)', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Old_Secretariat_Bombay_1878.jpg/800px-Old_Secretariat_Bombay_1878.jpg', description: 'One of the earliest Venetian Gothic buildings in the city.', year: '1874', architect: 'Col. H. St. Clair Wilkins', builder: 'Public Works Dept', location: { center: [18.92750, 72.83020] } },
+            { id: 'civil-court', category: 'Victorian', title: 'Old Secretariat (City Court)', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Mumbai_City_Civil_and_Sessions_Court_as_seen_from_Oval_Maidan.jpg/1280px-Mumbai_City_Civil_and_Sessions_Court_as_seen_from_Oval_Maidan.jpg', description: 'One of the earliest Venetian Gothic buildings in the city.', year: '1874', architect: 'Col. H. St. Clair Wilkins', builder: 'Public Works Dept', location: { center: [18.92750, 72.83020] } },
             // 25. University (Nudged North to Library/Convocation Hall)
             { id: 'university', category: 'Victorian', title: 'University of Mumbai', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/University_of_Mumbai_Fort_Campus.jpg/800px-University_of_Mumbai_Fort_Campus.jpg', description: 'The Fort campus features Venetian Gothic architecture including the Convocation Hall.', year: '1874', architect: 'Sir Gilbert Scott', builder: 'Cowasji Jehangir', location: { center: [18.92840, 72.83050] } },
             // University Library Facade (User Submission)
@@ -380,7 +378,7 @@ function initMap() {
             // New India Assurance Building (User Submission)
             { id: 'new-india', category: 'Art Deco', title: 'New India Assurance Building', image: './images/new-india-assurance.jpg', description: 'A monumental Art Deco structure designed by Master, Sathe & Bhuta. The facade features colossal relief sculptures by N.G. Pansare representing "Protection" and "Prosperity".', year: '1937', architect: 'Master, Sathe & Bhuta', builder: 'Sir Dorabji Tata', location: { center: [18.930111, 72.831167] } },
             // 24. Oval Maidan (Far West)
-            { id: 'oval', category: 'Public Space', title: 'Oval Maidan', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Oval_Maidan_Mumbai.jpg/800px-Oval_Maidan_Mumbai.jpg', description: 'A Grade I heritage open precinct.', year: '1860', architect: 'N/A', builder: 'City Planner', location: { center: [18.92800, 72.82950] } },
+            { id: 'oval', category: 'Public Space', title: 'Oval Maidan', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Oval_Maidan%2C_Mumbai.jpg/1024px-Oval_Maidan%2C_Mumbai.jpg', description: 'A Grade I heritage open precinct.', year: '1860', architect: 'N/A', builder: 'City Planner', location: { center: [18.92800, 72.82950] } },
 
             // --- MG ROAD NORTH / FLORA FOUNTAIN ---
             // 8. Army and Navy (West side)
@@ -413,7 +411,7 @@ function initMap() {
 
             // Wayside Inn (Next to Esplanade)
             { id: 'wayside', category: 'Ghost Site', title: 'Wayside Inn', image: './images/wayside.jpg', description: 'Now the Khyber restaurant. Famous quaint tea room.', year: '1920', architect: 'N/A', builder: 'Historic Site', location: { center: [18.92860, 72.83170] } },
-            { id: 'kgc', category: 'Living Heritage', title: 'Kala Ghoda Café', image: './images/kgc.jpg', description: 'A modern institution in a heritage shell, known for its sustainable architecture.', year: '2009', architect: 'N/A', builder: 'Private', location: { center: [18.92716499313838, 72.83273188562479] } },
+            { id: 'kgc', category: 'Living Heritage', title: 'Kala Ghoda Café', image: './images/kgcafe.png', description: 'A modern institution in a heritage shell, known for its sustainable architecture.', year: '2009', architect: 'N/A', builder: 'Private', location: { center: [18.92716499313838, 72.83273188562479] } },
             // Street Art Mural (User Submission)
             { id: 'horse-mural', category: 'Living Heritage', title: 'Street Art Mural', image: './images/horse-mural.jpg', description: 'A contemporary street art mural featuring a galloping horse and the word "HEAL", painted on a compound wall.', year: 'Unknown', architect: 'Unknown', builder: 'Street Artist', location: { center: [18.927639, 72.833083] } },
             // Commerce House Gate (User Submission)
@@ -543,6 +541,10 @@ function initMap() {
             { id: 'ryrie-building', categories: ['Neoclassical', 'Lettering'], title: 'Ryrie\'s Building (Galeries Lafayette)', images: ['./images/ryrie-building.jpg', './images/ryrie-monogram.jpg'], description: 'A grand heritage building on D.N. Road, recently restored to house Galeries Lafayette. The stone facade features intricate Neoclassical details, including the original "RY" monogram carved into the masonry, signifying its history as the Ryrie\'s building.', year: '1900', architect: 'Unknown', builder: 'Ryrie & Co.', location: { center: [18.930883, 72.834693] } },
             // State Bank Building Directory (User Submission)
             { id: 'sbi-directory', category: 'Lettering', title: 'State Bank Building Directory', image: './images/crawford-bayley-board.jpg', description: 'A classic black directory board located at the entrance of the State Bank Building (formerly State Bank of India Commercial Branch). It features the names of historic tenants like Crawford Bayley & Co. and The Oriental Fire & General Insurance, rendered in crisp white lettering.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.931083, 72.834972] } },
+            // Keystone Sculptures (User Submission)
+            { id: 'keystone-heads', category: 'Urban Texture', title: 'Keystone Sculptures', image: './images/keystone-heads.jpg', description: 'Intricate sculpted heads (mascarons) adorning the keystones of the arches on this heritage façade. These bearded faces, possibly depicting European or mythological figures, watch over the street from above the shopfronts (currently Bademiya).', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.931444, 72.835194] } },
+            // Oriental Building (User Submission)
+            { id: 'oriental-building', category: 'Victorian', title: 'Oriental Building', image: './images/oriental-building.jpg', description: 'A magnificent Venetian Gothic structure completed in 1885. Its facade is a masterpiece of stone carving, featuring prominent arches, decorative balconies, and the signature "mascaron" heads on its keystones. Originally built for the Oriental Life Assurance Company, it is now an iconic part of the Fort district\'s architectural fabric.', year: '1885', architect: 'Frederick William Stevens', builder: 'Oriental Life Assurance', location: { center: [18.931444, 72.835194] } },
 
             // Heritage Lettering (User Submission)
             { id: '1923-lettering', category: 'Lettering', title: '1923 Lettering', image: './images/lettering-north-fort.jpg', description: 'Carved stone lettering displaying the year "1923" adorned with decorative floral motifs.', year: '1923', architect: 'Unknown', builder: 'Private', location: { center: [18.935944, 72.833889] } },
@@ -552,6 +554,65 @@ function initMap() {
             { id: 'kerbstones', category: 'Urban Texture', title: 'Kurla Basalt Kerbstones', image: './images/kurla-basalt.jpg', description: 'Original massive blocks of grey Kurla basalt lining the pavement.', year: '1880', architect: 'City Engineers', builder: 'Public Works', location: { center: [18.92750, 72.83200] } }
         ]
     };
+
+    // --- PRELOADER SYSTEM ---
+    (function preloadAllImages() {
+        var allImages = [];
+        config.chapters.forEach(function (ch) {
+            if (ch.image) allImages.push(ch.image);
+            if (ch.images) allImages.push(...ch.images);
+        });
+        // Deduplicate
+        allImages = allImages.filter(function (item, pos) {
+            return allImages.indexOf(item) == pos;
+        });
+
+        var total = allImages.length;
+        var loaded = 0;
+        var bar = document.getElementById('loading-bar');
+        var screen = document.getElementById('loading-screen');
+        var text = document.getElementById('loading-text');
+
+        if (total === 0) {
+            if (screen) screen.style.display = 'none';
+            return;
+        }
+
+        // Failsafe: If loading takes too long (e.g. 10s), force close
+        setTimeout(function () {
+            if (screen && screen.style.display !== 'none') {
+                console.warn('Preloader timed out, forcing close.');
+                if (bar) bar.style.width = '100%';
+                if (screen) {
+                    screen.style.opacity = '0';
+                    setTimeout(function () { screen.style.display = 'none'; }, 500);
+                }
+            }
+        }, 15000);
+
+        function checkDone() {
+            loaded++;
+            var percent = Math.min(100, Math.round((loaded / total) * 100));
+            if (bar) bar.style.width = percent + '%';
+            if (text) text.innerText = 'Loading Map... ' + percent + '%';
+
+            if (loaded >= total) {
+                setTimeout(function () {
+                    if (screen) {
+                        screen.style.opacity = '0';
+                        setTimeout(function () { screen.style.display = 'none'; }, 500);
+                    }
+                }, 800);
+            }
+        }
+
+        allImages.forEach(function (url) {
+            var img = new Image();
+            img.onload = checkDone;
+            img.onerror = checkDone;
+            img.src = url;
+        });
+    })();
 
     function parseYear(yearStr) {
         if (!yearStr) return 2025;
@@ -616,7 +677,15 @@ function initMap() {
             triggerHaptic();
             resetFilters();
             updateChipStates();
-            showToast('All layers visible');
+            // Fly back to original location
+            map.flyTo({
+                center: [72.8322, 18.9270],
+                zoom: 15.0,
+                pitch: 0,
+                bearing: 0,
+                duration: 1000
+            });
+            showToast('View reset');
         });
         chipBar.appendChild(resetChip);
 
