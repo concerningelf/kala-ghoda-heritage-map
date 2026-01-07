@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About | Kala Ghoda Visual Audit</title>
-    
+
     <!-- Fonts & Icons (Same as Main Map) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Labrada:wght@400;500;600;700&family=Lato:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <!-- Link to your existing CSS (we will add a few specific styles for this page below) -->
@@ -15,9 +18,10 @@
     <style>
         /* --- PAGE SPECIFIC STYLES --- */
         /* These override or add to styles.css for the text layout */
-        
+
         body {
-            overflow-y: auto; /* Allow scrolling for this page */
+            overflow-y: auto;
+            /* Allow scrolling for this page */
             background: #f9f9f9;
         }
 
@@ -45,7 +49,7 @@
             background: #fff;
             padding: 10px 20px;
             border-radius: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             color: var(--text-main);
             font-weight: 800;
             text-transform: uppercase;
@@ -53,11 +57,16 @@
             letter-spacing: 1px;
             transition: all 0.2s ease;
         }
-        .back-btn:hover { transform: translateX(-5px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
 
         /* Typography */
         h1.page-title {
-            font-family: 'Cardo', serif;
+            font-family: 'Labrada', serif;
+            font-weight: 700;
             font-size: 42px;
             color: var(--text-main);
             margin-bottom: 10px;
@@ -76,7 +85,8 @@
         }
 
         h3 {
-            font-family: 'Cardo', serif;
+            font-family: 'Labrada', serif;
+            font-weight: 600;
             font-size: 24px;
             margin-top: 40px;
             margin-bottom: 15px;
@@ -142,12 +152,28 @@
         }
 
         @media (max-width: 768px) {
-            .about-container { margin: 0; padding: 30px; border-radius: 0; border: none; min-height: 100vh; }
-            .features-grid { grid-template-columns: 1fr; }
-            .back-btn { position: sticky; top: 20px; margin-bottom: 20px; width: fit-content; }
+            .about-container {
+                margin: 0;
+                padding: 30px;
+                border-radius: 0;
+                border: none;
+                min-height: 100vh;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-btn {
+                position: sticky;
+                top: 20px;
+                margin-bottom: 20px;
+                width: fit-content;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <a href="index.html" class="back-btn">
@@ -156,58 +182,72 @@
 
     <div class="about-container">
         <h1 class="page-title">Visual Audit: Kala Ghoda</h1>
-        <h2 class="page-subtitle">Digital Heritage Survey 2025</h2>
+        <h2 class="page-subtitle">A Personal Archive of Micro-Heritage</h2>
 
         <p>
-            The <strong>Kala Ghoda Visual Audit</strong> is an interactive digital survey documenting the architectural evolution of Mumbai’s premier art district. Using web-based mapping technology, this project catalogs the diverse stylistic lineage of the precinct—from the demolition of the Fort walls in the 1860s to the Art Deco boom of the 1930s.
+            Kala Ghoda is more than just a heritage precinct; it is a living museum of Mumbai's urban soul. Named after
+            the "Black Horse" statue that once stood here, this crescent-shaped district holds one of the dense
+            concentrations of history in the city.
         </p>
 
         <p>
-            This tool serves as an open-access archive for students, urban planners, and historians to analyze the spatial relationship between the city's colonial past and its living heritage.
+            <strong>But history isn't just in the grand monuments.</strong>
         </p>
 
-        <h3>The Precinct</h3>
         <p>
-            Named after the black stone statue of King Edward VII (the "Black Horse") that once stood at the node, Kala Ghoda is a unique crescent-shaped precinct. It represents one of the finest concentrations of heritage structures in India, transitioning seamlessly from Victorian Neo-Gothic public buildings to early 20th-century Indo-Saracenic museums and later Edwardian commercial blocks.
+            This project was born out of a deep love for urban exploration—the desire to walk a city not just to
+            traverse it, but to understand it. My goal is to slow down and document the <em>micro-heritage</em> that
+            most people walk past every day without noticing.
+        </p>
+
+        <h3>What We Document</h3>
+        <p>
+            While the guidebooks show you the museums and libraries, this visual audit looks closer. It captures the
+            invisible details that give the city its texture:
         </p>
 
         <div class="features-grid">
             <div class="feature-card">
-                <i class="feature-icon fa-solid fa-layer-group"></i>
-                <div class="feature-title">Stylistic Layering</div>
-                <p class="feature-desc">Filter the map by architectural style (Gothic, Art Deco, Indo-Saracenic) to see how different eras of construction cluster in specific zones.</p>
+                <i class="feature-icon fa-solid fa-font"></i>
+                <div class="feature-title">The Art of Lettering</div>
+                <p class="feature-desc">From Art Deco reliefs to hand-painted street signs, Mumbai has a rich tradition
+                    of architectural typography that tells the story of the buildings' identity.</p>
             </div>
 
             <div class="feature-card">
-                <i class="feature-icon fa-solid fa-clock-rotate-left"></i>
-                <div class="feature-title">Time Travel</div>
-                <p class="feature-desc">Use the temporal slider to strip away modern developments and view the precinct as it existed in 1890, 1920, or 1950.</p>
+                <i class="feature-icon fa-solid fa-magnifying-glass-location"></i>
+                <div class="feature-title">Hidden Details</div>
+                <p class="feature-desc">Weather vanes, date plaques, carved monograms, and vernacular stone
+                    railings—the small design choices that reveal the hands of the original craftsmen.</p>
             </div>
 
             <div class="feature-card">
-                <i class="feature-icon fa-solid fa-map-location-dot"></i>
-                <div class="feature-title">1883 Historical Map</div>
-                <p class="feature-desc">Overlay a high-fidelity raster scan of the 1883 Survey of India map to compare historical street alignments with the modern urban fabric.</p>
+                <i class="feature-icon fa-solid fa-road"></i>
+                <div class="feature-title">Urban Texture</div>
+                <p class="feature-desc">The ground beneath our feet, from 150-year-old basalt paving stones to the tram
+                    tracks that once moved the city, recently rediscovered.</p>
             </div>
 
             <div class="feature-card">
-                <i class="feature-icon fa-solid fa-cube"></i>
-                <div class="feature-title">3D Morphology</div>
-                <p class="feature-desc">Explore the built form in 3D to understand the relationship between street widths, building heights, and the famous 'Rampart Row'.</p>
+                <i class="feature-icon fa-solid fa-ghost"></i>
+                <div class="feature-title">Ghost Sites</div>
+                <p class="feature-desc">Mapping places that no longer exist, like the original Fort walls (1862) or the
+                    1883 shoreline, to see how the city has grown over time.</p>
             </div>
         </div>
 
-        <h3>Methodology</h3>
         <p>
-            This audit utilizes vector mapping based on OpenMapTiles, overlaid with custom GeoJSON datasets derived from historical records. Each data point is categorized by construction year, architect (where known), and architectural classification. The "Invisible Ramparts" layer traces the exact coordinates of the original Bombay Fort walls, demolished in 1862, providing critical context to the precinct's layout.
+            This map is an invitation to explore deeply. To look up at a facade, to notice the curve of a bracket, or
+            the serif on a street name. It is a testament to how much heritage Mumbai holds in every square meter, if
+            only we take the time to see it.
         </p>
 
         <div class="audit-meta">
-            <span><strong>Status:</strong> Active Survey (v1.2)</span>
-            <span><strong>Region:</strong> Mumbai, India</span>
-            <span><strong>Tech:</strong> MapLibre GL JS</span>
+            <span><strong>Created with love for Mumbai</strong></span>
+            <span>2025</span>
         </div>
     </div>
 
 </body>
+
 </html>

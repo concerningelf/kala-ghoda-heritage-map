@@ -333,15 +333,11 @@ function initMap() {
             // 6. Elphinstone College
             { id: 'elphinstone', category: 'Victorian', title: 'Elphinstone College', image: './images/elphinstone.jpg', description: 'Victorian Gothic Revival building with pointed arches.', year: '1871', architect: 'James Trubshawe', builder: 'Sir Cowasji Jehangir', location: { center: [18.92497448499293, 72.83083411935105] } },
             // 10. Rhythm House (Nudged West/Left side of street)
-            { id: 'rhythm', category: 'Ghost Site', title: 'Rhythm House', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Rhythm_House_(14427838921).jpg/1024px-Rhythm_House_(14427838921).jpg', description: 'Formerly the city\'s premier music store.', year: '1940s', architect: 'Unknown', builder: 'Mehmood Curmally', location: { center: [18.928066, 72.832123] } },
-            // Rhythm House Lettering (User Submission)
-            { id: 'rhythm-lettering', category: 'Lettering', title: 'Rhythm House Lettering', image: './images/rhythm-house-lettering.jpg', description: 'The iconic Art Deco typography of Rhythm House, synonymous with Mumbai\'s music culture for decades.', year: '1940s', architect: 'Unknown', builder: 'Private', location: { center: [18.928090, 72.832150] } },
+            { id: 'rhythm', categories: ['Ghost Site', 'Lettering'], title: 'Rhythm House', images: ['https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Rhythm_House_(14427838921).jpg/1024px-Rhythm_House_(14427838921).jpg', './images/rhythm-house-lettering.jpg'], description: 'Formerly the city\'s premier music store. The iconic Art Deco typography was synonymous with Mumbai\'s music culture for decades.', year: '1940s', architect: 'Unknown', builder: 'Mehmood Curmally', location: { center: [18.928066, 72.832123] } },
             // 12. Jehangir Art Gallery (Nudged East/Right side of street)
             { id: 'jehangir', category: 'Modern', title: 'Jehangir Art Gallery', image: './images/jehangir.jpg', description: 'Modernist concrete structure with a distinctive cantilevered entrance.', year: '1952', architect: 'G. M. Bhuta', builder: 'Sir Cowasji Jehangir', location: { center: [18.92745, 72.83185] } },
             // 17. Ador House (Nudged North of Rhythm House)
-            { id: 'ador', category: 'Art Deco', title: 'Ador House', image: './images/ador-house-building.jpg', description: 'A mid-20th century structure blending commercial utility with Art Deco, featuring a stone facade and bracketed wooden eaves.', year: '1940', architect: 'Unknown', builder: 'JB Advani Group', location: { center: [18.927000, 72.833167] } },
-            // Ador House Lettering (User Submission)
-            { id: 'ador-lettering', category: 'Lettering', title: 'Ador House Signage', image: './images/ador-house-lettering.jpg', description: 'The "ADOR HOUSE" lettering in clean, sans-serif metal relief, mounted prominently above the entrance arcade.', year: '1940', architect: 'Unknown', builder: 'JB Advani Group', location: { center: [18.927028, 72.833194] } },
+            { id: 'ador', categories: ['Art Deco', 'Lettering'], title: 'Ador House', images: ['./images/ador-house-building.jpg', './images/ador-house-lettering.jpg'], description: 'A mid-20th century structure blending commercial utility with Art Deco, featuring a stone facade and bracketed wooden eaves. The "ADOR HOUSE" lettering is rendered in clean, sans-serif metal relief above the entrance arcade.', year: '1940', architect: 'Unknown', builder: 'JB Advani Group', location: { center: [18.927000, 72.833167] } },
             // 29. Max Mueller (Nudged East of Ador)
             { id: 'mmb', category: 'Modern', title: 'Max Mueller Bhavan', image: './images/placeholder.jpg', description: 'The Goethe-Institut hub for Indo-German cultural exchange.', year: '1970', architect: 'N/A', builder: 'Goethe Institut', location: { center: [18.92725, 72.83250] } },
             // 32. Pavement Gallery (Specific spot on pavement)
@@ -360,9 +356,7 @@ function initMap() {
             // Heritage Stone Paving (User Submission)
             { id: 'heritage-paving', category: 'Urban Texture', title: 'Historic Basalt Paving', image: './images/stone-paving.jpg', description: 'Remnants of the original heavy rectangular basalt stone paving that once lined many of the Fort precinct\'s streets, providing a durable surface for carriages and trams.', year: 'Unknown', architect: 'City Engineers', builder: 'Public Works', location: { center: [18.928806, 72.832333] } },
             // 11. Synagogue (Further East)
-            { id: 'synagogue', category: 'Victorian', title: 'Keneseth Eliyahoo', image: './images/synagogue.jpg', description: 'Victorian era synagogue with a distinctive blue facade.', year: '1884', architect: 'Gostling & Morris', builder: 'Jacob Elias Sassoon', location: { center: [18.92811, 72.83257] } },
-            // Synagogue Lettering (User Submission)
-            { id: 'synagogue-lettering', category: 'Lettering', title: 'Keneseth Eliyahoo Lettering', image: './images/synagogue-lettering.jpg', description: 'Hebrew inscription above the entrance: "This is the gate of the Lord; the righteous shall enter through it" (Psalm 118:20).', year: '1884', architect: 'Unknown', builder: 'Jacob Elias Sassoon', location: { center: [18.92814, 72.83260] } },
+            { id: 'synagogue', categories: ['Victorian', 'Lettering'], title: 'Keneseth Eliyahoo', images: ['./images/synagogue.jpg', './images/synagogue-lettering.jpg'], description: 'Victorian era synagogue with a distinctive blue facade. The Hebrew inscription above the entrance reads: "This is the gate of the Lord; the righteous shall enter through it" (Psalm 118:20).', year: '1884', architect: 'Gostling & Morris', builder: 'Jacob Elias Sassoon', location: { center: [18.92811, 72.83257] } },
             // Numbered Signage (User Submission)
             { id: 'numbered-sign', category: 'Lettering', title: '52-54-56 Signage', image: './images/numbered-sign.jpg', description: 'A distinctive metal building number sign "52-54-56" mounted against a backdrop of contemporary street art featuring a stylized bird.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.928222, 72.832556] } },
             // Homji Street Sign (User Submission)
@@ -380,9 +374,7 @@ function initMap() {
             // University Library Facade (User Submission)
             { id: 'university-facade', category: 'Victorian', title: 'University Library Turret', image: './images/university-turret.jpg', description: 'A close-up view of the Venetian Gothic stonework on the University Library. Designed by Sir George Gilbert Scott, the structure uses local Kurla basalt and Malad stone.', year: '1878', architect: 'Sir Gilbert Scott', builder: 'Premchand Roychand', location: { center: [18.928833, 72.831194] } },
             // Jehangir Building (User Submission)
-            { id: 'jehangir-building', category: 'Victorian', title: 'Jehangir Building', image: './images/jehangir-building.jpg', description: 'A handsome stone facade building on Mahatma Gandhi Road featuring arched windows and decorative iron balconies, typical of the late 19th-century commercial architecture in Fort.', year: '1890', architect: 'Unknown', builder: 'Private', location: { center: [18.928833, 72.831250] } },
-            // Jehangir Building Lettering (User Submission)
-            { id: 'jehangir-building-lettering', category: 'Lettering', title: 'Jehangir Building Signage', image: './images/jehangir-lettering.jpg', description: 'The name "JEHANGIR BUILDING" rendered in bold relief lettering across the stone facade, a classic example of integrated architectural typography.', year: '1890', architect: 'Unknown', builder: 'Private', location: { center: [18.928860, 72.831280] } },
+            { id: 'jehangir-building', categories: ['Victorian', 'Lettering'], title: 'Jehangir Building', images: ['./images/jehangir-building.jpg', './images/jehangir-lettering.jpg'], description: 'A handsome stone facade building on Mahatma Gandhi Road featuring arched windows and decorative iron balconies. The name "JEHANGIR BUILDING" is rendered in bold relief lettering across the facade.', year: '1890', architect: 'Unknown', builder: 'Private', location: { center: [18.928833, 72.831250] } },
             // 26. Rajabai Tower (Nudged South to the actual Tower base)
             { id: 'rajabai', category: 'Victorian', title: 'Rajabai Clock Tower', image: './images/rajabai.jpg', description: 'Modeled on Big Ben, this 85m tower dominates the skyline.', year: '1878', architect: 'Sir Gilbert Scott', builder: 'Premchand Roychand', location: { center: [18.92880, 72.83020] } },
             // New India Assurance Building (User Submission)
@@ -392,9 +384,7 @@ function initMap() {
 
             // --- MG ROAD NORTH / FLORA FOUNTAIN ---
             // 8. Army and Navy (West side)
-            { id: 'army', category: 'Victorian', title: 'Army and Navy Building', image: './images/army-navy.jpg', description: 'Late nineteenth century Neo-Classical/Victorian commercial building.', year: '1890', architect: 'Frederick William Stevens', builder: 'British Military', location: { center: [18.92820, 72.83130] } },
-            // Army Lettering (Micro-location on the Army Navy facade)
-            { id: 'army-lettering', category: 'Lettering', title: 'Army and Navy Signage', image: './images/army-lettering.jpg', description: 'The iconic "ARMY & NAVY BUILDING" serif lettering, rendered in silver against the dark stone facade, marking the historic department store.', year: '1890', architect: 'Unknown', builder: 'British Military', location: { center: [18.92825, 72.83135] } },
+            { id: 'army', categories: ['Victorian', 'Lettering'], title: 'Army and Navy Building', images: ['./images/army-navy.jpg', './images/army-lettering.jpg'], description: 'Late nineteenth century Neo-Classical/Victorian commercial building. The iconic "ARMY & NAVY BUILDING" serif lettering is rendered in silver against the dark stone facade.', year: '1890', architect: 'Frederick William Stevens', builder: 'British Military', location: { center: [18.92820, 72.83130] } },
             // 9. Esplanade (Opposite Army Navy)
             { id: 'esplanade', category: 'Victorian', title: 'Esplanade Mansion', image: './images/esplanade.jpg', description: 'Formerly Watson\'s Hotel. Cast iron framed building.', year: '1865', architect: 'Rowland Mason Ordish', builder: 'British Engineers', location: { center: [18.92830, 72.83160] } },
             // Lumiere Screening (Ghost Site - Next to Esplanade)
@@ -462,7 +452,7 @@ function initMap() {
             // East & West Building (User Submission)
             { id: 'east-west', category: 'Lettering', title: 'East & West Building', image: './images/east-west.jpg', description: 'Heritage stone inscription on the facade of the East & West Insurance Building.', year: 'Unknown', architect: 'Unknown', builder: 'East & West Insurance Co.', location: { center: [18.929972, 72.833583] } },
             // Ring Co (User Submission)
-            { id: 'ring-co', category: 'Ghost Site', title: 'Ghost Signage (Ring Co.)', image: './images/ring-co.jpg', description: 'A fragmented sign reading "...RING CO." visible above the Bhaveshwar Copy Center, hinting at a former industrial or engineering tenant.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.93030, 72.83390] } },
+            { id: 'ring-co', categories: ['Lettering', 'Ghost Site'], title: 'Ghost Signage (Ring Co.)', image: './images/ring-co.jpg', description: 'A fragmented sign reading "...RING CO." visible above the Bhaveshwar Copy Center, hinting at a former industrial or engineering tenant.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.93030, 72.83390] } },
             // Vernacular Wooden Facade (User Submission)
             { id: 'vernacular-facade', category: 'Vernacular', title: 'Late 19th Century Vernacular Facade', image: './images/wooden-facade.jpg', description: 'A rare partially-preserved example of the vernacular architectural style once common in Fort. Features intricate wooden jali balconies and corbelled brackets.', year: 'Unknown', architect: 'Unknown', builder: 'Local Craftsmen', location: { center: [18.929194, 72.8325] } },
             // Wooden Terraces (User Submission)
@@ -475,10 +465,28 @@ function initMap() {
             { id: 'gujerat-mill', category: 'Lettering', title: 'The Gujerat Mill Store', image: './images/gujerat-mill.jpg', description: 'Distinctive mid-century corporate signage featuring a stylized "G" logo and metal lettering on a textured plaster facade.', year: 'Unknown', architect: 'N/A', builder: 'Private', location: { center: [18.928389, 72.833139] } },
             // Rampart Beat Chowky (User Submission)
             { id: 'rampart-chowky', category: 'Victorian', title: 'Rampart Beat Chowky', image: './images/rampart-chowky.jpg', description: 'A small stone police outpost with heritage architectural details, including a cornice and stone brackets, guarding the entrance to Rampart Row.', year: 'Unknown', architect: 'Public Works Dept', builder: 'Govt. of Bombay', location: { center: [18.927500, 72.832361] } },
+            // Allahabad Bank Building (User Submission)
+            { id: 'allahabad-bank', category: 'Neoclassical', title: 'Allahabad Bank Building', image: './images/allahabad-bank.jpg', description: 'A grand Neo-Classical banking hall (now Indian Bank) featuring a prominent corner entrance, Corinthian pilasters, and heavy stone detailing.', year: 'Unknown', architect: 'Unknown', builder: 'Allahabad Bank', location: { center: [18.931250, 72.834000] } },
+            // SBI Fort Branch (User Submission)
+            { id: 'sbi-fort', category: 'Neoclassical', title: 'SBI Main Branch (Fort)', image: './images/sbi-fort-branch.jpg', description: 'A massive colonial-era banking structure with colossal Ionic columns and a pedimented entrance, originally the Imperial Bank of India.', year: '1924', architect: 'Unknown', builder: 'Imperial Bank', location: { center: [18.931306, 72.834000] } },
+            // SBI Roman Numeral (User Submission)
+            { id: 'sbi-roman', category: 'Lettering', title: 'MCMXXIV Date Plaque', image: './images/sbi-mcmxxiv.jpg', description: 'The Roman numeral MCMXXIV (1924) carved in bold relief gold-painted serif lettering on the stone entablature, marking the building’s completion year.', year: '1924', architect: 'Unknown', builder: 'Imperial Bank', location: { center: [18.931333, 72.834028] } },
+            // A. Doshi & Co. (User Submission)
+            { id: 'a-doshi', categories: ['Lettering'], title: 'A. Doshi & Co.', images: ['./images/a-doshi-sign.jpg'], description: 'Classic commercial signage with bold relief lettering, accompanied by a diamond-shaped plaque reading "ESTD 1940".', year: '1940', architect: 'Unknown', builder: 'Private', location: { center: [18.931333, 72.833750] } },
+            // Ewart House Lettering (User Submission)
+            { id: 'ewart-house', categories: ['Lettering', 'Ghost Site'], title: 'Ewart House Lettering', image: './images/ewart-house.jpg', description: 'Carved "EWART HOUSE" lettering on the stone facade above the Central Bank of India. A subtle reminder of the building\'s identity.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.931361, 72.833083] } },
+            // Bruce Street Sign (User Submission)
+            { id: 'bruce-street', categories: ['Street Sign', 'Ghost Site'], title: 'Old Bruce Street Sign', images: ['./images/bruce-street-sign.jpg'], description: 'A rare painted sign for "10, BRUCE STREET" (now Homi Modi Street) preserved on a building facade, a tangible reminder of the area’s colonial nomenclature.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.931417, 72.833556] } },
             // 27. BSE (Far East)
             { id: 'bse', category: 'Modern', title: 'Bombay Stock Exchange', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/BSE_-_Bombay_Stock_Exchange_Building.jpg/960px-BSE_-_Bombay_Stock_Exchange_Building.jpg', description: 'The Phiroze Jeejeebhoy Towers.', year: '1980', architect: 'Chandrakant Patel', builder: 'BSE', location: { center: [18.92970, 72.83360] } },
             // Dalal Street Sign Black (User Submission)
             { id: 'dalal-sign-black', category: 'Street Sign', title: 'Dalal Street Sign (Black)', image: './images/dalal-street-black.jpg', description: 'A classic black cast-iron street sign marking Dalal Street, the financial heart of Mumbai.', year: 'Unknown', architect: 'BMC', builder: 'Municipal Corp', location: { center: [18.929722, 72.833722] } },
+            // Jawaharlal Darda Statue (User Submission)
+            { id: 'darda-statue', category: 'Street Furniture', title: 'Jawaharlal Darda Statue', image: './images/jawaharlal-darda.jpg', description: 'A bronze bust honoring the freedom fighter and journalist Jawaharlal Darda, affectionately known as "Babuji".', year: 'Unknown', architect: 'Unknown', builder: 'Public', location: { center: [18.929889, 72.833778] } },
+            // Carved Stone Facade (User Submission)
+            { id: 'carved-balconies', category: 'Vernacular', title: 'Ornate Stone Facade', image: './images/carved-balconies.jpg', description: 'A fine example of vernacular architecture featuring intricate stone jaali (lattice) work, heavy masonry brackets, and projecting balconies, characteristic of the mixed-use buildings in old Fort.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.929972, 72.833778] } },
+            // Stone Arched Facade (User Submission)
+            { id: 'stone-arches', category: 'Vernacular', title: 'Stone Arched Facade', image: './images/islamic-stone-arches.jpg', description: 'Distinctive vernacular building featuring scalloped (cusped) stone arches and geometric perforated stone railings.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.930250, 72.833833] } },
             // Dalal Street Sign Blue (User Submission)
             { id: 'dalal-sign-blue', category: 'Street Sign', title: 'Dalal Street Sign (Blue)', image: './images/dalal-street-blue.jpg', description: 'A vintage blue enamel street sign for Dalal Street, likely an earlier municipal design.', year: 'Unknown', architect: 'BMC', builder: 'Municipal Corp', location: { center: [18.929750, 72.833750] } },
 
@@ -490,7 +498,11 @@ function initMap() {
             // Tram Tracks (User Submission)
             { id: 'tram-tracks', category: 'Ghost Site', title: 'Tram Tracks', image: './images/tram-tracks.jpg', description: 'The tram tracks, hidden for more than six decades, were discovered during excavation in 2018. Mumbai\'s tram service began in 1874 and stopped in 1964. While horses were used to pull the trams earlier, they were replaced by electric engines in 1907. The network functioned from Colaba to Pydhonie via Crawford Market. The original tracks have been preserved at their original position.', year: '1874', architect: 'BEC', builder: 'Bombay Tramway Co.', location: { center: [18.932583, 72.831667] } },
             // Central Bank of India (User Submission)
-            { id: 'central-bank', category: 'Neoclassical', title: 'Central Bank of India', image: './images/central-bank.jpg', description: 'A grand heritage building with a distinctive dome and curved facade, established in 1911 as one of the first truly Indian owned banks.', year: '1911', architect: 'Unknown', builder: 'Sir Sorabji Pochkhanawala', location: { center: [18.931722, 72.831750] } },
+            { id: 'central-bank', categories: ['Neoclassical', 'Lettering'], title: 'Central Bank of India', images: ['./images/central-bank.jpg', './images/central-bank-lettering.jpg'], description: 'A grand heritage building established in 1911 as one of the first truly Indian owned banks. The facade features prominent "CENTRAL BANK BUILDING" carved lettering curving around the corner.', year: '1911', architect: 'Unknown', builder: 'Sir Sorabji Pochkhanawala', location: { center: [18.931722, 72.831750] } },
+            // Bombay House (User Submission)
+            { id: 'bombay-house', categories: ['Neoclassical', 'Lettering'], title: 'Bombay House', images: ['./images/bombay-house.jpg', './images/bombay-house-lettering.jpg'], description: 'The global headquarters of the Tata Group since 1924. This colonial-era stone building is renowned for its understated elegance and the "BOMBAY HOUSE" gold lettering above the entrance arcade.', year: '1924', architect: 'George Wittet', builder: 'Tata Group', location: { center: [18.931847, 72.832680] } },
+            // British Fire Hydrant (User Submission)
+            { id: 'fire-hydrant', category: 'Street Furniture', title: 'British Fire Hydrant', image: './images/british-fire-hydrant.jpg', description: 'A rare cast-iron fire hydrant from the British colonial era, painted bright red. These sturdy relics of civic infrastructure are disappearing but occasionally found on Fort’s sidewalks.', year: 'Unknown', architect: 'Unknown', builder: 'Municipal Corp', location: { center: [18.931500, 72.832944] } },
             // Siddharth College (User Submission)
             { id: 'siddharth-college', category: 'Victorian', title: 'Siddharth College (Anand Bhavan)', image: './images/siddharth-college.jpg', description: 'A Grade II heritage structure (formerly Albert Building), acquired by Dr. B.R. Ambedkar in 1951 to house the first college of the People\'s Education Society.', year: '1900', architect: 'Unknown', builder: 'People\'s Education Society', location: { center: [18.933889, 72.832389] } },
             // Davar Building (User Submission)
@@ -511,12 +523,32 @@ function initMap() {
             { id: 'fort-gate', category: 'Victorian', title: 'Fort Gate Remnant', image: './images/fort-gate-remnant.jpg', description: 'A surviving basalt stone archway, likely a remnant from the original Fort walls demolished in the 1860s. Now integrated into the urban fabric near DN Road.', year: '1860', architect: 'British Military Engineers', builder: 'Public Works', location: { center: [18.933667, 72.832361] } },
             // Booksellers (Nudged North West along the curve)
             { id: 'booksellers', category: 'Living Heritage', title: 'Secondhand Book Sellers', image: './images/books.jpg', description: 'The lineage of street book vendors near Flora Fountain.', year: '1950', architect: 'N/A', builder: 'Vendor Collective', location: { center: [18.93250, 72.83150] } },
+            // RBI Rupee Installation (User Submission)
+            { id: 'rbi-rupee', category: 'Street Furniture', title: 'RBI Rupee Installation', image: './images/rbi-rupee.jpg', description: 'A large golden installation of the Indian Rupee symbol (₹) accompanied by coin motifs, located outside the Reserve Bank of India.', year: '2010', architect: 'RBI', builder: 'RBI', location: { center: [18.932943, 72.837090] } },
+            // RBI Building (User Submission)
+            { id: 'rbi-building', categories: ['Modern', 'Street Furniture'], title: 'Reserve Bank of India (Main Building)', images: ['./images/rbi-building.jpg', './images/rbi-tiger.jpg'], description: 'The headquarters of India\'s central bank. Completed in 1939, the building is a transition between Art Deco and Modernism. A prominent golden statue of the RBI tiger under a palm tree (based on the East India Company\'s Mohur) stands at the entrance.', year: '1939', architect: 'J.A. Ritchie', builder: 'Shapoorji Pallonji', location: { center: [18.932850, 72.836850] } },
+            // India Government Mint (User Submission)
+            { id: 'mumbai-mint', category: 'Neoclassical', title: 'India Government Mint', image: './images/mumbai-mint.jpg', description: 'Established in 1829, the Mumbai Mint is one of the oldest in India. The building is a fine example of Neoclassical architecture, featuring a grand basalt stone facade.', year: '1829', architect: 'Major John Hawkins', builder: 'British Government', location: { center: [18.933361, 72.836556] } },
+            // Shahid Bhagat Singh Road Sign (User Submission)
+            { id: 'bhagatsingh-road-sign', category: 'Street Sign', title: 'Shahid Bhagat Singh Road Sign', image: './images/bhagatsingh-road-sign.jpg', description: 'A classic blue municipal street sign marking Shahid Bhagat Singh Road (formerly Colaba Causeway). The decorative ironwork scroll on the post is a characteristic feature of Mumbai\'s heritage street signage.', year: 'Unknown', architect: 'BMC', builder: 'Municipal Corp', location: { center: [18.932889, 72.836139] } },
+            // British Fire Hydrant - SBS Road (User Submission)
+            { id: 'fire-hydrant-sbs', category: 'Street Furniture', title: 'British Fire Hydrant', image: './images/hydrant-sbs.jpg', description: 'A weathered cast-iron fire hydrant from the British colonial era, located along Shahid Bhagat Singh Road. These hexagonal pillars remain as silent sentinels of the city\'s 19th-century water infrastructure.', year: '1890', architect: 'Unknown', builder: 'Municipal Corp', location: { center: [18.932583, 72.835806] } },
+            // British Fire Hydrant - D.N. Road (User Submission)
+            { id: 'fire-hydrant-dn', category: 'Street Furniture', title: 'British Fire Hydrant', image: './images/hydrant-dn-road.jpg', description: 'A tall, cylindrical cast-iron fire hydrant with a rounded cap, located within the heritage arcade on Dadabhai Naoroji Road. This red-oxide painted relic is part of Mumbai\'s historic fire-fighting infrastructure.', year: '1890', architect: 'Unknown', builder: 'Municipal Corp', location: { center: [18.93225, 72.834306] } },
+            // Heritage Monograms (User Submission)
+            { id: 'standard-monograms', category: 'Lettering', title: 'Heritage Monograms', images: ['./images/monogram-hb.jpg', './images/monogram-mb.jpg'], description: 'Intricate monograms carved into the stone balconies of the Standard Building on D.N. Road. These stylized "HB" and "MB" initials are a testament to the craftsmanship and personal branding of the early 20th-century architects and builders.', year: '1902', architect: 'F.W. Stevens', builder: 'Standard Life Assurance', location: { center: [18.932056, 72.834417] } },
+            // Gungadass Vizbhoocundass Piyav (User Submission)
+            { id: 'gungadass-piyav', categories: ['Street Furniture', 'Lettering'], title: 'Gungadass Vizbhoocundass Piyav', images: ['./images/gungadass-piyav.jpg', './images/gungadass-plaque-1841.jpg', './images/gungadass-plaque-1873.jpg'], description: 'A historic water fountain (piyav) decorated with red jaali work. The inscriptions in multiple scripts (English, Gujarati, Marathi, Urdu) commemorate its erection in 1841 by Gungadass Vizbhoocundass and a subsequent addition in 1873 by his widow, Bai Manchooverbai.', year: '1841', architect: 'Unknown', builder: 'Gungadass Vizbhoocundass', location: { center: [18.932028, 72.834389] } },
+            // Ryrie's Building (User Submission)
+            { id: 'ryrie-building', categories: ['Neoclassical', 'Lettering'], title: 'Ryrie\'s Building (Galeries Lafayette)', images: ['./images/ryrie-building.jpg', './images/ryrie-monogram.jpg'], description: 'A grand heritage building on D.N. Road, recently restored to house Galeries Lafayette. The stone facade features intricate Neoclassical details, including the original "RY" monogram carved into the masonry, signifying its history as the Ryrie\'s building.', year: '1900', architect: 'Unknown', builder: 'Ryrie & Co.', location: { center: [18.930883, 72.834693] } },
+            // State Bank Building Directory (User Submission)
+            { id: 'sbi-directory', category: 'Lettering', title: 'State Bank Building Directory', image: './images/crawford-bayley-board.jpg', description: 'A classic black directory board located at the entrance of the State Bank Building (formerly State Bank of India Commercial Branch). It features the names of historic tenants like Crawford Bayley & Co. and The Oriental Fire & General Insurance, rendered in crisp white lettering.', year: 'Unknown', architect: 'Unknown', builder: 'Private', location: { center: [18.931083, 72.834972] } },
 
             // Heritage Lettering (User Submission)
             { id: '1923-lettering', category: 'Lettering', title: '1923 Lettering', image: './images/lettering-north-fort.jpg', description: 'Carved stone lettering displaying the year "1923" adorned with decorative floral motifs.', year: '1923', architect: 'Unknown', builder: 'Private', location: { center: [18.935944, 72.833889] } },
 
             // Small extras
-            { id: 'hydrant', category: 'Urban Texture', title: 'British Fire Hydrant', image: './images/hydrant.jpg', description: 'A hexagonal cast-iron fire hydrant, a sturdy relic of the colonial municipal water infrastructure.', year: '1895', architect: 'BMC', builder: 'Foundry Cast', location: { center: [18.928139, 72.831917] } },
+            { id: 'hydrant', category: 'Street Furniture', title: 'British Fire Hydrant', image: './images/hydrant.jpg', description: 'A hexagonal cast-iron fire hydrant, a sturdy relic of the colonial municipal water infrastructure.', year: '1895', architect: 'BMC', builder: 'Foundry Cast', location: { center: [18.928139, 72.831917] } },
             { id: 'kerbstones', category: 'Urban Texture', title: 'Kurla Basalt Kerbstones', image: './images/kurla-basalt.jpg', description: 'Original massive blocks of grey Kurla basalt lining the pavement.', year: '1880', architect: 'City Engineers', builder: 'Public Works', location: { center: [18.92750, 72.83200] } }
         ]
     };
@@ -543,7 +575,17 @@ function initMap() {
     var selectedMarker = null;
 
     var layersContent = document.getElementById('layers-content');
-    var categories = [...new Set(config.chapters.map(function (item) { return item.category; }))];
+
+    // Helper to get categories array from a chapter (supports both 'category' and 'categories' fields)
+    function getCategories(item) {
+        if (item.categories && Array.isArray(item.categories)) {
+            return item.categories;
+        }
+        return item.category ? [item.category] : [];
+    }
+
+    // Extract all unique categories from chapters
+    var categories = [...new Set(config.chapters.flatMap(function (item) { return getCategories(item); }))];
 
     var allBtn = document.createElement('div');
     allBtn.className = 'filter-btn all-layers-btn active';
@@ -556,7 +598,8 @@ function initMap() {
         btn.className = 'filter-btn';
         btn.setAttribute('data-cat', cat);
         var color = config.colors[cat] || '#333';
-        btn.innerHTML = `<div class="layer-label-group"><span class="dot-indicator" style="color:${color}"></span><span>${cat}</span></div><div class="layer-actions"><span class="layer-solo-btn" title="Show Only This Layer">ONLY</span><div class="layer-eye-btn" title="Toggle Visibility">HIDE</div></div>`;
+        var iconClass = config.icons[cat] || 'fa-map-marker-alt';
+        btn.innerHTML = `<div class="layer-label-group"><span class="dot-indicator" style="color:${color}"></span><i class="fa-solid ${iconClass}" style="color:#666; font-size:12px;"></i><span>${cat}</span></div><div class="layer-actions"><span class="layer-solo-btn" title="Show Only This Layer">ONLY</span><div class="layer-eye-btn" title="Toggle Visibility">HIDE</div></div>`;
         btn.querySelector('.layer-eye-btn').addEventListener('click', function (e) { e.stopPropagation(); toggleCategory(cat, btn); });
         btn.querySelector('.layer-solo-btn').addEventListener('click', function (e) { e.stopPropagation(); soloCategory(cat, btn.querySelector('.layer-solo-btn')); });
         layersContent.appendChild(btn);
@@ -580,10 +623,11 @@ function initMap() {
         // Create a chip for each category
         categories.forEach(function (cat) {
             var color = config.colors[cat] || '#333';
+            var iconClass = config.icons[cat] || 'fa-map-marker-alt';
             var chip = document.createElement('div');
             chip.className = 'filter-chip';
             chip.setAttribute('data-cat', cat);
-            chip.innerHTML = `<span class="chip-dot" style="background:${color}"></span>${cat}`;
+            chip.innerHTML = `<span class="chip-dot" style="background:${color}"></span><i class="fa-solid ${iconClass}"></i>${cat}`;
 
             // Long press detection variables
             var longPressTimer = null;
@@ -653,6 +697,13 @@ function initMap() {
             wallChip.classList.toggle('chip-solo');
         });
         chipBar.appendChild(wallChip);
+
+        // Scroll hint: hide gradient when scrolled to end
+        var wrapper = chipBar.parentElement;
+        chipBar.addEventListener('scroll', function () {
+            var isAtEnd = chipBar.scrollLeft + chipBar.offsetWidth >= chipBar.scrollWidth - 10;
+            wrapper.classList.toggle('scrolled-end', isAtEnd);
+        });
     }
 
     // Function to sync chip visual states with the actual filter state
@@ -751,7 +802,11 @@ function initMap() {
 
     function updateMapState() {
         markerObjects.forEach(function (m) {
-            var categoryVisible = !disabledCategories.includes(m.category);
+            // For multi-category support: visible if ANY category is not disabled
+            var markerCategories = m.categories || [m.category];
+            var categoryVisible = markerCategories.some(function (cat) {
+                return !disabledCategories.includes(cat);
+            });
             var timeVisible = m.year <= currentSliderYear;
             if (categoryVisible && timeVisible) { m.element.style.display = 'flex'; m.element.style.opacity = '1'; }
             else { m.element.style.display = 'none'; }
@@ -905,12 +960,22 @@ function initMap() {
         }
 
         if (val.length < 1) { searchResults.style.display = 'none'; return; }
-        const matches = config.chapters.filter(item => item.title.toLowerCase().includes(val) || item.category.toLowerCase().includes(val));
+
+        // Search across title and all categories (supports both 'category' and 'categories')
+        const matches = config.chapters.filter(item => {
+            var itemCategories = getCategories(item);
+            var categoryMatch = itemCategories.some(cat => cat.toLowerCase().includes(val));
+            return item.title.toLowerCase().includes(val) || categoryMatch;
+        });
+
         searchResults.innerHTML = ''; searchResults.style.display = 'block';
         if (matches.length > 0) {
             matches.forEach(item => {
+                var itemCategories = getCategories(item);
+                var categoryDisplay = itemCategories.join(' · ');
+
                 const div = document.createElement('div'); div.className = 'search-item';
-                div.innerHTML = `<span class="search-item-title">${item.title}</span><span class="search-item-cat">${item.category}</span>`;
+                div.innerHTML = `<span class="search-item-title">${item.title}</span><span class="search-item-cat">${categoryDisplay}</span>`;
                 div.addEventListener('click', () => {
                     const targetObj = markerObjects.find(obj => obj.id === item.id);
                     if (targetObj) {
@@ -930,7 +995,32 @@ function initMap() {
     if (searchInputMobile) searchInputMobile.addEventListener('input', handleSearch);
     if (searchInputDesktop) searchInputDesktop.addEventListener('input', handleSearch);
 
-    document.addEventListener('click', function (e) { if (!document.getElementById('search-container').contains(e.target)) { searchResults.style.display = 'none'; } });
+    // Mobile search expansion - hide brand pill when focused
+    if (searchInputMobile) {
+        var headerPills = document.querySelector('.mobile-header-pills');
+        searchInputMobile.addEventListener('focus', function () {
+            if (headerPills) headerPills.classList.add('search-expanded');
+        });
+        searchInputMobile.addEventListener('blur', function () {
+            // Delay removal to allow result clicks
+            setTimeout(function () {
+                if (headerPills && !searchInputMobile.value) {
+                    headerPills.classList.remove('search-expanded');
+                }
+            }, 200);
+        });
+    }
+
+    document.addEventListener('click', function (e) {
+        if (!document.getElementById('search-container').contains(e.target)) {
+            searchResults.style.display = 'none';
+            // Also collapse search if clicking outside
+            var headerPills = document.querySelector('.mobile-header-pills');
+            if (headerPills && searchInputMobile && !searchInputMobile.value) {
+                headerPills.classList.remove('search-expanded');
+            }
+        }
+    });
 
     document.addEventListener('keydown', function (event) {
         if (event.key === "Escape") {
@@ -966,9 +1056,26 @@ function initMap() {
                 console.log('Auto-corrected coordinates for: ' + record.title);
             }
 
-            var color = config.colors[record.category] || '#333';
-            var iconClass = config.icons[record.category] || 'fa-map-marker-alt';
-            var el = document.createElement('div'); el.className = 'marker'; el.style.backgroundColor = color; el.innerHTML = '<i class="fa-solid ' + iconClass + '"></i>';
+            // Get categories array (supports both 'category' and 'categories' fields)
+            var recordCategories = getCategories(record);
+            var primaryCategory = recordCategories[0] || 'Unknown';
+            var isMultiCategory = recordCategories.length > 1;
+
+            var color = config.colors[primaryCategory] || '#333';
+            var iconClass = config.icons[primaryCategory] || 'fa-map-marker-alt';
+
+            var el = document.createElement('div');
+            el.className = 'marker' + (isMultiCategory ? ' marker-multi' : '');
+            el.style.backgroundColor = color;
+            el.innerHTML = '<i class="fa-solid ' + iconClass + '"></i>';
+
+            // Apply dynamic secondary color ring if multi-category
+            if (isMultiCategory) {
+                var secondaryCategory = recordCategories[1];
+                var secondaryColor = config.colors[secondaryCategory] || '#333';
+                el.style.setProperty('--ring-color', secondaryColor);
+            }
+
             record.parsedYear = parseYear(record.year);
             el.onclick = function (e) { e.stopPropagation(); openPanel(record, color, el); };
             if (window.matchMedia('(hover: hover)').matches) {
@@ -976,7 +1083,7 @@ function initMap() {
                 el.addEventListener('mouseleave', function () { tooltip.style.opacity = '0'; });
             }
             var marker = new maplibregl.Marker({ element: el, anchor: 'bottom' }).setLngLat(record.location.center).addTo(map);
-            markerObjects.push({ element: el, category: record.category, marker: marker, id: record.id, title: record.title, year: record.parsedYear });
+            markerObjects.push({ element: el, category: primaryCategory, categories: recordCategories, marker: marker, id: record.id, title: record.title, year: record.parsedYear });
         });
 
         // Check for deep link URL parameter (?site=xyz)
@@ -1022,27 +1129,115 @@ function initMap() {
             <button id="share-btn" class="panel-action-btn secondary"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
         </div>`;
 
-        // SKELETON LOADING LOGIC
+
+        // Get images array (supports both 'image' and 'images' fields)
+        var images = record.images && Array.isArray(record.images) ? record.images : [record.image];
+        var currentImageIndex = 0;
+
+        // IMAGE GALLERY CONTAINER
         var imageContainer = document.createElement('div');
-        imageContainer.className = 'panel-img-container skeleton'; // Start with skeleton
+        imageContainer.className = 'panel-img-container skeleton';
+
         var img = document.createElement('img');
-        img.className = 'panel-img loading'; // Start hidden
-        img.src = record.image;
+        img.className = 'panel-img loading';
+        img.src = images[0];
 
         img.onload = function () {
-            imageContainer.classList.remove('skeleton'); // Remove shimmer
-            img.classList.remove('loading'); // Fade in
+            imageContainer.classList.remove('skeleton');
+            img.classList.remove('loading');
         };
         imageContainer.appendChild(img);
+
+        // Add gallery navigation if multiple images
+        if (images.length > 1) {
+            // Dot indicators
+            var dotsContainer = document.createElement('div');
+            dotsContainer.className = 'gallery-dots';
+            images.forEach(function (_, idx) {
+                var dot = document.createElement('span');
+                dot.className = 'gallery-dot' + (idx === 0 ? ' active' : '');
+                dot.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    goToImage(idx);
+                });
+                dotsContainer.appendChild(dot);
+            });
+            imageContainer.appendChild(dotsContainer);
+
+            // Arrow buttons
+            var prevBtn = document.createElement('button');
+            prevBtn.className = 'gallery-arrow gallery-prev';
+            prevBtn.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+            prevBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                goToImage((currentImageIndex - 1 + images.length) % images.length);
+            });
+            imageContainer.appendChild(prevBtn);
+
+            var nextBtn = document.createElement('button');
+            nextBtn.className = 'gallery-arrow gallery-next';
+            nextBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+            nextBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                goToImage((currentImageIndex + 1) % images.length);
+            });
+            imageContainer.appendChild(nextBtn);
+
+            // Image counter
+            var counter = document.createElement('div');
+            counter.className = 'gallery-counter';
+            counter.textContent = '1 / ' + images.length;
+            imageContainer.appendChild(counter);
+
+            // Navigation function
+            function goToImage(idx) {
+                currentImageIndex = idx;
+                img.classList.add('loading');
+                imageContainer.classList.add('skeleton');
+                img.src = images[idx];
+                img.onload = function () {
+                    imageContainer.classList.remove('skeleton');
+                    img.classList.remove('loading');
+                };
+                // Update dots
+                dotsContainer.querySelectorAll('.gallery-dot').forEach(function (d, i) {
+                    d.classList.toggle('active', i === idx);
+                });
+                // Update counter
+                counter.textContent = (idx + 1) + ' / ' + images.length;
+            }
+
+            // Swipe support for mobile
+            var touchStartX = 0;
+            var touchEndX = 0;
+            imageContainer.addEventListener('touchstart', function (e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            imageContainer.addEventListener('touchend', function (e) {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) {
+                    goToImage((currentImageIndex + 1) % images.length); // Swipe left = next
+                } else if (touchEndX - touchStartX > 50) {
+                    goToImage((currentImageIndex - 1 + images.length) % images.length); // Swipe right = prev
+                }
+            }, { passive: true });
+        }
 
         // Combine content
         var panelInner = document.getElementById('panel-inner');
         panelInner.innerHTML = '';
         panelInner.appendChild(imageContainer);
 
+        // Build category pills (supports multi-category)
+        var recordCategories = getCategories(record);
+        var categoryPillsHTML = recordCategories.map(function (cat) {
+            var catColor = config.colors[cat] || '#333';
+            return `<span class="panel-cat" style="background:${catColor}">${cat}</span>`;
+        }).join('');
+
         var textContent = document.createElement('div');
         textContent.className = 'panel-content';
-        textContent.innerHTML = `<div class="panel-header"><span class="panel-cat" style="background:${color}">${record.category}</span></div><h2 class="panel-title">${record.title}</h2><p class="panel-desc">${record.description}</p>${infoHTML}${quickActions}`;
+        textContent.innerHTML = `<div class="panel-header">${categoryPillsHTML}</div><h2 class="panel-title">${record.title}</h2><p class="panel-desc">${record.description}</p>${infoHTML}${quickActions}`;
         panelInner.appendChild(textContent);
 
         // Add share button functionality
